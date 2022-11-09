@@ -3,6 +3,7 @@ import logging.handlers
 import os
 
 import requests
+import yagmail
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -20,15 +21,27 @@ try:
     SOME_SECRET = os.environ["SOME_SECRET"]
 except KeyError:
     SOME_SECRET = "Token not available!"
-    #logger.info("Token not available!")
-    #raise
+    
+try:
+    GMAIL_PWD = os.environ["GMAIL_PWD"]
+except KeyError:
+    GMAIL_PWD = "Token not available!"
 
 
 if __name__ == "__main__":
     logger.info(f"Token value: {SOME_SECRET}")
-
+    # extract weather info
     r = requests.get('https://weather.talkpython.fm/api/weather?city=saf&state=CA&country=US')
     if r.status_code == 200:
         data = r.json()
         temperature = data["forecast"]["temp"]
         logger.info(f'Weather in San Francisco: {temperature}')
+    msg = f"Hello, today's temperature is {temperature}"  
+    yag = yagmail.SMTP("wangxinyi1986@gmail.com",
+                   GMAIL_PWD)
+    # Adding Content and sending it
+    yag.send("wangxinyi1986@gmail.com", 
+         "Test yagmail",
+         msg)
+ 
+        
