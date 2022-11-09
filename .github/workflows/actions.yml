@@ -23,9 +23,8 @@ jobs:
           pip install -r requirements.txt
           
       - name: execute py script # run main.py
-        env: |
-          SOME_SECRET: ${{ secrets.SOME_SECRET }}
-	  GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
+        env:
+          GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
         run: python main.py
           
       - name: commit files
