@@ -6,7 +6,7 @@ from step2 import *
 # import requests
 import yagmail
 import ee
-# import ee.mapclient
+import ee.mapclient
 from datetime import datetime
 
 ee.Initialize()
