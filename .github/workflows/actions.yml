@@ -26,6 +26,7 @@ jobs:
         env:
           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
           SOME_SECRET: ${{ secrets.SOME_SECRET }}
+          GEE_AUTH: ${{secrets.GEE_AUTH}
         run: python main.py
           
       - name: commit files
