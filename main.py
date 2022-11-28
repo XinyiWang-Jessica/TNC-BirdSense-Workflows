@@ -6,10 +6,22 @@ from step2 import *
 # import requests
 import yagmail
 import ee
-import ee.mapclient
 from datetime import datetime
 
-ee.Initialize()
+try:
+    GMAIL_PWD = os.environ["GMAIL_PWD"]
+except KeyError:
+    GMAIL_PWD = "Token not available!"
+
+try:
+    GEE_AUTH = os.environ["GEE_AUTH"]
+except KeyError:
+    GEE_AUTH = "Token not available!"
+    
+
+service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
+credentials = ee.ServiceAccountCredentials(service_account, GEE_AUTH)
+ee.Initialize(credentials)
 
 # User defined settings
 start_string = '2022-10-01';
@@ -70,13 +82,7 @@ elif program == "WCWR22":
 # except KeyError:
 #     SOME_SECRET = "Token not available!"
     
-# try:
-#     GMAIL_PWD = os.environ["GMAIL_PWD"]
-# except KeyError:
-#     GMAIL_PWD = "Token not available!"
 
-
-    
     
 def main():
     # s2 = ee.ImageCollection('COPERNICUS/S2');
@@ -134,7 +140,7 @@ def main():
 
     msg = f"I got a number from Earth Engine {bands}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
-                   'gzedoghsyybkeamc')
+                   'GMAIL_PWD')
     # Adding Content and sending it
     yag.send(["wangxinyi1986@gmail.com"], 
          "Test Github Actions",
