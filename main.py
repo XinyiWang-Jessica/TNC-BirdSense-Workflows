@@ -140,7 +140,7 @@ def main():
 
     msg = f"I got a number from Earth Engine {bands}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
-                   'GMAIL_PWD')
+                   GMAIL_PWD)
     # Adding Content and sending it
     yag.send(["wangxinyi1986@gmail.com"], 
          "Test Github Actions",
