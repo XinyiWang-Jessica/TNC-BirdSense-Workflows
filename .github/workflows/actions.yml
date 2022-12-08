@@ -21,13 +21,21 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      
+      - uses: actions/checkout@v3
+      - name: Decrypt large secret
+        run: ./decrypt_secret.sh
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+      - name: Test printing your secret (Remove this step in production)
+        run: cat $HOME/secrets/my_secret.json  
           
       - name: execute py script # run main.py
         env:
           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
           GEE_AUTH: ${{secrets.GEE_AUTH}}
-        run: cat $HOME/secrets/my_secret.json
+        run: python main.py
           
       - name: commit files
         run: |
