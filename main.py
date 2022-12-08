@@ -14,13 +14,13 @@ except KeyError:
     GMAIL_PWD = "Token not available!"
 
 try:
-    GEE_AUTH = os.environ["GEE_AUTH"]
+    LARGE_SECRET_PASSPHRASE = os.environ["LARGE_SECRET_PASSPHRASE"]
 except KeyError:
-    GEE_AUTH = "Token not available!"
+    LARGE_SECRET_PASSPHRASE = "Token not available!"
     
 
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, 'HOME/secrets/tnc-birdreturn-test-c95e19825893.json')
+credentials = ee.ServiceAccountCredentials(service_account, LARGE_SECRET_PASSPHRASE)
 ee.Initialize(credentials)
 
 # User defined settings
