@@ -24,7 +24,7 @@ jobs:
       
       - uses: actions/checkout@v3
       - name: Decrypt large secret
-        run: ./decrypt_secret.sh
+        run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/secrets/tnc-birdreturn-test-c95e19825893.json tnc-birdreturn-test-c95e19825893.json.gpg
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
       - name: Test printing your secret (Remove this step in production)
