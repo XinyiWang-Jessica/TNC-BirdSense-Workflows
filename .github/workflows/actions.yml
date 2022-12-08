@@ -27,7 +27,7 @@ jobs:
           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
           GEE_AUTH: ${{secrets.GEE_AUTH}}
-        run: python main.py
+        run: cat $HOME/secrets/my_secret.json
           
       - name: commit files
         run: |
