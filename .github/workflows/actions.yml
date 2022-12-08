@@ -25,7 +25,7 @@ jobs:
       - name: execute py script # run main.py
         env:
           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
-          SOME_SECRET: ${{ secrets.SOME_SECRET }}
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
           GEE_AUTH: ${{secrets.GEE_AUTH}}
         run: python main.py
           
