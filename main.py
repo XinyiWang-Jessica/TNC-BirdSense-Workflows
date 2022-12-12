@@ -20,7 +20,7 @@ except KeyError:
     
 
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, 'HOME/tnc-birdreturn-test-c95e19825893.json')
+credentials = ee.ServiceAccountCredentials(service_account, '$HOME/tnc-birdreturn-test-c95e19825893.json')
 ee.Initialize(credentials)
 
 # User defined settings
