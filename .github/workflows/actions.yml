@@ -27,15 +27,17 @@ jobs:
         run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/tnc-birdreturn-test-c95e19825893.json tnc-birdreturn-test-c95e19825893.json.gpg
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
-      - name: Test printing your secret (Remove this step in production)
-        run: cat $HOME/tnc-birdreturn-test-c95e19825893.json  
-          
-      - name: execute py script # run main.py
-        env:
           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
-          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
           GEE_AUTH: ${{secrets.GEE_AUTH}}
-        run: python main.py
+      - name: execute py script # run main.py
+        run: python main.py 
+          
+#       - name: execute py script # run main.py
+#         env:
+#           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
+#           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+#           GEE_AUTH: ${{secrets.GEE_AUTH}}
+#         run: python main.py
           
       - name: commit files
         run: |
