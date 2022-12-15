@@ -20,7 +20,7 @@ except KeyError:
     
 
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, '$HOME/tnc-birdreturn-test-c95e19825893.json')
+credentials = ee.ServiceAccountCredentials(service_account, 'tnc-birdreturn-test-c95e19825893.json')
 ee.Initialize(credentials)
 
 # User defined settings
@@ -86,39 +86,16 @@ elif program == "WCWR22":
     
 def main():
     # s2 = ee.ImageCollection('COPERNICUS/S2');
-    s2 = ee.ImageCollection('COPERNICUS/S2_HARMONIZED'); # update for sentinel changes 1/25/2022 
-    s2c = ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
-    
-    checks_areaAdded = fields.map(addArea);
-
     start = ee.Date(start_string);
     end = ee.Date(end_string);
-
-    # Filter based on time and geography
-    s2 = s2.filterDate(start,end).filterBounds(fields);
-    s2c = s2c.filterDate(start,end).filterBounds(fields);
+    # Step 1: Extract images from EE and Filter based on time and geography
+    s2 = ee.ImageCollection('COPERNICUS/S2_HARMONIZED').filterDate(start,end).filterBounds(fields); # update for sentinel changes 1/25/2022 
+    s2c = ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY').filterDate(start,end).filterBounds(fields)
+    
+    checks_areaAdded = fields.map(addArea);
+    # step 2: add cloudProbability to S2
+    withCloudProbability = add_cloudProbability(s2, s2c);
    
-    # create list of system:index values in s2 and s2c
-    s2_sysindex_list = s2.aggregate_array('system:index')
-    s2c_sysindex_list = s2c.aggregate_array('system:index')
-
-    # create list of system:index values in s2 that are NOT in s2c
-    s2_sysindex_list_noMatch = s2_sysindex_list.removeAll(s2c_sysindex_list)
-    #print(s2_sysindex_list_noMatch.getInfo())
-
-    # filter s2 into two imgColls: 
-    s2_sys_ind_match = s2.filter(ee.Filter.inList("system:index", s2c_sysindex_list))
-    s2_sys_ind_NoMatch = s2.filter(ee.Filter.inList("system:index", s2_sysindex_list_noMatch))
-    
-    # for s2 images that have matching system:index values in s2c
-    # Join the cloud probability collection to the TOA reflectance collection.
-    withCloudProbability_yes_s2c = indexJoin(s2_sys_ind_match, s2c, 'cloud_probability')
-
-    # for s2 image that do NOT have matching system:index values in s2c
-    # apply constant cloud probability raster = 0
-    withCloudProbability_no_s2c  = s2_sys_ind_NoMatch.map(addNoCloudProb).filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
-    withCloudProbability = withCloudProbability_yes_s2c.merge(withCloudProbability_no_s2c)
-    
     cloud_free_imgColl = withCloudProbability.map(cloud_free_function);
     
     maskClouds = buildMaskFunction(50);
@@ -131,25 +108,40 @@ def main():
      # unique_dates = imlist.map(lambda im: ee.Image(im).date().format("YYYY-MM-dd")).distinct()
     withNDWI = s2Masked_byday.map(addNDWIThresh);
     NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
-    bands = NDWIThreshonly.first().bandNames().getInfo()
-    # reduced_cloudfree = s2NoMask_byday.select(['cloud_free_binary', 'pixel_count']).map(reduceRegionsSum)
 
-#     flattened_cloudfree = reduced_cloudfree.flatten()
+    bands = NDWIThreshonly.first().bandNames().getInfo()
+    rrs = fix(checks_areaAdded)
+    reduced_cloudfree = s2NoMask_byday.select(['cloud_free_binary', 'pixel_count']).map(rrs)
+
+    flattened_cloudfree = reduced_cloudfree.flatten()
     
-#     with_PctCloudFree = flattened_cloudfree.map(addPctCloudFree);
+    with_PctCloudFree = flattened_cloudfree.map(addPctCloudFree);
+    
+    task = ee.batch.Export.table.toDrive(**{
+        'collection': with_PctCloudFree,
+        'folder': 'BirdReturns',
+        'description':'cloud_free_' + program + '_' + end_string + run,
+        'fileFormat': 'CSV',
+        'selectors': [bid_name,field_name,'Unique_ID','Pct_CloudFree','Date'] # export only select fields
+        # 'area_sqm','cloud_free_binary','pixel_count',
+        })
+
+    task.start()
+    task.status()
+    
+    # # Sumarize the mean value of the NDWI value, the threshold layer (i.e. the % of the polygon that is above the threshold )
+    # reduced = NDWIThreshonly.map(reduceRegionsMean)
+    # table = reduced.flatten();    
 
     msg = f"I got a number from Earth Engine {bands}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
-                   GMAIL_PWD)
+                   'gzedoghsyybkeamc')
     # Adding Content and sending it
     yag.send(["wangxinyi1986@gmail.com"], 
          "Test Github Actions",
          msg)
     
-
-    
     
 if __name__ == "__main__":
     main()
  
-        
