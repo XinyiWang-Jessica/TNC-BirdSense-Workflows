@@ -14,6 +14,22 @@ thresh_val = 0.25
 def addArea(feature):
     return feature.set({'area_sqm': feature.geometry().area()})
 
+def add_cloudProbability(s2, s2c):
+    s2_sysindex_list = s2.aggregate_array('system:index')
+    s2c_sysindex_list = s2c.aggregate_array('system:index')
+    # create list of system:index values in s2 that are NOT in s2c
+    s2_sysindex_list_noMatch = s2_sysindex_list.removeAll(s2c_sysindex_list)
+    # filter s2 into two imgColls: 
+    s2_sys_ind_match = s2.filter(ee.Filter.inList("system:index", s2c_sysindex_list))
+    s2_sys_ind_NoMatch = s2.filter(ee.Filter.inList("system:index", s2_sysindex_list_noMatch))
+    # Join the cloud probability collection to the TOA reflectance collection.
+    withCloudProbability_yes_s2c = indexJoin(s2_sys_ind_match, s2c, 'cloud_probability')
+    # apply constant cloud probability raster = 0
+    withCloudProbability_no_s2c = s2_sys_ind_NoMatch.map(addNoCloudProb).filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+    # merge two imgColls
+    withCloudProbability = withCloudProbability_yes_s2c.merge(withCloudProbability_no_s2c)
+    return withCloudProbability
+
 # ** Cloud masking
 # Define a function to join the two collections on their 'system:index'
 # property. The 'propName' parameter is the name of the property that
