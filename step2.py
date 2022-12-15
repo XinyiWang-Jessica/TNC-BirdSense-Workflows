@@ -29,7 +29,8 @@ def add_cloudProbability(s2, s2c):
     # merge two imgColls
     withCloudProbability = withCloudProbability_yes_s2c.merge(withCloudProbability_no_s2c)
     return withCloudProbability
-
+ 
+    
 # ** Cloud masking
 # Define a function to join the two collections on their 'system:index'
 # property. The 'propName' parameter is the name of the property that
@@ -84,11 +85,25 @@ def addNDWIThresh(image):
     thresh = ndwi.gt(thresh_val).rename('threshold')
     return image.addBands([ndwi,thresh])
 
-# def reduceRegionsSum(image):
-#     collection=checks_areaAdded
-#     reducer=ee.Reducer.sum()
-#     scale=10
-#     sum_cloudfree = image.reduceRegions(collection, reducer, scale)
-#   # add date field to each feature with image date
-#     return sum_cloudfree.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')))
+def fix(area):
+    def reduceRegionsSum(image):
+        collection=area
+        reducer=ee.Reducer.sum()
+        scale=10
+        sum_cloudfree = image.reduceRegions(collection, reducer, scale)
+  # add date field to each feature with image date
+        return sum_cloudfree.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')))
+    return reduceRegionsSum
 
+def addPctCloudFree(feature):
+    return feature.set({'Pct_CloudFree': ee.Number(feature.get('cloud_free_binary')).divide(ee.Number(feature.get('pixel_count')))})
+
+# Sumarize the mean value of the NDWI value, the threshold layer (i.e. the % of the polygon that is above the threshold )
+# reduce regions MEAN
+def reduceRegionsMean(image):
+    collection=fields
+    reducer=ee.Reducer.mean()
+    scale=30
+    mean_NDWI_threshold = image.reduceRegions(collection, reducer, scale)
+  # add date field to each feature with image date # set geometry to null
+    return mean_NDWI_threshold.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')).setGeometry(None))
