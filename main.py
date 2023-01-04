@@ -131,10 +131,10 @@ def main():
     #upload to datapane
     app = dp.App(dp.DataTable(df))
     app.upload(name="BirdReturn Report " + end_string)
-    url = 'https://cloud.datapane.com/apps/E7PnZwA/birdreturn-report ' + end_string
+    url = 'https://cloud.datapane.com/apps/E7PnZwA/birdreturn-report-' + end_string
     
    # send email 
-    msg = f"I got a number from Earth Engine {url}"  
+    msg = f"Please check the latest BirdReturn report {url}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
