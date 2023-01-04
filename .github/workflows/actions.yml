@@ -2,7 +2,9 @@ name: run main.py
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - 'datapane-test'
 
 jobs:
   build:
@@ -21,33 +23,37 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
-      - uses: actions/checkout@v3
-      - name: Decrypt large secret
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/tnc-birdreturn-test-c95e19825893.json tnc-birdreturn-test-c95e19825893.json.gpg
-        env:
-          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
-          GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
-          GEE_AUTH: ${{secrets.GEE_AUTH}}
-      - name: execute py script # run main.py
-        run: python main.py 
           
-#       - name: execute py script # run main.py
+# decrypt secret    
+#       - uses: actions/checkout@v3
+#       - name: Decrypt large secret
+#         run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/tnc-birdreturn-test-c95e19825893.json tnc-birdreturn-test-c95e19825893.json.gpg
 #         env:
 #           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
+#           GEE_AUTH: ${{secrets.GEE_AUTH}}
+#       - name: execute py script # run main.py
+#         run: python main.py 
+          
+      - name: execute py script # run main.py
+        uses: datapane/build-action@v2
+        env:
+          GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
 #           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 #           GEE_AUTH: ${{secrets.GEE_AUTH}}
-#         run: python main.py
-          
-      - name: commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main 
+          script: "main.py"
+          token: ${{ secrets.DATAPANE_TOKEN }}
+
+          
+#       - name: commit files
+#         run: |
+#           git config --local user.email "action@github.com"
+#           git config --local user.name "GitHub Action"
+#           git add -A
+#           git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
+          
+#       - name: push changes
+#         uses: ad-m/github-push-action@v0.6.0
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: main 

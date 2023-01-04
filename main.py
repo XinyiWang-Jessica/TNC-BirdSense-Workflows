@@ -7,16 +7,19 @@ from step2 import *
 import yagmail
 import ee
 from datetime import datetime
+import datapane as dp
+import pandas as pd
+
 
 try:
     GMAIL_PWD = os.environ["GMAIL_PWD"]
 except KeyError:
     GMAIL_PWD = "Token not available!"
 
-try:
-    LARGE_SECRET_PASSPHRASE = os.environ["LARGE_SECRET_PASSPHRASE"]
-except KeyError:
-    LARGE_SECRET_PASSPHRASE = "Token not available!"
+# try:
+#     LARGE_SECRET_PASSPHRASE = os.environ["LARGE_SECRET_PASSPHRASE"]
+# except KeyError:
+#     LARGE_SECRET_PASSPHRASE = "Token not available!"
     
 
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
@@ -109,35 +112,33 @@ def main():
     withNDWI = s2Masked_byday.map(addNDWIThresh);
     NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
 
-    bands = NDWIThreshonly.first().bandNames().getInfo()
+#     bands = NDWIThreshonly.first().bandNames().getInfo()
     rrs = fix(checks_areaAdded)
     reduced_cloudfree = s2NoMask_byday.select(['cloud_free_binary', 'pixel_count']).map(rrs)
-
     flattened_cloudfree = reduced_cloudfree.flatten()
-    
     with_PctCloudFree = flattened_cloudfree.map(addPctCloudFree);
     
-    task = ee.batch.Export.table.toDrive(**{
-        'collection': with_PctCloudFree,
-        'folder': 'BirdReturns',
-        'description':'cloud_free_' + program + '_' + end_string + run,
-        'fileFormat': 'CSV',
-        'selectors': [bid_name,field_name,'Unique_ID','Pct_CloudFree','Date'] # export only select fields
-        # 'area_sqm','cloud_free_binary','pixel_count',
-        })
-
-    task.start()
-    task.status()
+    rrm = fix2(fields)
+    reduced = NDWIThreshonly.map(rrm)
+    table = reduced.flatten();
     
-    # # Sumarize the mean value of the NDWI value, the threshold layer (i.e. the % of the polygon that is above the threshold )
-    # reduced = NDWIThreshonly.map(reduceRegionsMean)
-    # table = reduced.flatten();    
-
-    msg = f"I got a number from Earth Engine {bands}"  
+    # convert featurecollection to dataframe
+    columns = [bid_name,field_name,'Status', 'NDWI','threshold','Date'] # export only select fields
+    nested_list = table.reduceColumns(ee.Reducer.toList(len(columns)), columns).values().get(0)
+    data = nested_list.getInfo()
+    df = pd.DataFrame(data, columns=columns)
+    
+    #upload to datapane
+    app = dp.App(dp.DataTable(df))
+    app.upload(name="BirdReturn Report " + end_string)
+    url = 'https://cloud.datapane.com/apps/0AEn9Q3/birdreturn-report-' + end_string
+    
+   # send email 
+    msg = f"Please check the latest BirdReturn report {url}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
-                   'gzedoghsyybkeamc')
+                   GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com"], 
+    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"], 
          "Test Github Actions",
          msg)
     
