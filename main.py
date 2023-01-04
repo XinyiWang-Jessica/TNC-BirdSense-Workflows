@@ -131,14 +131,14 @@ def main():
     #upload to datapane
     app = dp.App(dp.DataTable(df))
     app.upload(name="BirdReturn Report " + end_string)
-    url = 'https://cloud.datapane.com/apps/E7PnZwA/birdreturn-report-' + end_string
+    url = 'https://cloud.datapane.com/apps/0AEn9Q3/birdreturn-report-' + end_string
     
    # send email 
     msg = f"Please check the latest BirdReturn report {url}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com"], 
+    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"], 
          "Test Github Actions",
          msg)
     
