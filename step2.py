@@ -100,10 +100,12 @@ def addPctCloudFree(feature):
 
 # Sumarize the mean value of the NDWI value, the threshold layer (i.e. the % of the polygon that is above the threshold )
 # reduce regions MEAN
-def reduceRegionsMean(image):
-    collection=fields
-    reducer=ee.Reducer.mean()
-    scale=30
-    mean_NDWI_threshold = image.reduceRegions(collection, reducer, scale)
+def fix2(fields):
+    def reduceRegionsMean(image):
+        collection=fields
+        reducer=ee.Reducer.mean()
+        scale=30
+        mean_NDWI_threshold = image.reduceRegions(collection, reducer, scale)
   # add date field to each feature with image date # set geometry to null
-    return mean_NDWI_threshold.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')).setGeometry(None))
+        return mean_NDWI_threshold.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')).setGeometry(None))
+    return reduceRegionsMean
