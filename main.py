@@ -6,6 +6,7 @@ from step2 import *
 # import requests
 import yagmail
 import ee
+import folium
 from datetime import datetime
 import datapane as dp
 import pandas as pd
@@ -20,7 +21,6 @@ except KeyError:
 #     LARGE_SECRET_PASSPHRASE = os.environ["LARGE_SECRET_PASSPHRASE"]
 # except KeyError:
 #     LARGE_SECRET_PASSPHRASE = "Token not available!"
-    
 
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
 credentials = ee.ServiceAccountCredentials(service_account, 'tnc-birdreturn-test-c95e19825893.json')
@@ -67,6 +67,17 @@ elif program == "WCWR22":
   bid_name = 'Contract_I'
   field_name = 'Field_Name'
 
+s2_vis_params = {
+    'bands': ['B4', 'B3', 'B2'],
+    'max': 3133,
+    'min': 405,
+    'gamma': 1,
+    'opacity':0.7
+}
+
+thresh_vis_params = {
+    'palette' : ['white', 'blue']
+}
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -128,8 +139,26 @@ def main():
     data = nested_list.getInfo()
     df = pd.DataFrame(data, columns=columns)
     
+    thresh_mean = NDWIThreshonly.select("threshold").mean()  
+    
+    # Add EE drawing method to folium.
+    folium.Map.add_ee_layer = add_ee_layer
+    # Create a folium map object.
+    my_map = folium.Map(location=[35.78412097398606, -119.58929243484157], zoom_start=10, height=500, width=1000)
+
+    # Add layers to the map object.
+    my_map.add_ee_layer(NDWIThreshonly.select("threshold").mean(), thresh_vis_params, 'average flood frequency')
+    #my_map.add_ee_layer(s2NoMask_byday.filterMetadata('system:time_start','equals',1612310400000).select('cloud_free_binary'),{'min':0,'max':1,'palette':['white','green']},'temp')
+    my_map.add_ee_layer(NDWIThreshonly.select("threshold").filterDate(ee.Date(start_string),ee.Date(end_string)), thresh_vis_params, 'threshold')
+
+    # Display ee.FeatureCollection
+    my_map.add_ee_layer(fields,{},'fields')
+
+    # Add a layer control panel to the map.
+    my_map.add_child(folium.LayerControl())
+    
     #upload to datapane
-    app = dp.App(dp.DataTable(df))
+    app = dp.App(dp.Plot(my_map), dp.DataTable(df))
     app.upload(name="BirdReturn Report " + end_string)
     url = 'https://cloud.datapane.com/apps/0AEn9Q3/birdreturn-report-' + end_string
     
