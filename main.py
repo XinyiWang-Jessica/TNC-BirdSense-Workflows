@@ -41,6 +41,8 @@ in_fields_WDW21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDW");
 in_fields_WDF21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDF_enrolled");
 in_fields_WB4B22 = ee.FeatureCollection("projects/codefornature/assets/B4B_fields_Winter2022");
 in_fields_WCWR22 = ee.FeatureCollection("projects/codefornature/assets/CWRHIP_fields_Winter2022");
+in_fields_WSOD22 = ee.FeatureCollection("projects/codefornature/assets/DSOD_fields_Winter2022");
+in_fields_WDDR22 = ee.FeatureCollection("projects/codefornature/assets/DDR_fields_Winter2022");
 
 if program == "W21":
     fields = in_fields_W21
@@ -66,6 +68,14 @@ elif program == "WCWR22":
   fields = in_fields_WCWR22
   bid_name = 'Contract_I'
   field_name = 'Field_Name'
+elif program == "WSOD22":
+  fields = in_fields_WSOD22
+  bid_name = 'BidID'
+  field_name = 'FieldID'
+elif program == "WDDR22":
+  fields = in_fields_WDDR22
+  bid_name = 'BidID'
+  field_name = 'FieldID'
 
 s2_vis_params = {
     'bands': ['B4', 'B3', 'B2'],
@@ -78,6 +88,9 @@ s2_vis_params = {
 thresh_vis_params = {
     'palette' : ['white', 'blue']
 }
+
+columns1 = [bid_name,field_name, 'Status','Pct_CloudFree','Date']
+columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -133,11 +146,9 @@ def main():
     reduced = NDWIThreshonly.map(rrm)
     table = reduced.flatten();
     
-    # convert featurecollection to dataframe
-    columns = [bid_name,field_name,'Status', 'NDWI','threshold','Date'] # export only select fields
-    nested_list = table.reduceColumns(ee.Reducer.toList(len(columns)), columns).values().get(0)
-    data = nested_list.getInfo()
-    df = pd.DataFrame(data, columns=columns)
+    # convert featurecollections to dataframe, combine and formatted as we need
+    df = table_combine(with_PctCloudFree, table, columns1, columns2)
+    df = pivot_table(df)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     

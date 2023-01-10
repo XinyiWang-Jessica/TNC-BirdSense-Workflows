@@ -1,10 +1,11 @@
 import ee
 import folium
-
+import pandas as pd
 # Import datetime
 from datetime import datetime
 
 thresh_val = 0.25
+cloud_free_thresh = 0.5
 
 # add area field to fields
 def addArea(feature):
@@ -155,3 +156,50 @@ def add_ee_layer(self, ee_object, vis_params, name):
     except:
         print("Could not display {}".format(name))
 
+def to_dataframe(table, columns):
+    nested_list = table.reduceColumns(ee.Reducer.toList(len(columns)), columns).values().get(0)
+    data = nested_list.getInfo()
+    return pd.DataFrame(data, columns=columns)
+
+def standardize_names(df, standard_name, old_name):
+    if standard_name in df.columns:
+        print("{} exists".format(standard_name))
+    else:
+        df[standard_name] = df[old_name]
+        df = df.drop([old_name], axis = 1)
+    return df
+
+def table_combine(table1, table2, columns1, columns2):
+    df1 = to_dataframe(table1, columns1)
+    df2 = to_dataframe(table2, columns2)
+    df = pd.merge(df1, df2, on=['BidID','FieldID', 'Date'], how='left')
+    df['Date'] =  pd.to_datetime(df['Date'])
+    df['pct_flood'] =  df['threshold']
+    df['Source'] = 'Sentinel 2'
+    # Convert to starndardized column names
+    df = standardize_names(df, "Bid_ID", columns1[0])
+    df = standardize_names(df, "Field_ID", columns1[1])
+    df['Unique_ID'] = df['Bid_ID'] + "_" + df['Field_ID']
+    #remove rows with lots of clouds
+    df = df.loc[df.Pct_CloudFree > cloud_free_thresh].copy()
+    # add in no data to ensure all weeks are include
+    df1 = pd.date_range(start=df.Date.min(), end=df.Date.max()).to_frame(name="Date")
+    df1["Unique_ID"] = df.iloc[0]['Unique_ID']
+    df1["Source"] = df.iloc[0]['Source']
+    df = df.append(df1).reset_index()
+    return df
+
+def pivot_table(df):
+    df['Week_start'] = df['Date'] - pd.to_timedelta(6, unit='d')
+    df_week = (df.groupby([pd.Grouper(key='Week_start', freq='W-SUN'),'Unique_ID','Source'])
+            .agg({'pct_flood':'mean'})
+            .reset_index()
+            .rename(columns={'pct_flood':'Mean_field_flood_pct',})
+           )
+    df_week['Week_start'] = df_week['Week_start'].dt.strftime('%Y-%m-%d')
+    df_pivot = df_week.pivot_table(index=['Unique_ID','Source'], columns='Week_start', values='Mean_field_flood_pct', dropna=False).reset_index()
+    df_pivot = df_pivot.dropna(how='all', subset=df_pivot.columns.values.tolist()[2:])
+    df_pivot['Bid_ID'] = df_pivot['Unique_ID'].str.split('_', n = 1, expand = True)[0]
+    df_pivot['Field_ID'] = df_pivot['Unique_ID'].str.split('_', n = 1, expand = True)[1]
+    df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
+    return df_pivot
