@@ -175,16 +175,16 @@ def main():
     
     #upload to datapane
     app = dp.App(dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"), dp.Plot(my_map, caption="Flooded Area on Map") )
-    app.upload(name="Weekly BirdSense Report " + end_string)
-    url = app.url
+    app.upload(name="Weekly BirdSense Report " + end_string, , publicly_visible = True)
+    url = app.web_url
     
    # send email 
     msg = f"Please check the latest BirdSense report {url}"  
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"], 
-         "Test Github Actions",
+    yag.send(["wangxinyi1986@gmail.com"], 
+         "Weekly BirdSense Report - Testing",
          msg)
     
     
