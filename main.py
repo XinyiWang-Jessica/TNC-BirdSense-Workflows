@@ -45,31 +45,37 @@ in_fields_WSOD22 = ee.FeatureCollection("projects/codefornature/assets/DSOD_fiel
 in_fields_WDDR22 = ee.FeatureCollection("projects/codefornature/assets/DDR_fields_Winter2022");
 
 if program == "W21":
+  fields = in_fields_W21
   bid_name = 'Bid_ID'
   field_name = 'Field_ID'
 elif program == "F21":
+  fields = in_fields_F21
   bid_name = 'Bid_ID'
   field_name = 'Field_ID'
 elif program == "WDW21":
+  fields = in_fields_WDW21
   bid_name = 'wn21_ID'
   field_name = 'Field_Name'
-  stat_list = ['enrolled']
 elif program == "WDF21":
+  fields = in_fields_WDF21
   bid_name = 'wn21_ID'
   field_name = 'Field_Name'
-  stat_list = ['enrolled']
-elif program in  ["WB4B22", 'WDDR22']:
+elif program == "WB4B22":
+  fields = in_fields_WB4B22
   bid_name = 'BidID'
   field_name = 'FieldID'
-  stat_list = ['Bid', 'Enrolled']
 elif program == "WCWR22":
+  fields = in_fields_WCWR22
   bid_name = 'Contract_I'
   field_name = 'Field_Name'
-  stat_list = ['App', 'A[pp', 'Bid']
-elif program == 'WSOD22':
+elif program == "WSOD22":
+  fields = in_fields_WSOD22
   bid_name = 'BidID'
   field_name = 'FieldID'
-  stat_list = ['Enrolled']
+elif program == "WDDR22":
+  fields = in_fields_WDDR22
+  bid_name = 'BidID'
+  field_name = 'FieldID'
 
 s2_vis_params = {
     'bands': ['B4', 'B3', 'B2'],
