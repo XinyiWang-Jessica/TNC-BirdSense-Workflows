@@ -175,7 +175,7 @@ def main():
     
     #upload to datapane
     app = dp.App(dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"), dp.Plot(my_map, caption="Flooded Area on Map") )
-    app.upload(name="Weekly BirdSense Report " + end_string, , publicly_visible = True)
+    app.upload(name="Weekly BirdSense Report " + end_string, publicly_visible = True)
     url = app.web_url
     
    # send email 
