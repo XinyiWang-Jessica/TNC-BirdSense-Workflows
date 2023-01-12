@@ -203,3 +203,31 @@ def pivot_table(df):
     df_pivot['Field_ID'] = df_pivot['Unique_ID'].str.split('_', n = 1, expand = True)[1]
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
+
+def add_flood_dates(df_d, df):
+    ''' function to add start and end tates for each lot'''
+    df_d['Flood_Start'] =  pd.to_datetime(df_d['StartDT'])
+    df_d['Flood_End'] =  pd.to_datetime(df_d['EndDT'])
+    #df_d = df_d.rename(columns={'StartDT': 'Flood_Start', 'EndDT': 'Flood_End'})
+    df_d = df_d[['Bid_ID', 'Field_ID', 'Status', 'Flood_Start','Flood_End']]
+    df_pivot = pd.merge(df, df_d, on=['Bid_ID', 'Field_ID'], how='left')
+    df_pivot = df_pivot.loc[df_pivot.Status.isin(stat_list)]
+  # print("Selected status values: {}".format(stat_list))
+  # print("All status values: {}".format(df_d['Status'].unique().tolist()))
+    df_pivot= df_pivot.drop(['Status'], axis=1)
+    col_num = -4
+  # Change the order of the columns
+    cols = df_pivot.columns.tolist()
+    cols = cols[col_num:] + cols[:col_num]
+    df_pivot = df_pivot[cols]
+    df_pivot['Flood_Start']=df_pivot['Flood_Start'].astype(str)
+    df_pivot['Flood_End']=df_pivot['Flood_End'].astype(str)
+    
+    return df_pivot
+
+def no_flood_dates(df):
+    ''' in case no flood start/end dates available, prepare the table for publish. '''
+    cols = df.columns.tolist()
+    cols = cols[-2:] + cols[:-2]
+    df = df[cols]
+    return df
