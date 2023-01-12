@@ -1,11 +1,16 @@
 name: run main.py
 
-on:
-  push:
-    branches:
-      - main
-      - 'Testing'
+# on:
+#   push:
+#     branches:
+#       - main
+#       - 'Testing'
 
+on:
+    schedule:
+        # run at 2pm every Wendsday
+        - cron: "00 14 * * 3"
+        
 jobs:
   build:
     runs-on: ubuntu-latest
