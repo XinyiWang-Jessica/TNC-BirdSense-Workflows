@@ -24,7 +24,7 @@ except KeyError:
 
 # GEE authentication
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, data_key = GEE_AUTH)
+credentials = ee.ServiceAccountCredentials(service_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # User defined settings
