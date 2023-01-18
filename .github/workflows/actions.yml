@@ -1,15 +1,15 @@
 name: run main.py
 
-# on:
-#   push:
-#     branches:
-#       - main
-#       - 'Testing'
-
 on:
-    schedule:
-        # run at 2pm every Wendsday
-        - cron: "00 14 * * 3"
+  push:
+    branches:
+      - main
+      - 'Testing'
+
+# on:
+#     schedule:
+#         # run at 2pm every Wendsday
+#         - cron: "00 14 * * 3"
         
 jobs:
   build:
@@ -29,22 +29,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-# decrypt secret    
-#       - uses: actions/checkout@v3
-#       - name: Decrypt large secret
-#         run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/tnc-birdreturn-test-c95e19825893.json tnc-birdreturn-test-c95e19825893.json.gpg
-#         env:
-#           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
-#           GEE_AUTH: ${{secrets.GEE_AUTH}}
-#       - name: execute py script # run main.py
-#         run: python main.py 
           
       - name: execute py script # run main.py
         uses: datapane/build-action@v2
         env:
           GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
-#           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
-#           GEE_AUTH: ${{secrets.GEE_AUTH}}
+          GEE_AUTH: ${{secrets.GEE_AUTH}}
         with:
           script: "main.py"
           token: ${{ secrets.DATAPANE_TOKEN }}

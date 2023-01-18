@@ -11,19 +11,20 @@ from datetime import datetime
 import datapane as dp
 import pandas as pd
 
-
+# extract token from environment
 try:
     GMAIL_PWD = os.environ["GMAIL_PWD"]
 except KeyError:
     GMAIL_PWD = "Token not available!"
 
-# try:
-#     LARGE_SECRET_PASSPHRASE = os.environ["LARGE_SECRET_PASSPHRASE"]
-# except KeyError:
-#     LARGE_SECRET_PASSPHRASE = "Token not available!"
+try:
+    GEE_AUTH = os.environ["GEE_AUTH"]
+except KeyError:
+    GEE_AUTH = "Token not available!"
 
+# GEE authentication
 service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, 'tnc-birdreturn-test-c95e19825893.json')
+credentials = ee.ServiceAccountCredentials(service_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # User defined settings
@@ -183,7 +184,7 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu", "kklausmeyer@tnc.org"], 
+    yag.send(["wangxinyi1986@gmail.com"], 
          "Weekly BirdSense Report - Testing",
          msg)
     
