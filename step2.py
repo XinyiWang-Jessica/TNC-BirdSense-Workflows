@@ -3,6 +3,7 @@ import folium
 import pandas as pd
 # Import datetime
 from datetime import datetime
+import datetime as dt
 
 thresh_val = 0.25
 cloud_free_thresh = 0.5
@@ -180,13 +181,16 @@ def table_combine(table1, table2, columns1, columns2):
     df = standardize_names(df, "Bid_ID", columns1[0])
     df = standardize_names(df, "Field_ID", columns1[1])
     df['Unique_ID'] = df['Bid_ID'] + "_" + df['Field_ID']
-    #remove rows with lots of clouds
+    return df
+
+def add_all_dates(df):
+    # remove rows with lots of clouds
     df = df.loc[df.Pct_CloudFree > cloud_free_thresh].copy()
     # add in no data to ensure all weeks are include
-    df1 = pd.date_range(start=df.Date.min(), end=df.Date.max()).to_frame(name="Date")
-    df1["Unique_ID"] = df.iloc[0]['Unique_ID']
-    df1["Source"] = df.iloc[0]['Source']
-    df = df.append(df1).reset_index()
+    df_date = pd.date_range(start=df.Date.min(), end=df.Date.max()).to_frame(name="Date")
+    df_date["Unique_ID"] = df.iloc[0]['Unique_ID']
+    df_date["Source"] = df.iloc[0]['Source']
+    df = pd.concat([df,df_date]).reset_index()
     return df
 
 def pivot_table(df):
@@ -231,3 +235,26 @@ def no_flood_dates(df):
     cols = cols[-2:] + cols[:-2]
     df = df[cols]
     return df
+
+def cloud_free_percent(df):
+## Check the number of cloud free records in the last seven days
+
+    # Calculate the date seven days ago
+    day_7_ago = dt.datetime.now().date() - dt.timedelta(days=7)
+    day_14_ago = dt.datetime.now().date() - dt.timedelta(days=14)
+
+    # Create a boolean mask indicating which rows meet both conditions
+    df['Date_obj'] = df['Date'].dt.date
+    last_week = (df['Date_obj'] >= day_7_ago)
+    two_week_ago = ((df['Date_obj'] >= day_14_ago) & (df['Date_obj'] < day_7_ago))
+    mask_last = (df['Pct_CloudFree'] > cloud_free_thresh) & (df['Date_obj'] >= day_7_ago)
+    mask_2_week = (df['Pct_CloudFree'] > cloud_free_thresh) & (df['Date_obj'] >= day_14_ago) & (df['Date_obj'] < day_7_ago)
+    # Count the number of rows that meet the conditions
+    percent = mask_last.sum()/last_week.sum()
+    num = len(df.Unique_ID.unique())
+    if two_week_ago.sum() == 0:
+        percent2 = 0
+    else:
+        percent2 = mask_2_week.sum()/two_week_ago.sum()
+    return num, percent, percent2
+

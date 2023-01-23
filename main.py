@@ -149,7 +149,11 @@ def main():
     
     # convert featurecollections to dataframe, combine and formatted as we need
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
-    df = pivot_table(df)
+    # calculate the cloud free datepoints
+    num, percent, percent2 = cloud_free_percent(df)
+    
+    df = add_all_dates(df)
+    df_t = pivot_table(df)
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
         df_pivot = add_flood_dates(df_d, df)
@@ -175,7 +179,16 @@ def main():
     my_map.add_child(folium.LayerControl())
     
     #upload to datapane
-    app = dp.App(dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"), dp.Plot(my_map, caption="Flooded Area on Map") )
+    app = dp.App(
+        dp.Group(
+            dp.BigNumber(heading = 'Total Fields', value = num),
+            dp.BigNumber(heading = 'Cloud Free Laste Week', 
+                     value = "{:.2%}".format(percent), 
+                     change = "{:.2%}".format(percent - percent2),
+                    is_upward_change = True), columns = 2), 
+        dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
+        dp.Plot(my_map, caption="Flooded Area on Map")
+        ) 
     app.upload(name="Weekly BirdSense Report " + end_string, publicly_visible = True)
     url = app.web_url
     
