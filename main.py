@@ -182,7 +182,7 @@ def main():
     app = dp.App(
         dp.Group(
             dp.BigNumber(heading = 'Total Fields', value = num),
-            dp.BigNumber(heading = 'Percentage of Cloud Free Fields Laste Week', 
+            dp.BigNumber(heading = 'Cloud Free Laste Week', 
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
