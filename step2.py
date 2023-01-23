@@ -3,6 +3,7 @@ import folium
 import pandas as pd
 # Import datetime
 from datetime import datetime
+import datetime as dt
 
 thresh_val = 0.25
 cloud_free_thresh = 0.5
