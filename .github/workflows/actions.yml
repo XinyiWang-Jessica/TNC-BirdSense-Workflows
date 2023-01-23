@@ -1,15 +1,15 @@
 name: run main.py
 
-# on:
-#   push:
-#     branches:
-#       - main
-#       - 'Testing'
-
 on:
-    schedule:
-        # run at 2pm every Wendsday
-        - cron: "00 22 * * 3"
+  push:
+    branches:
+      - main
+      - 'Testing'
+
+# on:
+#     schedule:
+#         # run at 2pm every Wendsday
+#         - cron: "00 22 * * 3"
         
 jobs:
   build:
