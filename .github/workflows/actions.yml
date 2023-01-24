@@ -8,8 +8,8 @@ name: run main.py
 
 on:
     schedule:
-        # run at 2pm every Wendsday
-        - cron: "00 15 * * 3"
+        # run at 7am every Wendsday
+        - cron: "00 15 */3 * *"
         
 jobs:
   build:
