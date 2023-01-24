@@ -8,6 +8,7 @@ import datetime as dt
 thresh_val = 0.25
 cloud_free_thresh = 0.5
 
+
 # add area field to fields
 def addArea(feature):
     return feature.set({'area_sqm': feature.geometry().area()})
@@ -108,7 +109,6 @@ def fix2(fields):
         return mean_NDWI_threshold.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')).setGeometry(None))
     return reduceRegionsMean
 
-
 # Define a method for displaying Earth Engine image tiles on a folium map.
 def add_ee_layer(self, ee_object, vis_params, name):
     
@@ -156,7 +156,8 @@ def add_ee_layer(self, ee_object, vis_params, name):
     
     except:
         print("Could not display {}".format(name))
-
+        
+        
 def to_dataframe(table, columns):
     nested_list = table.reduceColumns(ee.Reducer.toList(len(columns)), columns).values().get(0)
     data = nested_list.getInfo()
@@ -208,8 +209,9 @@ def pivot_table(df):
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
 
+
 def add_flood_dates(df_d, df):
-    ''' function to add start and end tates for each lot'''
+    
     df_d['Flood_Start'] =  pd.to_datetime(df_d['StartDT'])
     df_d['Flood_End'] =  pd.to_datetime(df_d['EndDT'])
     #df_d = df_d.rename(columns={'StartDT': 'Flood_Start', 'EndDT': 'Flood_End'})
@@ -230,7 +232,6 @@ def add_flood_dates(df_d, df):
     return df_pivot
 
 def no_flood_dates(df):
-    ''' in case no flood start/end dates available, prepare the table for publish. '''
     cols = df.columns.tolist()
     cols = cols[-2:] + cols[:-2]
     df = df[cols]
@@ -257,4 +258,6 @@ def cloud_free_percent(df):
     else:
         percent2 = mask_2_week.sum()/two_week_ago.sum()
     return num, percent, percent2
+
+
 

@@ -158,7 +158,7 @@ def main():
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
         df_pivot = add_flood_dates(df_d, df)
     except:
-        df_pivot = no_flood_dates(df)
+        df_pivot = no_flood_dates(df_t)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
