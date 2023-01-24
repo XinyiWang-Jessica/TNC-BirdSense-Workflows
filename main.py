@@ -156,7 +156,7 @@ def main():
     df_t = pivot_table(df)
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
-        df_pivot = add_flood_dates(df_d, df)
+        df_pivot = add_flood_dates(df_d, df_t)
     except:
         df_pivot = no_flood_dates(df_t)
     
@@ -197,7 +197,7 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com"], 
+    yag.send(["wangxinyi1986@gmail.com", "kklausmeyer@tnc.org", "wliao14@dons.usfca.edu"], 
          "Weekly BirdSense Report - Testing",
          msg)
     
