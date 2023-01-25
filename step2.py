@@ -172,6 +172,7 @@ def standardize_names(df, standard_name, old_name):
     return df
 
 def table_combine(table1, table2, columns1, columns2):
+    # combine two tables
     df1 = to_dataframe(table1, columns1)
     df2 = to_dataframe(table2, columns2)
     df = pd.merge(df1, df2, on=['BidID','FieldID', 'Date'], how='left')
@@ -182,6 +183,13 @@ def table_combine(table1, table2, columns1, columns2):
     df = standardize_names(df, "Bid_ID", columns1[0])
     df = standardize_names(df, "Field_ID", columns1[1])
     df['Unique_ID'] = df['Bid_ID'] + "_" + df['Field_ID']
+    # replace the percentage flooded with Nan if below cloud_free_tresh
+    df.loc[df['Pct_CloudFree'] < cloud_free_thresh, 'pct_flood'] = pd.NA
+    # add in no data to ensure all weeks are include
+    df_date = pd.date_range(start=df.Date.min(), end=df.Date.max()).to_frame(name="Date")
+    df_date["Unique_ID"] = df.iloc[0]['Unique_ID']
+    df_date["Source"] = df.iloc[0]['Source']
+    df = pd.concat([df,df_date]).reset_index()
     return df
 
 def add_all_dates(df):
@@ -209,7 +217,6 @@ def pivot_table(df):
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
 
-
 def add_flood_dates(df_d, df):
     
     df_d['Flood_Start'] =  pd.to_datetime(df_d['StartDT'])
@@ -227,8 +234,7 @@ def add_flood_dates(df_d, df):
     cols = cols[col_num:] + cols[:col_num]
     df_pivot = df_pivot[cols]
     df_pivot['Flood_Start']=df_pivot['Flood_Start'].astype(str)
-    df_pivot['Flood_End']=df_pivot['Flood_End'].astype(str)
-    
+    df_pivot['Flood_End']=df_pivot['Flood_End'].astype(str)    
     return df_pivot
 
 def no_flood_dates(df):
@@ -238,26 +244,26 @@ def no_flood_dates(df):
     return df
 
 def cloud_free_percent(df):
-## Check the number of cloud free records in the last seven days
-
+    ## Check the number of cloud free records in the last seven days
     # Calculate the date seven days ago
     day_7_ago = dt.datetime.now().date() - dt.timedelta(days=7)
     day_14_ago = dt.datetime.now().date() - dt.timedelta(days=14)
-
     # Create a boolean mask indicating which rows meet both conditions
     df['Date_obj'] = df['Date'].dt.date
-    last_week = (df['Date_obj'] >= day_7_ago)
-    two_week_ago = ((df['Date_obj'] >= day_14_ago) & (df['Date_obj'] < day_7_ago))
-    mask_last = (df['Pct_CloudFree'] > cloud_free_thresh) & (df['Date_obj'] >= day_7_ago)
-    mask_2_week = (df['Pct_CloudFree'] > cloud_free_thresh) & (df['Date_obj'] >= day_14_ago) & (df['Date_obj'] < day_7_ago)
-    # Count the number of rows that meet the conditions
-    percent = mask_last.sum()/last_week.sum()
+    last_week = df[df['Date_obj'] >= day_7_ago].groupby(['Unique_ID']).agg({'Pct_CloudFree': 'max'})
+    two_week_ago = df[(df['Date_obj'] < day_7_ago) & (df['Date_obj'] >= day_14_ago)].groupby(['Unique_ID']).agg({'Pct_CloudFree': 'max'})
+    mask_last_week = (last_week > cloud_free_thresh)
+    mask_2_week = (two_week_ago > cloud_free_thresh) 
     num = len(df.Unique_ID.unique())
-    if two_week_ago.sum() == 0:
+    # Count the number of rows that meet the conditions
+    percent = mask_last_week.sum()/len(last_week)
+    if len(two_week_ago) == 0:
         percent2 = 0
     else:
-        percent2 = mask_2_week.sum()/two_week_ago.sum()
-    return num, percent, percent2
+        percent2 = mask_2_week.sum()/len(two_week_ago)
+    print(num, percent, percent2)
+    return num, percent[0], percent2[0]
+
 
 
 
