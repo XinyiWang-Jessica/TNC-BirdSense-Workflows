@@ -10,7 +10,17 @@ Short description of Project
 
 ## Preparation
 ### GEE Authentication with Google Service Account
+To access data from GEE API, Google Searvice Account is used to authenticate to Earth Engine. To do so, follow the [guide of create service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
+  1. Create a Google Cloud Project
+  2. Choose the created project and create a Service Account
+  3. Create a private key for the Service Account and download the jason key file
+  4. Register your service account for use with the Earth Engine API.
+  5. Save the jason key content as a repo secrete with the Name of GEE_AUTH under the repo Settings
 ### DataPane Authentication
+To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instrution](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
+  1. Create a DataPane account and login
+  2. Go to the setting page and copy the API Token
+  3. Add the API token as a repo secrete with the Name of DATAPANE_TOKEN under the repo Settings
 ### Gmail Authentication
 ### GitHub Repository Secrete Set Up
 
