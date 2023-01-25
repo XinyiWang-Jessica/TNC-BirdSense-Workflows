@@ -151,14 +151,12 @@ def main():
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
     # calculate the cloud free datepoints
     num, percent, percent2 = cloud_free_percent(df)
-    
-    df = add_all_dates(df)
-    df_t = pivot_table(df)
+    # produce pivoted table
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
-        df_pivot = add_flood_dates(df_d, df)
+        df_pivot = add_flood_dates(df_d, pivot_table(df))
     except:
-        df_pivot = no_flood_dates(df_t)
+        df_pivot = no_flood_dates(pivot_table(df))
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
