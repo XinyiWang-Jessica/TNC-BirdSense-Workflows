@@ -2,6 +2,7 @@
 # import logging.handlers
 import os
 from step2 import *
+from step3 import *
 
 # import requests
 import yagmail
