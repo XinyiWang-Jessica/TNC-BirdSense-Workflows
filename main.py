@@ -157,6 +157,10 @@ def main():
         df_pivot = add_flood_dates(df_d, pivot_table(df))
     except:
         df_pivot = no_flood_dates(pivot_table(df))
+   
+    # add plots
+    fig1 = plot_1(df_pivot)
+    fig2 = plot_2(df_pivot)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
@@ -184,6 +188,9 @@ def main():
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
+        dp.Group(
+            dp.Plot(fig1, caption="Last Week Result" ),
+            dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
         dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
