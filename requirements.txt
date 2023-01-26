@@ -3,3 +3,4 @@ yagmail==0.15.293
 earthengine-api==0.1.331
 datapane==0.15.5
 folium==0.14.0
+matplotlib==3.6.2

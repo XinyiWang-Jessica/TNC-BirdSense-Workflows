@@ -2,6 +2,7 @@
 # import logging.handlers
 import os
 from step2 import *
+from step3 import *
 
 # import requests
 import yagmail
@@ -151,14 +152,16 @@ def main():
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
     # calculate the cloud free datepoints
     num, percent, percent2 = cloud_free_percent(df)
-    
-    df = add_all_dates(df)
-    df_t = pivot_table(df)
+    # produce pivoted table
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
-        df_pivot = add_flood_dates(df_d, df_t)
+        df_pivot = add_flood_dates(df_d, pivot_table(df))
     except:
-        df_pivot = no_flood_dates(df_t)
+        df_pivot = no_flood_dates(pivot_table(df))
+   
+    # add plots
+    fig1 = plot_1(df_pivot)
+    fig2 = plot_2(df_pivot)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
@@ -186,6 +189,9 @@ def main():
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
+        dp.Group(
+            dp.Plot(fig1, caption="Last Week Result" ),
+            dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
         dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
@@ -197,10 +203,9 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com", "kklausmeyer@tnc.org", "wliao14@dons.usfca.edu"], 
+    yag.send(["wangxinyi1986@gmail.com"], #"kklausmeyer@tnc.org", "wliao14@dons.usfca.edu"
          "Weekly BirdSense Report - Testing",
          msg)
-    
     
 if __name__ == "__main__":
     main()
