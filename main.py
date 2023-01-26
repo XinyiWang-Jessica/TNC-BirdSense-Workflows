@@ -203,7 +203,7 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com"], #"kklausmeyer@tnc.org", "wliao14@dons.usfca.edu"
+    yag.send(["wangxinyi1986@gmail.com","kklausmeyer@tnc.org", "wliao14@dons.usfca.edu"], #"kklausmeyer@tnc.org", "wliao14@dons.usfca.edu"
          "Weekly BirdSense Report - Testing",
          msg)
     
