@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 def plot_1(df):
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
@@ -40,8 +41,7 @@ def plot_2(df):
     return fig
 
 def plot_3(df):
-    import plotly.graph_objects as go
-    
+    bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
     level = pd.cut(df[df.columns[-1]],
                               bins=[0, .33, .66, 1],
                               labels=bin_labels)
