@@ -38,3 +38,45 @@ def plot_2(df):
     # plt.tick_params(left = False)
     plt.yticks([])
     return fig
+
+def plot_3(df):
+    import plotly.graph_objects as go
+    
+    level = pd.cut(df[df.columns[-1]],
+                              bins=[0, .33, .66, 1],
+                              labels=bin_labels)
+    freq = level.value_counts()/level.count()
+    
+    level_y = pd.cut(df[df.columns[-2]],
+                              bins=[0, .33, .66, 1],
+                              labels=bin_labels)
+
+    freq_y = level_y.value_counts()/level_y.count()
+
+    fig = go.Figure(go.Indicator(
+        mode = "number+delta",
+        value = freq.values[0]*100,
+        number = {'suffix' : '%'},
+        title = {'text': "Flooded"},
+        delta = {'reference': freq_y.values[0]*100, 'relative': False, "valueformat": ".2f"},
+        domain = {'x': [0, 0.33], 'y': [0, 1]}
+    ))
+
+    fig.add_trace(go.Indicator(
+        mode = "number+delta",
+        value = freq.values[1]*100,
+        number = {'suffix' : '%'},
+        title = {"text": "Partially Flooded"},
+        delta = {'reference': freq_y.values[1]*100, 'relative': False, "valueformat": ".2f"},
+        domain = {'x': [0.34, 0.66], 'y': [0, 1]}))
+
+
+    fig.add_trace(go.Indicator(
+        mode = "number+delta",
+        value = freq.values[2]*100,
+        number = {'suffix' : '%'},
+        title = {"text": "Minimally Flooded"},
+        delta = {'reference': freq_y.values[2]*100, 'relative': False, "valueformat": ".2f"},
+        domain = {'x': [0.67, 1], 'y': [0, 1]}))
+
+    return fig
