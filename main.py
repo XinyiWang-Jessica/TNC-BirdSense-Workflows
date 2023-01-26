@@ -160,9 +160,10 @@ def main():
         df_pivot = no_flood_dates(pivot_table(df))
    
     # add plots
-    fig1 = plot_1(df_pivot)
+    #fig1 = plot_1(df_pivot)
     fig2 = plot_2(df_pivot)
-    
+    fig3 = plot_3(df_pivot)
+
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
     # Add EE drawing method to folium.
@@ -190,7 +191,7 @@ def main():
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
         dp.Group(
-            dp.Plot(fig1, caption="Last Week Result" ),
+            dp.Plot(fig3, caption="Last Week Result" ),
             dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
         dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
         dp.Plot(my_map, caption="Flooded Area on Map")
