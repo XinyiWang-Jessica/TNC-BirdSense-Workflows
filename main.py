@@ -186,6 +186,8 @@ def main():
     # Add a layer control panel to the map.
     my_map.add_child(folium.LayerControl())
     
+    
+    
     #upload to datapane
     app = dp.App(
         dp.Group(
