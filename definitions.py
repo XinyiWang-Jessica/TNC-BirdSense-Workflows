@@ -1,4 +1,5 @@
 from datetime import datetime
+import ee
 
 # User defined settings
 start_string = '2022-10-01';
