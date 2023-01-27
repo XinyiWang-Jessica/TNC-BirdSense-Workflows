@@ -3,6 +3,7 @@
 import os
 from step2 import *
 from step3 import *
+from definitions import *
 
 # import requests
 import yagmail
