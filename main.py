@@ -198,9 +198,9 @@ def main():
             dp.Plot(fig3, caption="Flood" ),
             dp.Plot(fig4, caption="Partially Flooded"),
             dp.Plot(fig5, caption="Minimally Flooded"),columns = 3)
-        dp.Group(
-            #dp.Plot(fig3, caption="Last Week Result" ),
-            dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
+        #dp.Group(
+        #    dp.Plot(fig3, caption="Last Week Result" ),
+        #    dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
         dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
