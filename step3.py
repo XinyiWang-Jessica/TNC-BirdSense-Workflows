@@ -53,32 +53,62 @@ def plot_3(df):
 
     freq_y = level_y.value_counts()/level_y.count()
 
-    fig = go.Figure()
+    fig = go.Figure(go.Indicator(
+    mode = "number+delta",
+    value = freq.values[0]*100,
+    number = {'suffix' : '%'},
+    title = {"text": "Flooded"},
+    delta = {'reference': freq_y.values[0]*100, 'relative': False, "valueformat": ".2f"},
+    domain = {'x': [0,0.1], 'y': [0, 0.5]}
+    ))
 
-    fig.add_trace(go.Indicator(
-        mode = "number+delta",
-        value = freq.values[0]*100,
-        number = {'suffix' : '%'},
-        title = {"text": "Flooded"},
-        delta = {'reference': freq_y.values[0]*100, 'relative': False, "valueformat": ".2f"},
-        domain = {'x': [0, 0.2], 'y': [0, 0.5]}))
+    return fig
+
+def plot_4(df):
+    bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
+    level = pd.cut(df[df.columns[-1]],
+                              bins=[0, .33, .66, 1],
+                              labels=bin_labels)
+    freq = level.value_counts()/level.count()
+    
+    level_y = pd.cut(df[df.columns[-2]],
+                              bins=[0, .33, .66, 1],
+                              labels=bin_labels)
+
+    freq_y = level_y.value_counts()/level_y.count()
+
+    fig = go.Figure(go.Indicator(
+    mode = "number+delta",
+    value = freq.values[1]*100,
+    number = {'suffix' : '%'},
+    title = {"text": "Partially Flooded"},
+    delta = {'reference': freq_y.values[1]*100, 'relative': False, "valueformat": ".2f"},
+    domain = {'x': [0,0.1], 'y': [0, 0.5]}
+    ))
+
+    return fig
 
 
-    fig.add_trace(go.Indicator(
-        mode = "number+delta",
-        value = freq.values[1]*100,
-        number = {'suffix' : '%'},
-        title = {"text": "Partially Flooded"},
-        delta = {'reference': freq_y.values[1]*100, 'relative': False, "valueformat": ".2f"},
-        domain = {'x': [0.21, 0.4], 'y': [0, 0.5]}))
+def plot_5(df):
+    bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
+    level = pd.cut(df[df.columns[-1]],
+                              bins=[0, .33, .66, 1],
+                              labels=bin_labels)
+    freq = level.value_counts()/level.count()
+    
+    level_y = pd.cut(df[df.columns[-2]],
+                              bins=[0, .33, .66, 1],
+                              labels=bin_labels)
 
+    freq_y = level_y.value_counts()/level_y.count()
 
-    fig.add_trace(go.Indicator(
-        mode = "number+delta",
-        value = freq.values[2]*100,
-        number = {'suffix' : '%'},
-        title = {"text": "Minimally Flooded"},
-        delta = {'reference': freq_y.values[2]*100, 'relative': False, "valueformat": ".2f"},
-        domain = {'x': [0.41, 0.6], 'y': [0, 0.5]}))
+    fig = go.Figure(go.Indicator(
+    mode = "number+delta",
+    value = freq.values[2]*100,
+    number = {'suffix' : '%'},
+    title = {"text": "Minimally Flooded"},
+    delta = {'reference': freq_y.values[2]*100, 'relative': False, "valueformat": ".2f"},
+    domain = {'x': [0,0.1], 'y': [0, 0.5]}
+    ))
 
     return fig
