@@ -197,7 +197,8 @@ def main():
         dp.Group(
             dp.Plot(fig3, caption="Flood" ),
             dp.Plot(fig4, caption="Partially Flooded"),
-            dp.Plot(fig5, caption="Minimally Flooded"),columns = 3)
+            dp.Plot(fig5, caption="Minimally Flooded"),columns = 3),
+        
         #dp.Group(
         #    dp.Plot(fig3, caption="Last Week Result" ),
         #    dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
