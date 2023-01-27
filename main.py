@@ -163,6 +163,10 @@ def main():
     #fig1 = plot_1(df_pivot)
     fig2 = plot_2(df_pivot)
     fig3 = plot_3(df_pivot)
+    fig4 = plot_4(df_pivot)
+    fig5 = plot_5(df_pivot)
+
+
 
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
@@ -191,7 +195,11 @@ def main():
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
         dp.Group(
-            dp.Plot(fig3, caption="Last Week Result" ),
+            dp.Plot(fig3, caption="Flood" ),
+            dp.Plot(fig4, caption="Partially Flooded"),
+            dp.Plot(fig5, caption="Minimally Flooded"),columns = 3)
+        dp.Group(
+            #dp.Plot(fig3, caption="Last Week Result" ),
             dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
         dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
         dp.Plot(my_map, caption="Flooded Area on Map")
@@ -204,7 +212,7 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com","wliao14@dons.usfca.edu" ],  #,"kklausmeyer@tnc.org"
+    yag.send(["wliao14@dons.usfca.edu" ],  #,"kklausmeyer@tnc.org","wangxinyi1986@gmail.com"
          "Weekly BirdSense Report - Testing",
          msg)
     
