@@ -3,7 +3,7 @@
 import os
 from step2 import *
 from step3 import *
-# from definitions import *
+from definitions import *
 
 # import requests
 import yagmail
@@ -30,13 +30,13 @@ credentials = ee.ServiceAccountCredentials(service_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # User defined settings
-start_string = '2022-10-01';
-#end_string = '2022-10-21';
-end_string = datetime.today().strftime('%Y-%m-%d')
-run = '_01'
-#run = ''
-program = "WB4B22"
-thresh_val = 0.25
+# start_string = '2022-10-01';
+# #end_string = '2022-10-21';
+# end_string = datetime.today().strftime('%Y-%m-%d')
+# run = '_01'
+# #run = ''
+# program = "WB4B22"
+# thresh_val = 0.25
 
 in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
 in_fields_F21 = ee.FeatureCollection("users/kklausmeyer/B4B_fields_Fall2021");
@@ -92,8 +92,8 @@ thresh_vis_params = {
     'palette' : ['white', 'blue']
 }
 
-columns1 = [bid_name,field_name, 'Status','Pct_CloudFree','Date']
-columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
+# columns1 = [bid_name,field_name, 'Status','Pct_CloudFree','Date']
+# columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -166,6 +166,7 @@ def main():
     fig3 = plot_3(df_pivot)
     fig4 = plot_4(df_pivot)
     fig5 = plot_5(df_pivot)
+    heatmaps = all_heatmaps(df_pivot)
 
 
 
