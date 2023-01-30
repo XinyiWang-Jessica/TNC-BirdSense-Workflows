@@ -30,14 +30,6 @@ credentials = ee.ServiceAccountCredentials(service_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # User defined settings
-# start_string = '2022-10-01';
-# #end_string = '2022-10-21';
-# end_string = datetime.today().strftime('%Y-%m-%d')
-# run = '_01'
-# #run = ''
-program = "WB4B22"
-# thresh_val = 0.25
-
 in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
 in_fields_F21 = ee.FeatureCollection("users/kklausmeyer/B4B_fields_Fall2021");
 in_fields_WDW21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDW");
@@ -47,50 +39,16 @@ in_fields_WCWR22 = ee.FeatureCollection("projects/codefornature/assets/CWRHIP_fi
 in_fields_WSOD22 = ee.FeatureCollection("projects/codefornature/assets/DSOD_fields_Winter2022");
 in_fields_WDDR22 = ee.FeatureCollection("projects/codefornature/assets/DDR_fields_Winter2022");
 
-if program == "W21":
-  fields = in_fields_W21
-  bid_name = 'Bid_ID'
-  field_name = 'Field_ID'
-elif program == "F21":
-  fields = in_fields_F21
-  bid_name = 'Bid_ID'
-  field_name = 'Field_ID'
-elif program == "WDW21":
-  fields = in_fields_WDW21
-  bid_name = 'wn21_ID'
-  field_name = 'Field_Name'
-elif program == "WDF21":
-  fields = in_fields_WDF21
-  bid_name = 'wn21_ID'
-  field_name = 'Field_Name'
-elif program == "WB4B22":
-  fields = in_fields_WB4B22
-  bid_name = 'BidID'
-  field_name = 'FieldID'
-elif program == "WCWR22":
-  fields = in_fields_WCWR22
-  bid_name = 'Contract_I'
-  field_name = 'Field_Name'
-elif program == "WSOD22":
-  fields = in_fields_WSOD22
-  bid_name = 'BidID'
-  field_name = 'FieldID'
-elif program == "WDDR22":
-  fields = in_fields_WDDR22
-  bid_name = 'BidID'
-  field_name = 'FieldID'
-
-s2_vis_params = {
-    'bands': ['B4', 'B3', 'B2'],
-    'max': 3133,
-    'min': 405,
-    'gamma': 1,
-    'opacity':0.7
-}
-
-thresh_vis_params = {
-    'palette' : ['white', 'blue']
-}
+bid_name = field_bid_names[program][0]
+field_name = field_bid_names[program][1]
+stat_list = field_bid_names[program][2]
+field_list = {"W21": in_fields_W21, 
+              "F21": in_fields_F21, 
+              "WDW21": in_fields_WDW21, 
+              "WDF21":in_fields_WDF21,
+              "WB4B22": in_fields_WB4B22, 
+              "WCWR22":in_fields_WCWR22}
+fields = field_list[program]
 
 columns1 = [bid_name,field_name, 'Status','Pct_CloudFree','Date']
 columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
@@ -164,11 +122,9 @@ def main():
     #fig1 = plot_1(df_pivot)
 #     fig2 = plot_2(df_pivot)
     fig3 = plot_3(df_pivot)
-#     fig4 = plot_4(df_pivot)
-#     fig5 = plot_5(df_pivot)
+    fig4 = plot_4(df_pivot)
+    fig5 = plot_5(df_pivot)
     heatmaps = all_heatmaps(df_pivot)
-
-
 
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
