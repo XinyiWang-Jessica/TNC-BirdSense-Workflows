@@ -164,8 +164,8 @@ def main():
     #fig1 = plot_1(df_pivot)
 #     fig2 = plot_2(df_pivot)
     fig3 = plot_3(df_pivot)
-    fig4 = plot_4(df_pivot)
-    fig5 = plot_5(df_pivot)
+#     fig4 = plot_4(df_pivot)
+#     fig5 = plot_5(df_pivot)
     heatmaps = all_heatmaps(df_pivot)
 
 
