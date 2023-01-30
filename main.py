@@ -162,7 +162,7 @@ def main():
    
     # add plots
     #fig1 = plot_1(df_pivot)
-    fig2 = plot_2(df_pivot)
+#     fig2 = plot_2(df_pivot)
     fig3 = plot_3(df_pivot)
     fig4 = plot_4(df_pivot)
     fig5 = plot_5(df_pivot)
@@ -186,8 +186,7 @@ def main():
 
     # Add a layer control panel to the map.
     my_map.add_child(folium.LayerControl())
-    
-    
+     
     
     #upload to datapane
     app = dp.App(
@@ -202,10 +201,11 @@ def main():
             dp.Plot(fig4, caption="Partially Flooded"),
             dp.Plot(fig5, caption="Minimally Flooded"),columns = 3),
         
-        #dp.Group(
-        #    dp.Plot(fig3, caption="Last Week Result" ),
-        #    dp.Plot(fig2, caption="Last 5 Weeks Flooded (>66%) Fields Percentage"), columns = 2),
-        dp.DataTable(df_pivot.round(3), caption="Average Percentage by Week"),
+        dp.Select(
+            blocks = [
+                dp.Plot(heatmaps[i], label = str(i*100)+'~'+str((i+1)*100)) for i in range(len(heatmaps))]+
+                [dp.DataTable(df_pivot.round(3), label="Data Table")], 
+                type=dp.SelectType.TABS),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
     app.upload(name="Weekly BirdSense Report " + end_string, publicly_visible = True)
@@ -216,7 +216,7 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
+    yag.send(["wangxinyi1986@gmail.com"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
          "Weekly BirdSense Report - Testing",
          msg)
     
