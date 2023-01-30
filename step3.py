@@ -44,7 +44,7 @@ def heatmap_plot(df, n):
     fig = go.Figure(data=go.Heatmap(
         z=df.iloc[n*100:(n+1)*100,3:-1].T.round(3),
         x=df.Unique_ID[n*100:(n+1)*100],
-        y=df_pivot.iloc[:,3:-1].columns,
+        y=df.iloc[:,3:-1].columns,
         colorscale='RdBu'))
     fig.update_layout(xaxis_visible=False)  
     return fig      
