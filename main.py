@@ -92,8 +92,8 @@ thresh_vis_params = {
     'palette' : ['white', 'blue']
 }
 
-# columns1 = [bid_name,field_name, 'Status','Pct_CloudFree','Date']
-# columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
+columns1 = [bid_name,field_name, 'Status','Pct_CloudFree','Date']
+columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
