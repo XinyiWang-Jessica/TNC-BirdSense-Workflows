@@ -35,7 +35,7 @@ ee.Initialize(credentials)
 # end_string = datetime.today().strftime('%Y-%m-%d')
 # run = '_01'
 # #run = ''
-# program = "WB4B22"
+program = "WB4B22"
 # thresh_val = 0.25
 
 in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
