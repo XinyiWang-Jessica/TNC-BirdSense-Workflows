@@ -40,6 +40,24 @@ def plot_2(df):
     plt.yticks([])
     return fig
 
+def heatmap_plot(df, n):
+    fig = go.Figure(data=go.Heatmap(
+        z=df.iloc[n*100:(n+1)*100,3:-1].T.round(3),
+        x=df.Unique_ID[n*100:(n+1)*100],
+        y=df_pivot.iloc[:,3:-1].columns,
+        colorscale='RdBu'))
+    fig.update_layout(xaxis_visible=False)  
+    return fig      
+
+def all_heatmaps(df):
+    heatmaps = []
+    df['Unique_ID'] = df['Bid_ID'] + "-" + df['Field_ID']
+    for i in range(round(len(df)/100)):
+        fig = heatmap_plot(df, i)
+        heatmaps.append(fig)
+    df.drop(['Unique_ID'], axis=1, inplace=True)
+    return heatmaps
+
 def plot_3(df):
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
     level = pd.cut(df[df.columns[-1]],
