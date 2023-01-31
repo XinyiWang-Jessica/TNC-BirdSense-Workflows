@@ -119,13 +119,13 @@ def main():
         df_pivot = no_flood_dates(pivot_table(df))
    
     # add plots
-    #fig1 = plot_1(df_pivot)
-#     fig2 = plot_2(df_pivot)
+    fig1 = plot_1(df_pivot)
+    fig2 = plot_2(df_pivot)
     fig3 = plot_3(df_pivot)
     fig4 = plot_4(df_pivot)
     fig5 = plot_5(df_pivot)
     heatmaps = all_heatmaps(df_pivot)
-
+    
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
     # Add EE drawing method to folium.
@@ -154,9 +154,12 @@ def main():
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
         dp.Group(
-            dp.Plot(fig3, caption="Flood" ),
-            dp.Plot(fig4, caption="Partially Flooded"),
-            dp.Plot(fig5, caption="Minimally Flooded"),columns = 3),
+            dp.Plot(fig5, caption="Flood" ),
+            dp.Select(blocks = [dp.Plot(fig1, caption="ALL",label="ALL")]+
+                            [dp.Plot(fig2, caption="Flooded",label="Flooded")]+
+                            [dp.Plot(fig3, caption="Partially Flooded",label="Partially Flooded")]+
+                            [dp.Plot(fig4, caption="Minimally Flooded",label="Minimally Flooded")]
+                  ,type=dp.SelectType.TABS), columns = 2),
         
         dp.Select(
             blocks = [
@@ -173,7 +176,7 @@ def main():
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                    GMAIL_PWD)
     # Adding Content and sending it
-    yag.send(["wangxinyi1986@gmail.com"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
+    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
          "Weekly BirdSense Report - Testing",
          msg)
     
