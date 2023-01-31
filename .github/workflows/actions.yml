@@ -1,15 +1,15 @@
 name: run main.py
 
-# on:
-#   push:
-#     branches:
-#       - main
-#       - 'Testing'
-
 on:
-    schedule:
-        # run at 7am every Wendsday
-        - cron: "00 15 */3 * *"
+  push:
+    branches:
+      - main
+      - 'Testing'
+
+# on:
+#     schedule:
+#         # run at 7am every Wendsday
+#         - cron: "00 15 */3 * *"
         
 jobs:
   build:
@@ -33,8 +33,9 @@ jobs:
       - name: execute py script # run main.py
         uses: datapane/build-action@v2
         env:
-          GMAIL_PWD: ${{ secrets.GMAIL_PWD }}
+          GMAIL_PWD: ${{secrets.GMAIL_PWD }}
           GEE_AUTH: ${{secrets.GEE_AUTH}}
+          GDRIVE_AUTH: ${{secrets.GDRIVE_AUTH}}
         with:
           script: "main.py"
           token: ${{ secrets.DATAPANE_TOKEN }}

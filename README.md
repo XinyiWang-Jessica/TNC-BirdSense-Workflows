@@ -20,8 +20,9 @@ To access data from GEE API, Google Searvice Account is used to authenticate to 
 To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instrution](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
   1. Create a DataPane account and login
   2. Go to the setting page and copy the API Token
-  3. Add the API token as a repo secrete with the Name of DATAPANE_TOKEN under the repo Settings
+  3. Add the API token as a repo secrete with the Name of DATAPANE_TOKEN 
 ### Gmail Authentication
+Yet Another Gmail [yagmail](https://yagmail.readthedocs.io/en/latest/)is applied to send emails automaticlly. It requires sign-in process to authorize. Follow the instruction to obtain the [Gmail App password](https://support.google.com/mail/answer/185833?hl=en). Then, add the password to the repo secrete with the name of GMAIL_PWD.
 ### GitHub Repository Secrete Set Up
 
 ## How to Use
