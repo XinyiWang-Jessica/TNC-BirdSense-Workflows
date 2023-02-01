@@ -111,12 +111,17 @@ def main():
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
     # calculate the cloud free datepoints
     num, percent, percent2 = cloud_free_percent(df)
-    # produce pivoted table
+    # create pivoted table and watch list
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
-        df_pivot = add_flood_dates(df_d, pivot_table(df))
-    except:
+        col = 5
+        df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
+        # generate the watch list with low percentage flooded rate  
+        watch = watch_list(df_pivot)
+    except FileNotFoundError:
         df_pivot = no_flood_dates(pivot_table(df))
+        col = 3
+        watch = pd.DataFrame()
    
     # add plots
     fig1 = plot_1(df_pivot)
@@ -149,7 +154,7 @@ def main():
     app = dp.App(
         dp.Group(
             dp.BigNumber(heading = 'Total Fields', value = num),
-            dp.BigNumber(heading = 'Cloud Free Laste Week', 
+            dp.BigNumber(heading = 'Cloud Free Percentage for Last 7 Days', 
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
@@ -160,7 +165,7 @@ def main():
                             [dp.Plot(fig3, caption="Partially Flooded",label="Partially Flooded")]+
                             [dp.Plot(fig4, caption="Minimally Flooded",label="Minimally Flooded")]
                   ,type=dp.SelectType.TABS), columns = 2),
-        
+        dp.Table(watch.style.background_gradient(cmap="autumn"), caption="Watch List of Last Week"),
         dp.Select(
             blocks = [
                 dp.Plot(heatmaps[i], label = str(i*100)+'~'+str((i+1)*100)) for i in range(len(heatmaps))]+
