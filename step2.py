@@ -264,6 +264,21 @@ def cloud_free_percent(df):
     print(num, percent, percent2)
     return num, percent[0], percent2[0]
 
+def watch_list(df):
+    today = pd.to_datetime(dt.datetime.now().date())
+    in_flood = df.iloc[:, [0,1,2,3,-1]].copy()
+    in_flood['Flood_Start'] =  pd.to_datetime(in_flood['Flood_Start'])
+    in_flood['Flood_End'] =  pd.to_datetime(in_flood['Flood_End'])
+    in_flood = in_flood[(in_flood['Flood_Start'] < today) &
+                    (in_flood['Flood_End'] > today) & 
+                    (in_flood.iloc[:, -1]<=0.33)].sort_values(by = in_flood.columns[-1])
+    watch = in_flood[in_flood.iloc[:,-1].notna()]
+    watch = in_flood.iloc[:,:-1]
+    watch['pct_flooded'] = in_flood.iloc[:,-1]
+    watch['Flood_Start']=watch['Flood_Start'].astype(str)
+    watch['Flood_End']=watch['Flood_End'].astype(str)
+    return watch
+
 
 
 
