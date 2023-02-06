@@ -243,15 +243,16 @@ def no_flood_dates(df):
     df = df[cols]
     return df
 
-def cloud_free_percent(df):
+def cloud_free_percent(df, start):
     ## Check the number of cloud free records in the last seven days
-    # Calculate the date seven days ago
-    day_7_ago = dt.datetime.now().date() - dt.timedelta(days=7)
-    day_14_ago = dt.datetime.now().date() - dt.timedelta(days=14)
+    # Calculate the start and end dates of last week and two weeks ago
+    start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
+    end_last = start_last+ dt.timedelta(days=6)
+    start_last2 = start_last - dt.timedelta(days=7)
     # Create a boolean mask indicating which rows meet both conditions
     df['Date_obj'] = df['Date'].dt.date
-    last_week = df[df['Date_obj'] >= day_7_ago].groupby(['Unique_ID']).agg({'Pct_CloudFree': 'max'})
-    two_week_ago = df[(df['Date_obj'] < day_7_ago) & (df['Date_obj'] >= day_14_ago)].groupby(['Unique_ID']).agg({'Pct_CloudFree': 'max'})
+    last_week = df[(df['Date_obj'] <= end_last) & (df['Date_obj'] >= start_last)].groupby(['Unique_ID']).agg({'Pct_CloudFree': 'max'})
+    two_week_ago = df[(df['Date_obj'] < start_last) & (df['Date_obj'] >= start_last2)].groupby(['Unique_ID']).agg({'Pct_CloudFree': 'max'})
     mask_last_week = (last_week > cloud_free_thresh)
     mask_2_week = (two_week_ago > cloud_free_thresh) 
     num = len(df.Unique_ID.unique())
@@ -261,24 +262,22 @@ def cloud_free_percent(df):
         percent2 = 0
     else:
         percent2 = mask_2_week.sum()/len(two_week_ago)
-    print(num, percent, percent2)
+    # print(num, percent[0], percent2[0])
     return num, percent[0], percent2[0]
 
-def watch_list(df):
-    today = pd.to_datetime(dt.datetime.now().date())
-    in_flood = df.iloc[:, [0,1,2,3,-1]].copy()
+
+def watch_list(df, start):
+    columns = df.columns[0:4].values.tolist()
+    columns.append(start)
+    print(df.columns)
+    print(start)
+    in_flood = df[columns].copy()
     in_flood['Flood_Start'] =  pd.to_datetime(in_flood['Flood_Start'])
     in_flood['Flood_End'] =  pd.to_datetime(in_flood['Flood_End'])
-    in_flood = in_flood[(in_flood['Flood_Start'] < today) &
-                    (in_flood['Flood_End'] > today) & 
-                    (in_flood.iloc[:, -1]<=0.33)].sort_values(by = in_flood.columns[-1])
+    in_flood = in_flood[(in_flood[start]<=0.33) &
+                   (in_flood['Flood_Start'] <= pd.to_datetime(start)) &
+                    (in_flood['Flood_End'] > pd.to_datetime(start))].sort_values(by = in_flood.columns[-1])
     watch = in_flood[in_flood.iloc[:,-1].notna()]
-    watch = in_flood.iloc[:,:-1]
-    watch['pct_flooded'] = in_flood.iloc[:,-1]
     watch['Flood_Start']=watch['Flood_Start'].astype(str)
-    watch['Flood_End']=watch['Flood_End'].astype(str)
-    return watch
-
-
-
-
+    watch['Flood_End']=df['Flood_End'].astype(str)
+    return watch.round(3)
