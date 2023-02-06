@@ -110,14 +110,14 @@ def main():
     # convert featurecollections to dataframe, combine and formatted as we need
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
     # calculate the cloud free datepoints
-    num, percent, percent2 = cloud_free_percent(df)
+    num, percent, percent2 = cloud_free_percent(df, start_last)
     # create pivoted table and watch list
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
         col = 5
         df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
         # generate the watch list with low percentage flooded rate  
-        watch = watch_list(df_pivot)
+        watch = watch_list(df_pivot, start_last)
     except: # FileNotFoundError
         df_pivot = no_flood_dates(pivot_table(df))
         col = 3
