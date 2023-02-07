@@ -40,23 +40,40 @@ import plotly.graph_objects as go
 #     plt.yticks([])
 #     return fig
 
-def heatmap_plot(df, n, col=5):
+def heatmap_plot(df, n, col, start):
+    '''
+    heatmap of percentage flooded,
+    x is unique field id
+    y is week starts days
+    '''
+    columns  = df.iloc[:,col:].columns.tolist()[:-2]
+    start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
+    if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
+        columns = columns[:-1]
     fig = go.Figure(data=go.Heatmap(
-        z=df.iloc[n*100:(n+1)*100,col:-1].T,
-        x=df.Unique_ID[n*100:(n+1)*100],
-        y=df.columns[col:-1],
+        z=df.loc[:,columns].T.round(3),
+        x=df.Unique_ID,
+        y=columns,
         colorscale='RdBu'))
+    fig.update_yaxes(autorange="reversed")
     fig.update_layout(xaxis_visible=False)  
+    fig.show()
     return fig      
 
-def all_heatmaps(df, col):
+def all_heatmaps(df, col, start):
+    '''
+    split fields into 5 groups and create heatmaps
+    '''
     heatmaps = []
     df['Unique_ID'] = df['Bid_ID'] + "-" + df['Field_ID']
-    for i in range(round(len(df)/100)):
-        fig = heatmap_plot(df, i, col)
+    df['group'] = df['Bid_ID'].apply(lambda x : x.split('-')[-1]).astype('int')
+    df['group'], cut_bin = pd.qcut(df['group'], q = 5, labels = range(5), retbins = True)
+    for i in range(5):
+        sub_df = df[df.group == i]
+        fig = heatmap_plot(sub_df, i, col, start)
         heatmaps.append(fig)
-    df.drop(['Unique_ID'], axis=1, inplace=True)
-    return heatmaps
+    df.drop(['Unique_ID', 'group'], axis=1, inplace=True)
+    return heatmaps, cut_bin
 
 # def plot_3(df):
 #     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
@@ -106,32 +123,42 @@ def all_heatmaps(df, col):
 #         },
 #     )
 
-def plot_1(df):
+def history_plot(df, start, n=8):
+    '''
+    plot the last n weeks data with plotly
+    '''
+    columns  = df.columns
+    start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
+    if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
+        columns = columns[:-1]
+    columns = columns[-n:]
+    last_n_week_all = df[columns].applymap(lambda x : 1 if x >=0 else 0).sum()/len(df)
+    last_n_week = df[columns].applymap(lambda x : 1 if x >0.66 else 0).sum()/len(df)
+    last_n_week_par = df[columns].applymap(lambda x : 1 if x >0.33 and x <= 0.66 else 0).sum()/len(df)
+    last_n_week_non = df[columns].applymap(lambda x : 1 if x <=0.33 else 0).sum()/len(df)
 
-    labels = df.columns[-5:]
-    last_5_week_all = df[df.columns[-5:]].applymap(lambda x : 1 if x >0 else 0).sum()/len(df)
-    last_5_week = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.66 else 0).sum()/len(df)
-    
-    last_5_week_par = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.33 and x <= 0.66 else 0).sum()/len(df)
-    last_5_week_non = df[df.columns[-5:]].applymap(lambda x : 1 if x <=0.33 else 0).sum()/len(df)
-
-    
-    fig, ax = plt.subplots(figsize = (6,1.2) ) 
-    ax.bar(range(5), last_5_week,  alpha = 0.8, width = 0.8)
-    ax.bar(range(5), last_5_week_par,  alpha = 0.8, width = 0.8,bottom =last_5_week,color='orange')
-    ax.bar(range(5), last_5_week_non,  alpha = 0.8, width = 0.8,bottom =last_5_week+last_5_week_par,color='r')
-
-    for index, value in enumerate(last_5_week_all):
-        plt.text(index-0.3, value+0.1, "{:.2%}".format(value))
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    ax.set_xticks(range(5))
-    ax.set_xticklabels(labels, fontsize='small')
-    # plt.tick_params(left = False)
-    plt.yticks([])
+    fig = go.Figure(data=[
+                go.Bar(name='Flooded', x=last_n_week.index , y=last_n_week, marker_color = 'blue'),
+                go.Bar(name='Partially Flooded', x=last_n_week.index, y=last_n_week_par, marker_color = 'orange'),
+                go.Bar(name='Minimally Flooded', 
+                    x=last_n_week.index, y=last_n_week_non, 
+                    marker_color = 'red',
+                    text = last_n_week_all,
+                    texttemplate='%{text:.1%}', 
+                    textposition='outside')])
+    # Change the bar mode
+    fig.update_layout(barmode='stack', 
+                      legend=dict(
+                            orientation="h",
+                            yanchor="bottom",
+                            y=1.02,
+                            xanchor="right",
+                            x=1),
+                     autosize=False,
+                        width=800,
+                        height=400,)
+    fig.update_yaxes(showticklabels=False, range=[0, 1.2])
     return fig
-
 
 def plot_2(df):
 
