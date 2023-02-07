@@ -1,4 +1,5 @@
 from datetime import datetime
+import datetime as dt
 import ee
 
 # User defined settings
@@ -32,3 +33,7 @@ s2_vis_params = {
 thresh_vis_params = {
     'palette' : ['white', 'blue']
 }
+
+# get the start sunday of the previous week
+aday = dt.datetime.now().date() - dt.timedelta(days = 6)
+start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')

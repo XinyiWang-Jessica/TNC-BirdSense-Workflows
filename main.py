@@ -110,21 +110,26 @@ def main():
     # convert featurecollections to dataframe, combine and formatted as we need
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
     # calculate the cloud free datepoints
-    num, percent, percent2 = cloud_free_percent(df)
-    # produce pivoted table
+    num, percent, percent2 = cloud_free_percent(df, start_last)
+    # create pivoted table and watch list
     try:
         df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
-        df_pivot = add_flood_dates(df_d, pivot_table(df))
-    except:
+        col = 5
+        df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
+        # generate the watch list with low percentage flooded rate  
+        watch = watch_list(df_pivot, start_last)
+    except: # FileNotFoundError
         df_pivot = no_flood_dates(pivot_table(df))
+        col = 3
+        watch = pd.DataFrame()
    
     # add plots
-    fig1 = plot_1(df_pivot)
-    fig2 = plot_2(df_pivot)
-    fig3 = plot_3(df_pivot)
-    fig4 = plot_4(df_pivot)
-    fig5 = plot_5(df_pivot)
-    heatmaps = all_heatmaps(df_pivot)
+    fig_history = history_plot(df_pivot, start_last)
+#     fig2 = plot_2(df_pivot)
+#     fig3 = plot_3(df_pivot)
+#     fig4 = plot_4(df_pivot)
+    fig_status = plot_status(df_pivot, start_last)
+    heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
@@ -147,25 +152,28 @@ def main():
     
     #upload to datapane
     app = dp.App(
+        dp.Text(f'# Weekly BirdSense Report - week of {start_last} ##'),
+        dp.Text(f'last update: {end_string}'),
         dp.Group(
             dp.BigNumber(heading = 'Total Fields', value = num),
-            dp.BigNumber(heading = 'Cloud Free Laste Week', 
+            dp.BigNumber(heading = 'Cloud Free Percentage for Last 7 Days', 
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
+        dp.Text('## Flooding Status ##'),
         dp.Group(
-            dp.Plot(fig5, caption="Flood" ),
-            dp.Select(blocks = [dp.Plot(fig1, caption="ALL",label="ALL")]+
-                            [dp.Plot(fig2, caption="Flooded",label="Flooded")]+
-                            [dp.Plot(fig3, caption="Partially Flooded",label="Partially Flooded")]+
-                            [dp.Plot(fig4, caption="Minimally Flooded",label="Minimally Flooded")]
-                  ,type=dp.SelectType.TABS), columns = 2),
-        
+            dp.Plot(fig_status, caption="Flooding Status of Last Week" ),
+            dp.Plot(fig_history, caption="Flooding Status for Last 8 Weeks" ), 
+            columns = 2),
+        dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
+        dp.Table(watch.style.background_gradient(cmap="autumn")),
+        dp.Text('## Flooded Percentage by Fields ##'),
         dp.Select(
             blocks = [
-                dp.Plot(heatmaps[i], label = str(i*100)+'~'+str((i+1)*100)) for i in range(len(heatmaps))]+
+                dp.Plot(heatmaps[i], label =  program + f' - {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))]+
                 [dp.DataTable(df_pivot.round(3), label="Data Table")], 
                 type=dp.SelectType.TABS),
+        dp.Text('## Flooding Status on Map ##'),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
     app.upload(name="Weekly BirdSense Report " + end_string, publicly_visible = True)
