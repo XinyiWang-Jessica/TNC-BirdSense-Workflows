@@ -1,5 +1,7 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+from datetime import datetime
+import datetime as dt
+# import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 # def plot_1(df):
@@ -160,68 +162,68 @@ def history_plot(df, start, n=8):
     fig.update_yaxes(showticklabels=False, range=[0, 1.2])
     return fig
 
-def plot_2(df):
+# def plot_2(df):
 
-    labels = df.columns[-5:]
-    last_5_week = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.66 else 0).sum()/len(df)
-
-    
-    fig, ax = plt.subplots(figsize = (6,1.2) ) 
-    ax.bar(range(5), last_5_week,  alpha = 0.8, width = 0.8)
-
-    for index, value in enumerate(last_5_week):
-        plt.text(index-0.3, value+0.1, "{:.2%}".format(value))
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    ax.set_xticks(range(5))
-    ax.set_xticklabels(labels, fontsize='small')
-    # plt.tick_params(left = False)
-    plt.yticks([])
-    return fig
-
-
-def plot_3(df):
-
-    labels = df.columns[-5:]
-    
-    last_5_week_par = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.33 and x <= 0.66 else 0).sum()/len(df)
+#     labels = df.columns[-5:]
+#     last_5_week = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.66 else 0).sum()/len(df)
 
     
-    fig, ax = plt.subplots(figsize = (6,1.2) ) 
-    ax.bar(range(5), last_5_week_par,  alpha = 0.8, width = 0.8,color='orange')
+#     fig, ax = plt.subplots(figsize = (6,1.2) ) 
+#     ax.bar(range(5), last_5_week,  alpha = 0.8, width = 0.8)
 
-    for index, value in enumerate(last_5_week_par):
-        plt.text(index-0.3, value+0.005, "{:.2%}".format(value))
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    ax.set_xticks(range(5))
-    ax.set_xticklabels(labels, fontsize='small')
-    # plt.tick_params(left = False)
-    plt.yticks([])
-    return fig
+#     for index, value in enumerate(last_5_week):
+#         plt.text(index-0.3, value+0.1, "{:.2%}".format(value))
+#     ax.spines['top'].set_visible(False)
+#     ax.spines['right'].set_visible(False)
+#     ax.spines['left'].set_visible(False)
+#     ax.set_xticks(range(5))
+#     ax.set_xticklabels(labels, fontsize='small')
+#     # plt.tick_params(left = False)
+#     plt.yticks([])
+#     return fig
 
-def plot_4(df):
 
-    labels = df.columns[-5:]
+# def plot_3(df):
+
+#     labels = df.columns[-5:]
     
-    last_5_week_non = df[df.columns[-5:]].applymap(lambda x : 1 if x <=0.33 else 0).sum()/len(df)
+#     last_5_week_par = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.33 and x <= 0.66 else 0).sum()/len(df)
 
     
-    fig, ax = plt.subplots(figsize = (6,1.2) ) 
-    ax.bar(range(5), last_5_week_non,  alpha = 0.8, width = 0.8,color='red')
+#     fig, ax = plt.subplots(figsize = (6,1.2) ) 
+#     ax.bar(range(5), last_5_week_par,  alpha = 0.8, width = 0.8,color='orange')
 
-    for index, value in enumerate(last_5_week_non):
-        plt.text(index-0.3, value+0.001, "{:.2%}".format(value))
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    ax.set_xticks(range(5))
-    ax.set_xticklabels(labels, fontsize='small')
-    # plt.tick_params(left = False)
-    plt.yticks([])
-    return fig
+#     for index, value in enumerate(last_5_week_par):
+#         plt.text(index-0.3, value+0.005, "{:.2%}".format(value))
+#     ax.spines['top'].set_visible(False)
+#     ax.spines['right'].set_visible(False)
+#     ax.spines['left'].set_visible(False)
+#     ax.set_xticks(range(5))
+#     ax.set_xticklabels(labels, fontsize='small')
+#     # plt.tick_params(left = False)
+#     plt.yticks([])
+#     return fig
+
+# def plot_4(df):
+
+#     labels = df.columns[-5:]
+    
+#     last_5_week_non = df[df.columns[-5:]].applymap(lambda x : 1 if x <=0.33 else 0).sum()/len(df)
+
+    
+#     fig, ax = plt.subplots(figsize = (6,1.2) ) 
+#     ax.bar(range(5), last_5_week_non,  alpha = 0.8, width = 0.8,color='red')
+
+#     for index, value in enumerate(last_5_week_non):
+#         plt.text(index-0.3, value+0.001, "{:.2%}".format(value))
+#     ax.spines['top'].set_visible(False)
+#     ax.spines['right'].set_visible(False)
+#     ax.spines['left'].set_visible(False)
+#     ax.set_xticks(range(5))
+#     ax.set_xticklabels(labels, fontsize='small')
+#     # plt.tick_params(left = False)
+#     plt.yticks([])
+#     return fig
 
 def plot_status(df, start):
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
