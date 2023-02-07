@@ -158,11 +158,14 @@ def main():
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
                     is_upward_change = True), columns = 2), 
+        dp.Text('## Flooding Status ##'),
         dp.Group(
-            dp.Plot(fig5, caption="Flood" ),
-            dp.Plot(fig_history, caption="ALL",label="ALL")+
-                    , columns = 2),
-        dp.Table(watch.style.background_gradient(cmap="autumn"), caption="Watch List of Last Week"),
+            dp.Plot(fig5, caption="Flood", caption="Flooding Status of Last Week" ),
+            dp.Plot(fig_history, caption="ALL",label="ALL", caption="Flooding Status for Last 8 Weeks" ), 
+            columns = 2),
+        dp.Text('## Watch List for Last Week ##')
+        dp.Table(watch.style.background_gradient(cmap="autumn")),
+        dp.Text('## Flooded Percentage by Fields ##')
         dp.Select(
             blocks = [
                 dp.Plot(heatmaps[i], label =  program + f' - {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))]+
