@@ -128,7 +128,7 @@ def main():
 #     fig2 = plot_2(df_pivot)
 #     fig3 = plot_3(df_pivot)
 #     fig4 = plot_4(df_pivot)
-    fig5 = plot_5(df_pivot)
+    fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
@@ -162,8 +162,8 @@ def main():
                     is_upward_change = True), columns = 2), 
         dp.Text('## Flooding Status ##'),
         dp.Group(
-            dp.Plot(fig5, caption="Flooding Status of Last Week" ),
-            dp.Plot(fig_history, caption="ALL",label="ALL", caption="Flooding Status for Last 8 Weeks" ), 
+            dp.Plot(fig_status, caption="Flooding Status of Last Week" ),
+            dp.Plot(fig_history, caption="Flooding Status for Last 8 Weeks" ), 
             columns = 2),
         dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
