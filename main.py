@@ -163,14 +163,15 @@ def main():
             dp.Plot(fig5, caption="Flood", caption="Flooding Status of Last Week" ),
             dp.Plot(fig_history, caption="ALL",label="ALL", caption="Flooding Status for Last 8 Weeks" ), 
             columns = 2),
-        dp.Text('## Watch List for Last Week ##')
+        dp.Text('## Watch List for Last Week ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
-        dp.Text('## Flooded Percentage by Fields ##')
+        dp.Text('## Flooded Percentage by Fields ##'),
         dp.Select(
             blocks = [
                 dp.Plot(heatmaps[i], label =  program + f' - {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))]+
                 [dp.DataTable(df_pivot.round(3), label="Data Table")], 
                 type=dp.SelectType.TABS),
+        dp.Text('## Flooding Status on Map ##'),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
     app.upload(name="Weekly BirdSense Report " + end_string, publicly_visible = True)
