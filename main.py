@@ -152,6 +152,8 @@ def main():
     
     #upload to datapane
     app = dp.App(
+        dp.Text(f'# Weekly BirdSense Report - week of {start_last} ##'),
+        dp.Text(f'last update: {end_string}'),
         dp.Group(
             dp.BigNumber(heading = 'Total Fields', value = num),
             dp.BigNumber(heading = 'Cloud Free Percentage for Last 7 Days', 
@@ -160,10 +162,10 @@ def main():
                     is_upward_change = True), columns = 2), 
         dp.Text('## Flooding Status ##'),
         dp.Group(
-            dp.Plot(fig5, caption="Flood", caption="Flooding Status of Last Week" ),
+            dp.Plot(fig5, caption="Flooding Status of Last Week" ),
             dp.Plot(fig_history, caption="ALL",label="ALL", caption="Flooding Status for Last 8 Weeks" ), 
             columns = 2),
-        dp.Text('## Watch List for Last Week ##'),
+        dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
         dp.Text('## Flooded Percentage by Fields ##'),
         dp.Select(
