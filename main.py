@@ -124,12 +124,12 @@ def main():
         watch = pd.DataFrame()
    
     # add plots
-    fig1 = plot_1(df_pivot)
-    fig2 = plot_2(df_pivot)
-    fig3 = plot_3(df_pivot)
-    fig4 = plot_4(df_pivot)
+    fig_history = history_plot(df_pivot, start_last)
+#     fig2 = plot_2(df_pivot)
+#     fig3 = plot_3(df_pivot)
+#     fig4 = plot_4(df_pivot)
     fig5 = plot_5(df_pivot)
-    heatmaps = all_heatmaps(df_pivot, col)
+    heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
     
     thresh_mean = NDWIThreshonly.select("threshold").mean()  
     
@@ -160,15 +160,12 @@ def main():
                     is_upward_change = True), columns = 2), 
         dp.Group(
             dp.Plot(fig5, caption="Flood" ),
-            dp.Select(blocks = [dp.Plot(fig1, caption="ALL",label="ALL")]+
-                            [dp.Plot(fig2, caption="Flooded",label="Flooded")]+
-                            [dp.Plot(fig3, caption="Partially Flooded",label="Partially Flooded")]+
-                            [dp.Plot(fig4, caption="Minimally Flooded",label="Minimally Flooded")]
-                  ,type=dp.SelectType.TABS), columns = 2),
+            dp.Plot(fig_history, caption="ALL",label="ALL")+
+                    , columns = 2),
         dp.Table(watch.style.background_gradient(cmap="autumn"), caption="Watch List of Last Week"),
         dp.Select(
             blocks = [
-                dp.Plot(heatmaps[i], label = str(i*100)+'~'+str((i+1)*100)) for i in range(len(heatmaps))]+
+                dp.Plot(heatmaps[i], label =  program + f' - {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))]+
                 [dp.DataTable(df_pivot.round(3), label="Data Table")], 
                 type=dp.SelectType.TABS),
         dp.Plot(my_map, caption="Flooded Area on Map")
@@ -182,7 +179,7 @@ def main():
                    GMAIL_PWD)
     # Adding Content and sending it
 
-    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
+    yag.send(["wangxinyi1986@gmail.com"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
 
 
          "Weekly BirdSense Report - Testing",
