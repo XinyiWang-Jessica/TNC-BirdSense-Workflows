@@ -223,23 +223,25 @@ def plot_4(df):
     plt.yticks([])
     return fig
 
-def plot_5(df):
+def plot_status(df, start):
+    start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
+    start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
-    level = pd.cut(df[df.columns[-2]],
+    level = pd.cut(df[start],
                               bins=[0, .33, .66, 1],
                               labels=bin_labels)
-    freq = level.value_counts()/level.count()
+    freq = level.value_counts()/len(level)
     
-    level_y = pd.cut(df[df.columns[-3]],
+    level_y = pd.cut(df[start_last2],
                               bins=[0, .33, .66, 1],
                               labels=bin_labels)
 
-    freq_y = level_y.value_counts()/level_y.count()
+    freq_y = level_y.value_counts()/len(level_y)
     fig = go.Figure()
     fig.add_trace(go.Indicator(
         mode = "number+delta",
         value = freq.values[0]*100,
-        number = {'suffix' : '%',"font":{"size":50}},
+        number = {'suffix' : '%',"font":{"size":40}},
         title = {"text": "Flooded"},
         delta = {'reference': freq_y.values[0]*100, 'relative': False, "valueformat": ".1f"},
         domain = {'x': [0, 0.33], 'y': [0, 1]}))
@@ -248,7 +250,7 @@ def plot_5(df):
     fig.add_trace(go.Indicator(
         mode = "number+delta",
         value = freq.values[1]*100,
-        number = {'suffix' : '%',"font":{"size":50}},
+        number = {'suffix' : '%',"font":{"size":40}},
         title = {"text": "Partially"+'<br>' +"Flooded"},
         delta = {'reference': freq_y.values[1]*100, 'relative': False, "valueformat": ".1f"},
         domain = {'x': [0.34, 0.66], 'y': [0, 1]}))
@@ -257,15 +259,15 @@ def plot_5(df):
     fig.add_trace(go.Indicator(
         mode = "number+delta",
         value = freq.values[2]*100,
-        number = {'suffix' : '%',"font":{"size":50}},
+        number = {'suffix' : '%',"font":{"size":40}},
         title = {"text": "Minimally"+"<br>"+"Flooded"},
         delta = {'reference': freq_y.values[2]*100, 'relative': False, "valueformat": ".1f"},
         domain = {'x': [0.67, 1], 'y': [0, 1]}))
     
     # Layout
     fig.update_layout(
-        width = 400,
-        height = 300,
+        width = 600,
+        height = 400,
         autosize = False,
         grid={
             'rows': 1,
@@ -273,7 +275,5 @@ def plot_5(df):
             'pattern': "coupled"
         },
     )
-    
-    return fig
     
     return fig
