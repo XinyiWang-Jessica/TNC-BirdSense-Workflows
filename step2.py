@@ -257,12 +257,14 @@ def cloud_free_percent(df, start):
     num = len(df.Unique_ID.unique())
     # Count the number of rows that meet the conditions
     percent = mask_last_week.sum()/len(last_week)
+    mask = mask_last_week.sum()
+    mask2 = mask_2_week.sum()
     if len(two_week_ago) == 0:
         percent2 = 0
     else:
         percent2 = mask_2_week.sum()/len(two_week_ago)
     # print(num, percent[0], percent2[0])
-    return num, percent[0], percent2[0]
+    return num, percent[0], percent2[0], mask, mask2
 
 
 def watch_list(df, start):
