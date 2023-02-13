@@ -165,7 +165,7 @@ def main():
     
     #upload to datapane
     app = dp.App(
-        dp.Text(f'# Weekly Report - {start_last} to ##'), # need to format to the date... and add end date
+        dp.Text(f'# Weekly Report - {start_last} to {end_last}##'), # need to format to the date... and add end date
         dp.Text(f'last update: {end_string}'),
         dp.Group(
             dp.BigNumber(heading = 'Total Fields', value = num),
@@ -180,7 +180,6 @@ def main():
             columns = 2),
         dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
-        dp.DataTable(df_d),
         dp.Text('## Flooding Percentage by Fields ##'),
         dp.Select(
             blocks = [
@@ -199,7 +198,7 @@ def main():
                    GMAIL_PWD)
     # Adding Content and sending it
 
-    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu", "kklausmeyer@tnc.org"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
+    yag.send(["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],  #,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu" 
          "Weekly BirdSense Report - Testing",
          msg)
     
