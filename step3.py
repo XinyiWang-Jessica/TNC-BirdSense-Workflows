@@ -289,7 +289,6 @@ def plot_status(df, start, df_pct):
         margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor="white",
         font=dict(
-            family="Courier New, monospace",
             size=18,
             color="RebeccaPurple"
         )
