@@ -2,6 +2,7 @@
 # import logging.handlers
 import os
 import io
+import json
 from step2 import *
 from step3 import *
 from definitions import *
@@ -40,12 +41,13 @@ credentials = ee.ServiceAccountCredentials(ee_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # Google Drive authentication and read the Excel file from google drive
-# SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
-# creds = service_account.Credentials.from_service_account_info(
-#         GDRIVE_AUTH, scopes=SCOPES)
-# service = build('drive', 'v3', credentials=creds)
-# request = service.files().get_media(fileId=file_id)
-# file = io.BytesIO(request.execute())
+SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+gdrive_auth = json.loads(GDRIVE_AUTH)
+creds = service_account.Credentials.from_service_account_info(
+        gdrive_auth, scopes=SCOPES)
+service = build('drive', 'v3', credentials=creds)
+request = service.files().get_media(fileId=file_id)
+file = io.BytesIO(request.execute())
 
 # User defined settings
 in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
@@ -82,13 +84,6 @@ columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
 # formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 # logger_file_handler.setFormatter(formatter)
 # logger.addHandler(logger_file_handler)
-
-# try:
-#     SOME_SECRET = os.environ["SOME_SECRET"]
-# except KeyError:
-#     SOME_SECRET = "Token not available!"
-    
-
     
 def main():
     # s2 = ee.ImageCollection('COPERNICUS/S2');
