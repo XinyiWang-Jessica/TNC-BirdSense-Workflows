@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
 import datetime as dt
+from step2 import *
 # import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
@@ -238,19 +239,20 @@ def history_plot(df, start, n=8):
 #     return fig
 
 def plot_status(df, start):
+    num, percent, percent2 = cloud_free_percent(df, start_last)
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
     level = pd.cut(df[start],
                    bins=[0, .33, .66, 1],
                    labels=bin_labels)
-    freq = level.value_counts()/len(level)
+    freq = level.value_counts()/len(level)*percent
 
     level_y = pd.cut(df[start_last2],
                      bins=[0, .33, .66, 1],
                      labels=bin_labels)
 
-    freq_y = level_y.value_counts()/len(level_y)
+    freq_y = level_y.value_counts()/len(level_y)*percent2
     fig = go.Figure()
     fig.add_trace(go.Indicator(
         mode="number+delta",
