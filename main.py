@@ -193,11 +193,11 @@ def main():
             dp.Plot(
                 fig_status, caption="Flooding Status This Week (Cloud-Free Fields Only) ",
                 # Lots of white space here, so we can use a smaller height
-                responsive=True, height=300
+                responsive=False, height=300
             ),
             dp.Plot(
                 fig_history, caption="Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)",
-                responsive=True, height=300),
+                responsive=False, height=300),
             columns=2),
         dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
