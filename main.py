@@ -30,8 +30,8 @@ except KeyError:
     GEE_AUTH = "Token not available!"
 
 # GEE authentication
-service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, key_data = GEE_AUTH)
+ee_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
+credentials = ee.ServiceAccountCredentials(ee_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # Google Drive authentication and read the Excel file from google drive
