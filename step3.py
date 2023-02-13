@@ -238,11 +238,12 @@ def history_plot(df, start, n=8):
 #     plt.yticks([])
 #     return fig
 
-def plot_status(df, start, start_last):
-    num, percent, percent2 = cloud_free_percent(df, start_last)
+def plot_status(df, start):
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
+    num, percent, percent2 = cloud_free_percent(df, start_last)
+
     level = pd.cut(df[start],
                    bins=[0, .33, .66, 1],
                    labels=bin_labels)
@@ -281,7 +282,7 @@ def plot_status(df, start, start_last):
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0.67, 1], 'y': [0, 1]}))
 
-    # Lots of white space here- can you remove some?
+    # # Lots of white space here- can you remove some?
     # fig.update_layout(
     #     height=200,
     #     margin=dict(l=0, r=0, t=0, b=0),
