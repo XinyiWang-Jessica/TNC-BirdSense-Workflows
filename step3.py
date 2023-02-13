@@ -255,8 +255,8 @@ def plot_status(df, start):
     fig.add_trace(go.Indicator(
         mode="number+delta",
         value=freq.values[0]*100,
-        number={'suffix': '%', "font": {"size": 40}},
-        title={"text": "Flooded"},
+        number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
+        title={"text": "Flooded<br>(66%-100%)"},
         delta={'reference': freq_y.values[0]*100,
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0, 0.33], 'y': [0, 1]}))
@@ -264,8 +264,8 @@ def plot_status(df, start):
     fig.add_trace(go.Indicator(
         mode="number+delta",
         value=freq.values[1]*100,
-        number={'suffix': '%', "font": {"size": 40}},
-        title={"text": "Partially"+'<br>' + "Flooded"},
+        number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
+        title={"text": "Partially<br>Flooded<br>(33%-66%)"},
         delta={'reference': freq_y.values[1]*100,
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0.34, 0.66], 'y': [0, 1]}))
@@ -273,10 +273,10 @@ def plot_status(df, start):
     fig.add_trace(go.Indicator(
         mode="number+delta",
         value=freq.values[2]*100,
-        number={'suffix': '%', "font": {"size": 40}},
-        title={"text": "Minimally"+"<br>"+"Flooded"},
+        number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
+        title={"text": "Minimally<br>Flooded<br>(0-33%)"},
         delta={'reference': freq_y.values[2]*100,
-               'relative': False, "valueformat": ".0f"},
+               'relative': False, "valueformat": ".1f"},
         domain={'x': [0.67, 1], 'y': [0, 1]}))
 
     # Layout
