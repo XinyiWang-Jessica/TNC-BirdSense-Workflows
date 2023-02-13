@@ -1,9 +1,15 @@
 # import logging
 # import logging.handlers
 import os
+import io
+import json
 from step2 import *
 from step3 import *
 from definitions import *
+
+# packages for google access
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 # import requests
 import yagmail
@@ -23,11 +29,25 @@ try:
     GEE_AUTH = os.environ["GEE_AUTH"]
 except KeyError:
     GEE_AUTH = "Token not available!"
+    
+try:
+    GDRIVE_AUTH = os.environ["GDRIVE_AUTH"]
+except KeyError:
+    GDRIVE_AUTH = "Token not available!"
 
 # GEE authentication
-service_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, key_data = GEE_AUTH)
+ee_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
+credentials = ee.ServiceAccountCredentials(ee_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
+
+# Google Drive authentication and read the Excel file from google drive
+SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+gdrive_auth = json.loads(GDRIVE_AUTH)
+creds = service_account.Credentials.from_service_account_info(
+        gdrive_auth, scopes=SCOPES)
+service = build('drive', 'v3', credentials=creds)
+request = service.files().get_media(fileId=file_id)
+file = io.BytesIO(request.execute())
 
 # User defined settings
 in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
@@ -64,13 +84,6 @@ columns2 = [bid_name,field_name, 'NDWI','threshold','Date']
 # formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 # logger_file_handler.setFormatter(formatter)
 # logger.addHandler(logger_file_handler)
-
-# try:
-#     SOME_SECRET = os.environ["SOME_SECRET"]
-# except KeyError:
-#     SOME_SECRET = "Token not available!"
-    
-
     
 def main():
     # s2 = ee.ImageCollection('COPERNICUS/S2');
@@ -113,12 +126,12 @@ def main():
     num, percent, percent2 = cloud_free_percent(df, start_last)
     # create pivoted table and watch list
     try:
-        df_d = pd.read_excel('Enrolled_Bid_Data_WB4B22.xlsx')
+        df_d = pd.read_excel(file)
         col = 5
         df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
         # generate the watch list with low percentage flooded rate  
         watch = watch_list(df_pivot, start_last)
-    except: # FileNotFoundError
+    except FileNotFoundError:
         df_pivot = no_flood_dates(pivot_table(df))
         col = 3
         watch = pd.DataFrame()
@@ -136,7 +149,7 @@ def main():
     # Add EE drawing method to folium.
     folium.Map.add_ee_layer = add_ee_layer
     # Create a folium map object.
-    my_map = folium.Map(location=[35.78412097398606, -119.58929243484157], zoom_start=10, height=500, width=1000)
+    my_map = folium.Map(location=[39.141, -121.63], zoom_start=8.5, height=500, width=800)
 
     # Add layers to the map object.
     my_map.add_ee_layer(NDWIThreshonly.select("threshold").mean(), thresh_vis_params, 'average flood frequency')
@@ -152,22 +165,23 @@ def main():
     
     #upload to datapane
     app = dp.App(
-        dp.Text(f'# Weekly BirdSense Report - week of {start_last} ##'),
+        dp.Text(f'# Weekly Report - {start_last} to ##'), # need to format to the date... and add end date
         dp.Text(f'last update: {end_string}'),
         dp.Group(
             dp.BigNumber(heading = 'Total Fields', value = num),
-            dp.BigNumber(heading = 'Cloud Free Percentage for Last 7 Days', 
+            dp.BigNumber(heading = 'Field with cloud-free data this week', 
                      value = "{:.2%}".format(percent), 
                      change = "{:.2%}".format(percent - percent2),
-                    is_upward_change = True), columns = 2), 
+                    is_upward_change = True), columns = 2), # check the upward = false
         dp.Text('## Flooding Status ##'),
         dp.Group(
-            dp.Plot(fig_status, caption="Flooding Status of Last Week" ),
-            dp.Plot(fig_history, caption="Flooding Status for Last 8 Weeks" ), 
+            dp.Plot(fig_status, caption="Flooding Status This Week (Cloud-Free Fields Only) " ),
+            dp.Plot(fig_history, caption="Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)" ), 
             columns = 2),
         dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
-        dp.Text('## Flooded Percentage by Fields ##'),
+        dp.DataTable(df_d),
+        dp.Text('## Flooding Percentage by Fields ##'),
         dp.Select(
             blocks = [
                 dp.Plot(heatmaps[i], label =  program + f' - {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))]+
@@ -176,7 +190,7 @@ def main():
         dp.Text('## Flooding Status on Map ##'),
         dp.Plot(my_map, caption="Flooded Area on Map")
         ) 
-    app.upload(name="Weekly BirdSense Report " + end_string, publicly_visible = True)
+    app.upload(name="BirdSense: Drought Relief WaterBird Program, Winter 2022-2023", publicly_visible = True)
     url = app.web_url
     
    # send email 
