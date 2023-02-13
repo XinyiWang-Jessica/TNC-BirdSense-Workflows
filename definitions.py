@@ -8,10 +8,17 @@ start_string = '2022-10-01';
 end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 #run = ''
+# define program to run
 program = "WB4B22"
+
+# define threshold
 thresh_val = 0.25
 cloud_free_thresh = 0.5
 
+# google drive document file id
+file_id = '15L6T4rtj0esWA0E2fiWd7EB3pCTPDsoI'
+
+# define bid and filed id based on program
 field_bid_names = {"W21":['Bid_ID','Field_ID', None], 
                    "F21": ['Bid_ID', 'Field_ID', None],
                    "WDW21": ['wn21_ID', 'Field_Name', ['enrolled']],
@@ -34,6 +41,9 @@ thresh_vis_params = {
     'palette' : ['white', 'blue']
 }
 
+
+
 # get the start sunday of the previous week
 aday = dt.datetime.now().date() - dt.timedelta(days = 6)
 start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
+end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
