@@ -28,6 +28,11 @@ try:
     GEE_AUTH = os.environ["GEE_AUTH"]
 except KeyError:
     GEE_AUTH = "Token not available!"
+    
+try:
+    GDRIVE_AUTH = os.environ["GDRIVE_AUTH"]
+except KeyError:
+    GDRIVE_AUTH = "Token not available!"
 
 # GEE authentication
 ee_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
@@ -37,7 +42,7 @@ ee.Initialize(credentials)
 # Google Drive authentication and read the Excel file from google drive
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 creds = service_account.Credentials.from_service_account_info(
-        GMAIL_PWD, scopes=SCOPES)
+        GDRIVE_AUTH, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
 request = service.files().get_media(fileId=file_id)
 file = io.BytesIO(request.execute())
