@@ -1,9 +1,14 @@
 # import logging
 # import logging.handlers
 import os
+import io
 from step2 import *
 from step3 import *
 from definitions import *
+
+# packages for google access
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 # import requests
 import yagmail
