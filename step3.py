@@ -53,13 +53,16 @@ def heatmap_plot(df, n, col, start):
     if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
         columns = columns[:-1]
     fig = go.Figure(data=go.Heatmap(
-        z=df.loc[:,columns].T.round(3),
+        z=df.loc[:,columns].T.round(3)*100,
         x=df.Unique_ID,
         y=columns,
-        colorscale='RdBu'))
+        colorscale='RdBu',
+        colorbar=dict(title='Flooding %'),)
+        )
+    fig.update_layout(yaxis={"title": 'Weeks'}, #"tickangle": 45
+                  xaxis={"title": 'Fields'})
     fig.update_yaxes(autorange="reversed")
     fig.update_layout(xaxis_visible=False)  
-    fig.show()
     return fig      
 
 def all_heatmaps(df, col, start):
