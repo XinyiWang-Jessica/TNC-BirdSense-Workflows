@@ -40,12 +40,12 @@ credentials = ee.ServiceAccountCredentials(ee_account, key_data = GEE_AUTH)
 ee.Initialize(credentials)
 
 # Google Drive authentication and read the Excel file from google drive
-SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
-creds = service_account.Credentials.from_service_account_info(
-        GDRIVE_AUTH, scopes=SCOPES)
-service = build('drive', 'v3', credentials=creds)
-request = service.files().get_media(fileId=file_id)
-file = io.BytesIO(request.execute())
+# SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+# creds = service_account.Credentials.from_service_account_info(
+#         GDRIVE_AUTH, scopes=SCOPES)
+# service = build('drive', 'v3', credentials=creds)
+# request = service.files().get_media(fileId=file_id)
+# file = io.BytesIO(request.execute())
 
 # User defined settings
 in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
@@ -136,7 +136,7 @@ def main():
         df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
         # generate the watch list with low percentage flooded rate  
         watch = watch_list(df_pivot, start_last)
-    except FileNotFoundError:
+    except: #FileNotFoundError:
         df_pivot = no_flood_dates(pivot_table(df))
         col = 3
         watch = pd.DataFrame()
