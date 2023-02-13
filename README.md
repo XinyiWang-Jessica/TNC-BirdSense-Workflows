@@ -5,6 +5,7 @@ Short description of Project
 ## Features:
 - Extract Sentinel 2 data from Google Earth Engine API
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
+- Extract data from Google Drive API
 - Generate a dashboard report through DataPane APP (example screenshot)
 - Schedule report sharing by email
 
@@ -16,6 +17,8 @@ To access data from GEE API, Google Searvice Account is used to authenticate to 
   3. Create a private key for the Service Account and download the jason key file
   4. Register your service account for use with the Earth Engine API.
   5. Save the jason key content as a repo secrete with the Name of GEE_AUTH under the repo Settings
+### Google Drive API Authentication
+
 ### DataPane Authentication
 To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instrution](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
   1. Create a DataPane account and login
@@ -32,7 +35,8 @@ GitHub Repository secrets allows to save passwords, API tokens and other sensiti
 ### Set up a schedule to run repo action
 GitHub repository can run script on a fixed schecule, such as daily, weekly, or a certain day of week/month. The scheduling is done by POSIX cron syntax. For more information, refer to the [GitHub Workflow Trigger Events - Schedule](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
 You can use use [crontab guru](https://crontab.guru) to help generate your cron syntax.
-### Define fields, start and end dates (Kirk to add)
+### Define fields (Kirk to add)
+### Modify user definitions
 ### Formate Dashboard
 For this workflow, DataPane is used to generate a report dashboard. DataPane allows to transform Jupyter Notebook or Python script to a interactive web app. It friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly and Folim for map visulization. 
 Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numbers, table, plot and map formating
