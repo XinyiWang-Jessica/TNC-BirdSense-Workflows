@@ -239,7 +239,7 @@ def history_plot(df, start, n=8):
 #     plt.yticks([])
 #     return fig
 
-def plot_status(df, start):
+def plot_status(df, start, df_pct):
     num, percent, percent2 = cloud_free_percent(df, start)
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')

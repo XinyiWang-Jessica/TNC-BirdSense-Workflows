@@ -149,10 +149,11 @@ def main():
 
     # add plots
     fig_history = history_plot(df_pivot, start_last)
+
 #     fig2 = plot_2(df_pivot)
 #     fig3 = plot_3(df_pivot)
 #     fig4 = plot_4(df_pivot)
-    fig_status = plot_status(df_pivot, start_last)
+    fig_status = plot_status(df_pivot, start_last, df)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
 
     thresh_mean = NDWIThreshonly.select("threshold").mean()
