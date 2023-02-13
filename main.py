@@ -134,7 +134,7 @@ def main():
     # convert featurecollections to dataframe, combine and formatted as we need
     df = table_combine(with_PctCloudFree, table, columns1, columns2)
     # calculate the cloud free datepoints
-    num, percent, percent2 = cloud_free_percent(df, start_last)
+    num, percent, percent2, mask, mask2 = cloud_free_percent(df, start_last)
     # create pivoted table and watch list
     try:
         df_d = pd.read_excel(file)
