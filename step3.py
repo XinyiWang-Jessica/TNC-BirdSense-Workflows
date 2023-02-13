@@ -283,28 +283,28 @@ def plot_status(df, start, df_pct):
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0.67, 1], 'y': [0, 1]}))
 
-    # # Lots of white space here- can you remove some?
-    # fig.update_layout(
-    #     height=200,
-    #     margin=dict(l=0, r=0, t=0, b=0),
-    #     paper_bgcolor="white",
-    #     font=dict(
-    #         family="Courier New, monospace",
-    #         size=18,
-    #         color="RebeccaPurple"
-    #     )
-    # )
-
-    # Layout
+    # Lots of white space here- can you remove some?
     fig.update_layout(
-        width=600,
-        height=400,
-        autosize=False,
-        grid={
-            'rows': 1,
-            'columns': 3,
-            'pattern': "coupled"
-        },
+        height=200,
+        margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor="white",
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="RebeccaPurple"
+        )
     )
+
+    # # Layout
+    # fig.update_layout(
+    #     width=600,
+    #     height=400,
+    #     autosize=False,
+    #     grid={
+    #         'rows': 1,
+    #         'columns': 3,
+    #         'pattern': "coupled"
+    #     },
+    # )
 
     return fig
