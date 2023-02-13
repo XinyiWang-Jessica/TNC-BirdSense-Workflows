@@ -4,9 +4,8 @@ import pandas as pd
 # Import datetime
 from datetime import datetime
 import datetime as dt
+from definitions import *
 
-thresh_val = 0.25
-cloud_free_thresh = 0.5
 
 
 # add area field to fields
@@ -217,10 +216,10 @@ def pivot_table(df):
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
 
-def add_flood_dates(df_d, df):
+def add_flood_dates(df_d, df, stat_list):
     
-    df_d['Flood_Start'] =  pd.to_datetime(df_d['StartDT'])
-    df_d['Flood_End'] =  pd.to_datetime(df_d['EndDT'])
+    df_d['Flood_Start'] =  pd.to_datetime(df_d['StartDate'])
+    df_d['Flood_End'] =  pd.to_datetime(df_d['EndDate'])
     #df_d = df_d.rename(columns={'StartDT': 'Flood_Start', 'EndDT': 'Flood_End'})
     df_d = df_d[['Bid_ID', 'Field_ID', 'Status', 'Flood_Start','Flood_End']]
     df_pivot = pd.merge(df, df_d, on=['Bid_ID', 'Field_ID'], how='left')
@@ -234,7 +233,7 @@ def add_flood_dates(df_d, df):
     cols = cols[col_num:] + cols[:col_num]
     df_pivot = df_pivot[cols]
     df_pivot['Flood_Start']=df_pivot['Flood_Start'].astype(str)
-    df_pivot['Flood_End']=df_pivot['Flood_End'].astype(str)    
+    df_pivot['Flood_End']=df_pivot['Flood_End'].astype(str) 
     return df_pivot
 
 def no_flood_dates(df):
