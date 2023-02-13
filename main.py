@@ -37,7 +37,7 @@ ee.Initialize(credentials)
 # Google Drive authentication and read the Excel file from google drive
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 creds = service_account.Credentials.from_service_account_info(
-        GMAIL_AUTH, scopes=SCOPES)
+        GMAIL_PWD, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
 request = service.files().get_media(fileId=file_id)
 file = io.BytesIO(request.execute())
