@@ -158,12 +158,12 @@ def history_plot(df, start, n=8):
                y=last_n_week_par, marker_color='orange'),
         go.Bar(name='Minimally Flooded',
                x=last_n_week.index, y=last_n_week_non,
-               marker_color='red',
-               text=last_n_week_all,
+               marker_color='blue',
+               text=last_n_week,
                texttemplate='%{text:.1%}',
                textposition='outside')])
     # Change the bar mode
-    #
+    # show each week legend in the x axis
     fig.update_layout(barmode='stack',
                       legend=dict(
                           orientation="h",
@@ -175,7 +175,6 @@ def history_plot(df, start, n=8):
                       width=900,
                       height=400,)
     fig.update_yaxes(showticklabels=False, range=[0, 1.2])
-    fig.update_xaxes(showticklabels=True)
     return fig
 
 # def plot_2(df):
