@@ -143,13 +143,13 @@ def history_plot(df, start, n=8):
         columns = columns[:-1]
     columns = columns[-n:]
     last_n_week_all = df[columns].applymap(
-        lambda x: 1 if x >= 0 else 0).sum()/len(df.count())
+        lambda x: 1 if x >= 0 else 0).sum()/len(df.count(skipna=True))
     last_n_week = df[columns].applymap(
-        lambda x: 1 if x > 0.66 else 0).sum()/len(df.count())
+        lambda x: 1 if x > 0.66 else 0).sum()/len(df.count(skipna=True))
     last_n_week_par = df[columns].applymap(
-        lambda x: 1 if x > 0.33 and x <= 0.66 else 0).sum()/len(df.count())
+        lambda x: 1 if x > 0.33 and x <= 0.66 else 0).sum()/len(df.count(skipna=True))
     last_n_week_non = df[columns].applymap(
-        lambda x: 1 if x <= 0.33 else 0).sum()/len(df.count())
+        lambda x: 1 if x <= 0.33 else 0).sum()/len(df.count(skipna=True))
 
     fig = go.Figure(data=[
         go.Bar(name='Flooded', x=last_n_week.index,
@@ -163,6 +163,7 @@ def history_plot(df, start, n=8):
                texttemplate='%{text:.1%}',
                textposition='outside')])
     # Change the bar mode
+    #
     fig.update_layout(barmode='stack',
                       legend=dict(
                           orientation="h",
@@ -171,9 +172,10 @@ def history_plot(df, start, n=8):
                           xanchor="right",
                           x=1),
                       autosize=False,
-                      width=800,
+                      width=900,
                       height=400,)
     fig.update_yaxes(showticklabels=False, range=[0, 1.2])
+    fig.update_xaxes(showticklabels=True)
     return fig
 
 # def plot_2(df):
@@ -243,7 +245,6 @@ def plot_status(df, start):
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
-    cnt = df.count()
     level = pd.cut(df[start],
                    bins=[0, .33, .66, 1],
                    labels=bin_labels)
