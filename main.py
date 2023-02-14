@@ -206,7 +206,7 @@ def main():
         dp.Text('## Flooding Percentage by Fields ##'),
         dp.Select(
             blocks=[
-                dp.Plot(heatmaps[i], label='Bids {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))] +
+                dp.Plot(heatmaps[i], label=f'Bids {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))] +
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
         dp.Text('## Flooding Status on Map ##'),
