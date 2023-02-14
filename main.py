@@ -179,7 +179,7 @@ def main():
 
     # upload to datapane
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
-    end_last_text = datetime.strptime(start_end, '%Y-%m-%d').strftime("%b %d, %Y")
+    end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
     app = dp.App(
         # need to format to the date... and add end date
         dp.Text(f'# Weekly Report - {start_last_text} to {end_last_text} #'),
