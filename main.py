@@ -153,7 +153,7 @@ def main():
 #     fig2 = plot_2(df_pivot)
 #     fig3 = plot_3(df_pivot)
 #     fig4 = plot_4(df_pivot)
-    fig_status = plot_status(df_pivot, start_last, df)
+    fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
 
     thresh_mean = NDWIThreshonly.select("threshold").mean()
@@ -193,11 +193,11 @@ def main():
             dp.Plot(
                 fig_status, caption="Flooding Status This Week (Cloud-Free Fields Only) ",
                 # Lots of white space here, so we can use a smaller height
-                responsive=False, height=300
+                responsive=False
             ),
             dp.Plot(
                 fig_history, caption="Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)",
-                responsive=False, height=300),
+                responsive=False),
             columns=2),
         dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
