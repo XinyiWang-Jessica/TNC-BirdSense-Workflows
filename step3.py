@@ -158,12 +158,11 @@ def history_plot(df, start, n=8):
                y=last_n_week_par, marker_color='orange'),
         go.Bar(name='Minimally Flooded',
                x=last_n_week.index, y=last_n_week_non,
-               marker_color='blue',
-               text=last_n_week,
+               marker_color='red',
+               text=last_n_week_all,
                texttemplate='%{text:.1%}',
                textposition='outside')])
     # Change the bar mode
-    # show each week legend in the x axis
     fig.update_layout(barmode='stack',
                       legend=dict(
                           orientation="h",
@@ -172,7 +171,7 @@ def history_plot(df, start, n=8):
                           xanchor="right",
                           x=1),
                       autosize=False,
-                      width=900,
+                      width=800,
                       height=400,)
     fig.update_yaxes(showticklabels=False, range=[0, 1.2])
     return fig
@@ -244,6 +243,7 @@ def plot_status(df, start):
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
+    cnt = df.count()
     level = pd.cut(df[start],
                    bins=[0, .33, .66, 1],
                    labels=bin_labels)
