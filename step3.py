@@ -143,13 +143,13 @@ def history_plot(df, start, n=8):
         columns = columns[:-1]
     columns = columns[-n:]
     last_n_week_all = df[columns].applymap(
-        lambda x: 1 if x >= 0 else 0).sum()/len(df.count(skipna=True))
+        lambda x: 1 if x >= 0 else 0).sum()/df.count()
     last_n_week = df[columns].applymap(
-        lambda x: 1 if x > 0.66 else 0).sum()/len(df.count(skipna=True))
+        lambda x: 1 if x > 0.66 else 0).sum()/df.count()
     last_n_week_par = df[columns].applymap(
-        lambda x: 1 if x > 0.33 and x <= 0.66 else 0).sum()/len(df.count(skipna=True))
+        lambda x: 1 if x > 0.33 and x <= 0.66 else 0).sum()/df.count()
     last_n_week_non = df[columns].applymap(
-        lambda x: 1 if x <= 0.33 else 0).sum()/len(df.count(skipna=True))
+        lambda x: 1 if x <= 0.33 else 0).sum()/df.count()
 
     fig = go.Figure(data=[
         go.Bar(name='Flooded', x=last_n_week.index,
