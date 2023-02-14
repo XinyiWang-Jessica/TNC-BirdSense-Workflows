@@ -284,12 +284,12 @@ def plot_status(df, start):
 
     # Lots of white space here- can you remove some?
     fig.update_layout(
-        height=200,
+        height=300,
         margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor="white",
         font=dict(
-            size=18,
-            color="RebeccaPurple"
+            size=18
+            # color="RebeccaPurple"
         )
     )
 
