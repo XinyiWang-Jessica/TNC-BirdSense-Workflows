@@ -239,22 +239,21 @@ def history_plot(df, start, n=8):
 #     plt.yticks([])
 #     return fig
 
-def plot_status(df, start, df_pct):
-    num, percent, percent2, mask, mask2 = cloud_free_percent(df_pct, start)
+def plot_status(df, start):
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
-
+    cnt = df.count()
     level = pd.cut(df[start],
                    bins=[0, .33, .66, 1],
                    labels=bin_labels)
-    freq = level.value_counts()/len(level) * mask
+    freq = level.value_counts()/cnt[level.name]
 
     level_y = pd.cut(df[start_last2],
                      bins=[0, .33, .66, 1],
                      labels=bin_labels)
 
-    freq_y = level_y.value_counts()/len(level_y) * mask2
+    freq_y = level_y.value_counts()/cnt[level_y.name]
     fig = go.Figure()
     fig.add_trace(go.Indicator(
         mode="number+delta",
