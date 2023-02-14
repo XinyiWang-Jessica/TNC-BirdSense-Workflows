@@ -149,10 +149,6 @@ def main():
 
     # add plots
     fig_history = history_plot(df_pivot, start_last)
-
-#     fig2 = plot_2(df_pivot)
-#     fig3 = plot_3(df_pivot)
-#     fig4 = plot_4(df_pivot)
     fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
 
@@ -162,7 +158,7 @@ def main():
     folium.Map.add_ee_layer = add_ee_layer
     # Create a folium map object.
     my_map = folium.Map(location=[39.141, -121.63],
-                        zoom_start=8, height=500, width=800)
+                        zoom_start=7, height=500, width=800)
 
     # Add layers to the map object.
     my_map.add_ee_layer(NDWIThreshonly.select(
