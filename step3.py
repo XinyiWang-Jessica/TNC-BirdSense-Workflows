@@ -157,7 +157,7 @@ def history_plot(df, start, n=8):
                text=last_n_week,
                texttemplate='%{text:.0%}',
                textposition="inside",
-               textfont=dict(color='eeeee4')),
+               textfont=dict(color='#eeeee4')),
         go.Bar(name='Partially Flooded', x=last_n_week.index,
                y=last_n_week_par, marker_color='#98aab9',
                text=last_n_week_par,
