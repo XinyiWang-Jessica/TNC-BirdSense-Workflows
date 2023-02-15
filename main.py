@@ -149,10 +149,6 @@ def main():
 
     # add plots
     fig_history = history_plot(df_pivot, start_last)
-
-#     fig2 = plot_2(df_pivot)
-#     fig3 = plot_3(df_pivot)
-#     fig4 = plot_4(df_pivot)
     fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
 
@@ -162,7 +158,7 @@ def main():
     folium.Map.add_ee_layer = add_ee_layer
     # Create a folium map object.
     my_map = folium.Map(location=[39.141, -121.63],
-                        zoom_start=8.5, height=500, width=800)
+                        zoom_start=7, height=500, width=800)
 
     # Add layers to the map object.
     my_map.add_ee_layer(NDWIThreshonly.select(
@@ -178,9 +174,11 @@ def main():
     my_map.add_child(folium.LayerControl())
 
     # upload to datapane
+    start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
+    end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
     app = dp.App(
         # need to format to the date... and add end date
-        dp.Text(f'# Weekly Report - {start_last} to {end_last}##'),
+        dp.Text(f'# Weekly Report - {start_last_text} to {end_last_text} #'),
         dp.Text(f'last update: {end_string}'),
         dp.Group(
             dp.BigNumber(heading='Total Fields', value=num),
@@ -200,12 +198,12 @@ def main():
                 fig_history, caption="Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)",
                 responsive=True),
             columns=2),
-        dp.Text(f'## Watch List for the Week Starting from {start_last} ##'),
+        dp.Text(f'## Watch List for the Week Starting from {start_last_text} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
         dp.Text('## Flooding Percentage by Fields ##'),
         dp.Select(
             blocks=[
-                dp.Plot(heatmaps[i], label=program + f' - {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))] +
+                dp.Plot(heatmaps[i], label=f'Bids {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))] +
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
         dp.Text('## Flooding Status on Map ##'),
@@ -221,7 +219,7 @@ def main():
                        GMAIL_PWD)
     # Adding Content and sending it
 
-    yag.send(["wliao14@dons.usfca.edu"],  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+    yag.send(["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"],  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
              "Weekly BirdSense Report - Testing",
              msg)
 
