@@ -314,7 +314,8 @@ def watch_list(df, start):
     in_flood = in_flood[(in_flood[start] <= 0.33) &
                         (in_flood['Flood_Start'] <= pd.to_datetime(start)) &
                         (in_flood['Flood_End'] > pd.to_datetime(start))].sort_values(by=in_flood.columns[-1])
-    watch = in_flood[in_flood.iloc[:, -1].notna()]
+    watch = '{:.2%}'.format(in_flood[in_flood.iloc[:, -1].notna()])
     watch['Flood_Start'] = watch['Flood_Start'].astype(str)
     watch['Flood_End'] = df['Flood_End'].astype(str)
-    return watch.round(3)
+    # return watch with format percentage
+    return watch
