@@ -170,7 +170,7 @@ def history_plot(df, start, n=8):
                text=last_n_week_non,
                texttemplate='%{text:.0%}',
                textposition='inside',
-               textfont=dict(color='white')))])
+               textfont=dict(color='white'))
     # Change the bar mode
     fig.update_layout(barmode='stack',
                       legend=dict(
