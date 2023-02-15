@@ -290,7 +290,8 @@ def plot_status(df, start):
         autosize=True,
         font=dict(
             size=20
-        )
+        ),
+        title='Flooding Status This Week (Cloud-Free Fields Only)'
     )
 
     # # Layout

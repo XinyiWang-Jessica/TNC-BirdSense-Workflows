@@ -191,7 +191,8 @@ def main():
         dp.Text('## Flooding Status ##'),
         dp.Group(
             dp.Plot(
-                fig_status, caption="Flooding Status This Week (Cloud-Free Fields Only) ",
+                # caption="Flooding Status This Week (Cloud-Free Fields Only) ",
+                fig_status,
                 # Lots of white space here, so we can use a smaller height
                 responsive=True
             ),
