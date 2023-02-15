@@ -153,15 +153,24 @@ def history_plot(df, start, n=8):
 
     fig = go.Figure(data=[
         go.Bar(name='Flooded', x=last_n_week.index,
-               y=last_n_week, marker_color='blue'),
+               y=last_n_week, marker_color='#063970',
+               text=last_n_week,
+               texttemplate='%{text:.0%}',
+               textposition="inside",
+               textfont=dict(color='eeeee4')),
         go.Bar(name='Partially Flooded', x=last_n_week.index,
-               y=last_n_week_par, marker_color='orange'),
+               y=last_n_week_par, marker_color='#98aab9',
+               text=last_n_week_par,
+               texttemplate='%{text:.0%}',
+               textposition="inside",
+               textfont=dict(color='#515151')),
         go.Bar(name='Minimally Flooded',
                x=last_n_week.index, y=last_n_week_non,
-               marker_color='red',
-               text=last_n_week_all,
-               texttemplate='%{text:.1%}',
-               textposition='outside')])
+               marker_color='#f98c24',
+               text=last_n_week_non,
+               texttemplate='%{text:.0%}',
+               textposition='inside',
+               textfont=dict(color='white')))])
     # Change the bar mode
     fig.update_layout(barmode='stack',
                       legend=dict(
