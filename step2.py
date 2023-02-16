@@ -306,18 +306,19 @@ def cloud_free_percent(df, start):
 def watch_list(df, start):
     columns = df.columns[0:4].values.tolist()
     columns.append(start)
-    print(df.columns)
-    print(start)
+    # print(df.columns)
+    # print(start)
     in_flood = df[columns].copy()
     in_flood['Flood_Start'] = pd.to_datetime(in_flood['Flood_Start'])
     in_flood['Flood_End'] = pd.to_datetime(in_flood['Flood_End'])
     in_flood = in_flood[(in_flood[start] <= 0.33) &
                         (in_flood['Flood_Start'] <= pd.to_datetime(start)) &
                         (in_flood['Flood_End'] > pd.to_datetime(start))].sort_values(by=in_flood.columns[-1])
-    in_flood[in_flood.columns[-1]] = in_flood[in_flood.columns[-1]
-                                              ].apply(lambda x: "{:.2%}".format(x))
+    in_flood[start] = in_flood[start]*100
     watch = in_flood[in_flood.iloc[:, -1].notna()]
     watch['Flood_Start'] = watch['Flood_Start'].astype(str)
     watch['Flood_End'] = df['Flood_End'].astype(str)
+    watch[start] = watch[start].astype(int)
+    watch = watch.rename(columns={start: 'Flooding Percentage, %'})
     # return watch with format percentage
     return watch
