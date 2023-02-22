@@ -153,19 +153,19 @@ def history_plot(df, start, n=8):
 
     fig = go.Figure(data=[
         go.Bar(name='Flooded', x=last_n_week.index,
-               y=last_n_week, marker_color='#063970',
+               y=last_n_week.round(3), marker_color='#063970',
                text=last_n_week.round(3),
                texttemplate='%{text:.0%}',
                textposition="inside",
                textfont=dict(color='#eeeee4')),
         go.Bar(name='Partially Flooded', x=last_n_week.index,
-               y=last_n_week_par, marker_color='#98aab9',
+               y=last_n_week_par.round(3), marker_color='#98aab9',
                text=last_n_week_par.round(3),
                texttemplate='%{text:.0%}',
                textposition="inside",
                textfont=dict(color='#515151')),
         go.Bar(name='Minimally Flooded',
-               x=last_n_week.index, y=last_n_week_non,
+               x=last_n_week.index, y=last_n_week_non.round(3),
                marker_color='#CE1212',
                text=last_n_week_non.round(3),
                texttemplate='%{text:.0%}',
@@ -181,7 +181,12 @@ def history_plot(df, start, n=8):
                           x=1),
                       autosize=False,
                       width=800,
-                      height=400,)
+                      height=400,
+                      title = {'text': 'Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)',
+                              'x': 0.5,'y': 0.9,
+                              'xanchor': 'center',
+                             'font': {'size': 16}}
+                     )
     fig.update_yaxes(showticklabels=False, range=[0, 1.2])
     return fig
 
@@ -300,19 +305,11 @@ def plot_status(df, start):
         font=dict(
             size=20
         ),
-        title='Flooding Status This Week (Cloud-Free Fields Only)'
+        title = {'text': 'Flooding Status This Week (Cloud-Free Fields Only)',
+                              'x': 0.5,'y': 0.9,
+                              'xanchor': 'center',
+                             'font': {'size': 16}}
     )
 
-    # # Layout
-    # fig.update_layout(
-    #     width=600,
-    #     height=400,
-    #     autosize=False,
-    #     grid={
-    #         'rows': 1,
-    #         'columns': 3,
-    #         'pattern': "coupled"
-    #     },
-    # )
 
     return fig
