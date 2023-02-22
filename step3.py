@@ -254,12 +254,12 @@ def plot_status(df, start):
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
     cnt = df.count()
     level = pd.cut(df[start],
-                   bins=[0, .33, .66, 1],
+                   bins=[-1, .33, .66, 1],
                    labels=bin_labels)
     freq = level.value_counts()/level.count()
 
     level_y = pd.cut(df[start_last2],
-                     bins=[0, .33, .66, 1],
+                     bins=[-1, .33, .66, 1],
                      labels=bin_labels)
 
     freq_y = level_y.value_counts()/level_y.count()
