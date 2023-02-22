@@ -310,6 +310,40 @@ def plot_status(df, start):
                               'xanchor': 'center',
                              'font': {'size': 16}}
     )
-
-
     return fig
+
+def map_plot(fields, df, start):
+    '''
+    this function take the geometry information from fieds,
+    the flooding percentage results from last week,
+    and plot a map
+    '''
+    # obtain geometry information and convert to dataframe
+    df_geo = gpd.read_file(json.dumps(fields.getInfo()))
+    # join the flooding percentage results to the geo dataframe
+    merged_df = pd.merge(df_geo, df, 
+                         left_on=['BidID','FieldID'], 
+                         right_on= list(df.columns[:2]))
+    merged_df['Flooding %'] = merged_df[start].round(3)*100
+    merged_df['unique_id'] = merged_df['Bid_ID']+merged_df['Field_ID'] 
+    merged_df.set_index('unique_id', inplace = True)
+    merged_df['timeframe'] = 'Flooding from ' + merged_df['Flood_Start'] + ' to ' +merged_df['Flood_End']
+    fig = px.choropleth_mapbox(
+        merged_df,            # Data frame with values
+        geojson = merged_df.geometry,                      # Geojson with geometries
+        locations = merged_df.index,           
+        hover_name = 'timeframe', 
+        color = 'Flooding %',                # Name of the column of the data frame with the data to be represented
+        mapbox_style = 'stamen-terrain',
+        color_continuous_scale = 'RdBu',
+        opacity = 0.7,
+        center = dict(lat = 39.141, lon = -121.63),
+        zoom = 8)
+    fig.update_layout(height=800, width = 1000, 
+                  autosize = True,
+                  title = {'text': f'Flooding Status on Map for the week of {start}',
+                              'x': 0.5,'y': 0.95,
+                              'xanchor': 'center',
+                             'font': {'size': 16}})
+    return fig
+
