@@ -121,6 +121,11 @@ def history_plot(df, start, n=8):
                       autosize=False,
                       width=800,
                       height=400,
+                      xaxis = dict(
+                          title='Start of the Week',
+                          tickmode = 'array',
+                          tickvals = last_n_week.index,
+                          ),
                       title = {'text': 'Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)',
                               'x': 0.5,'y': 0.9,
                               'xanchor': 'center',
