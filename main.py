@@ -151,27 +151,28 @@ def main():
     fig_history = history_plot(df_pivot, start_last)
     fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
+    pct_map = map_plot(fields, df_pivot, start_last)
 
-    thresh_mean = NDWIThreshonly.select("threshold").mean()
+#     thresh_mean = NDWIThreshonly.select("threshold").mean()
 
     # Add EE drawing method to folium.
-    folium.Map.add_ee_layer = add_ee_layer
+#     folium.Map.add_ee_layer = add_ee_layer
     # Create a folium map object.
-    my_map = folium.Map(location=[39.141, -121.63],
-                        zoom_start=7, height=500, width=800)
+#     my_map = folium.Map(location=[39.141, -121.63],
+#                         zoom_start=7, height=500, width=800)
 
     # Add layers to the map object.
-    my_map.add_ee_layer(NDWIThreshonly.select(
-        "threshold").mean(), thresh_vis_params, 'average flood frequency')
-    # my_map.add_ee_layer(s2NoMask_byday.filterMetadata('system:time_start','equals',1612310400000).select('cloud_free_binary'),{'min':0,'max':1,'palette':['white','green']},'temp')
-    my_map.add_ee_layer(NDWIThreshonly.select("threshold").filterDate(
-        ee.Date(start_string), ee.Date(end_string)), thresh_vis_params, 'threshold')
+#     my_map.add_ee_layer(NDWIThreshonly.select(
+#         "threshold").mean(), thresh_vis_params, 'average flood frequency')
+#     # my_map.add_ee_layer(s2NoMask_byday.filterMetadata('system:time_start','equals',1612310400000).select('cloud_free_binary'),{'min':0,'max':1,'palette':['white','green']},'temp')
+#     my_map.add_ee_layer(NDWIThreshonly.select("threshold").filterDate(
+#         ee.Date(start_string), ee.Date(end_string)), thresh_vis_params, 'threshold')
 
     # Display ee.FeatureCollection
-    my_map.add_ee_layer(fields, {}, 'fields')
+#     my_map.add_ee_layer(fields, {}, 'fields')
 
     # Add a layer control panel to the map.
-    my_map.add_child(folium.LayerControl())
+#     my_map.add_child(folium.LayerControl())
 
     # upload to datapane
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
@@ -189,14 +190,12 @@ def main():
         dp.Text('## Flooding Status ##'),
         dp.Group(
             dp.Plot(
-                # caption="Flooding Status This Week (Cloud-Free Fields Only) ",
                 fig_status,
                 # Lots of white space here, so we can use a smaller height
                 responsive=True
             ),
             dp.Plot(
-                fig_history, caption="Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)",
-                responsive=True),
+                fig_history, responsive=True),
             columns=2),
         dp.Text(f'## Watch List for the Week Starting from {start_last_text} ##'),
         dp.Table(watch.style.background_gradient(cmap="autumn")),
@@ -207,7 +206,7 @@ def main():
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
         dp.Text('## Flooding Status on Map ##'),
-        dp.Plot(my_map, caption="Flooded Area on Map")
+        dp.Plot(pct_map, caption="Flooded Status on Map")
     )
     app.upload(name="BirdSense: Drought Relief WaterBird Program, Winter 2022-2023",
                publicly_visible=True)

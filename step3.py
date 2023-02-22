@@ -2,8 +2,11 @@ import pandas as pd
 from datetime import datetime
 import datetime as dt
 from step2 import *
+import json
+import geopandas as gpd
 # import matplotlib.pyplot as plt
 import plotly.graph_objects as go
+import plotly.express as px
 from definitions import *
 
 # def plot_1(df):
@@ -27,23 +30,6 @@ from definitions import *
 #     plt.tick_params(left = False)
 #     plt.xticks([])
 #     return fig
-
-# def plot_2(df):
-#     labels = df.columns[-5:]
-#     last_5_week = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.66 else 0).sum()/len(df)
-#     fig, ax = plt.subplots(figsize = (6,1.2) )
-#     ax.bar(range(5), last_5_week,  alpha = 0.8, width = 0.8)
-#     for index, value in enumerate(last_5_week):
-#         plt.text(index-0.3, value+0.1, "{:.2%}".format(value))
-#     ax.spines['top'].set_visible(False)
-#     ax.spines['right'].set_visible(False)
-#     ax.spines['left'].set_visible(False)
-#     ax.set_xticks(range(5))
-#     ax.set_xticklabels(labels, fontsize='small')
-#     # plt.tick_params(left = False)
-#     plt.yticks([])
-#     return fig
-
 
 def heatmap_plot(df, n, col, start):
     '''
@@ -85,53 +71,6 @@ def all_heatmaps(df, col, start):
     df.drop(['Unique_ID', 'group'], axis=1, inplace=True)
     return heatmaps, cut_bin
 
-# def plot_3(df):
-#     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
-#     level = pd.cut(df[df.columns[-1]],
-#                               bins=[0, .33, .66, 1],
-#                               labels=bin_labels)
-#     freq = level.value_counts()/level.count()
-
-#     level_y = pd.cut(df[df.columns[-2]],
-#                               bins=[0, .33, .66, 1],
-#                               labels=bin_labels)
-
-#     freq_y = level_y.value_counts()/level_y.count()
-#     fig = go.Figure()
-#     fig.add_trace(go.Indicator(
-#         mode = "number+delta",
-#         value = freq.values[0]*100,
-#         number = {'suffix' : '%'},
-#         title = {"text": "Flooded"},
-#         delta = {'reference': freq_y.values[0]*100, 'relative': False, "valueformat": ".2f"},
-#         domain = {'x': [0, 0.33], 'y': [0, 1]}))
-
-
-#     fig.add_trace(go.Indicator(
-#         mode = "number+delta",
-#         value = freq.values[1]*100,
-#         number = {'suffix' : '%'},
-#         title = {"text": "Partially Flooded"},
-#         delta = {'reference': freq_y.values[1]*100, 'relative': False, "valueformat": ".2f"},
-#         domain = {'x': [0.34, 0.66], 'y': [0, 1]}))
-
-
-#     fig.add_trace(go.Indicator(
-#         mode = "number+delta",
-#         value = freq.values[2]*100,
-#         number = {'suffix' : '%'},
-#         title = {"text": "Minimally Flooded"},
-#         delta = {'reference': freq_y.values[2]*100, 'relative': False, "valueformat": ".2f"},
-#         domain = {'x': [0.67, 1], 'y': [0, 1]}))
-
-#     # Layout
-#     fig.update_layout(
-#         grid={
-#             'rows': 1,
-#             'columns': 3,
-#             'pattern': "independent"
-#         },
-#     )
 
 def history_plot(df, start, n=8):
     '''
@@ -153,21 +92,21 @@ def history_plot(df, start, n=8):
 
     fig = go.Figure(data=[
         go.Bar(name='Flooded', x=last_n_week.index,
-               y=last_n_week, marker_color='#063970',
-               text=last_n_week,
+               y=last_n_week.round(3), marker_color='#063970',
+               text=last_n_week.round(3),
                texttemplate='%{text:.0%}',
                textposition="inside",
                textfont=dict(color='#eeeee4')),
         go.Bar(name='Partially Flooded', x=last_n_week.index,
-               y=last_n_week_par, marker_color='#98aab9',
-               text=last_n_week_par,
+               y=last_n_week_par.round(3), marker_color='#98aab9',
+               text=last_n_week_par.round(3),
                texttemplate='%{text:.0%}',
                textposition="inside",
                textfont=dict(color='#515151')),
         go.Bar(name='Minimally Flooded',
-               x=last_n_week.index, y=last_n_week_non,
+               x=last_n_week.index, y=last_n_week_non.round(3),
                marker_color='#CE1212',
-               text=last_n_week_non,
+               text=last_n_week_non.round(3),
                texttemplate='%{text:.0%}',
                textposition='inside',
                textfont=dict(color='white'))])
@@ -181,72 +120,20 @@ def history_plot(df, start, n=8):
                           x=1),
                       autosize=False,
                       width=800,
-                      height=400,)
+                      height=400,
+                      xaxis = dict(
+                          title='Start of the Week',
+                          tickmode = 'array',
+                          tickvals = last_n_week.index,
+                          ),
+                      title = {'text': 'Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)',
+                              'x': 0.5,'y': 0.9,
+                              'xanchor': 'center',
+                             'font': {'size': 16}}
+                     )
     fig.update_yaxes(showticklabels=False, range=[0, 1.2])
     return fig
 
-# def plot_2(df):
-
-#     labels = df.columns[-5:]
-#     last_5_week = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.66 else 0).sum()/len(df)
-
-
-#     fig, ax = plt.subplots(figsize = (6,1.2) )
-#     ax.bar(range(5), last_5_week,  alpha = 0.8, width = 0.8)
-
-#     for index, value in enumerate(last_5_week):
-#         plt.text(index-0.3, value+0.1, "{:.2%}".format(value))
-#     ax.spines['top'].set_visible(False)
-#     ax.spines['right'].set_visible(False)
-#     ax.spines['left'].set_visible(False)
-#     ax.set_xticks(range(5))
-#     ax.set_xticklabels(labels, fontsize='small')
-#     # plt.tick_params(left = False)
-#     plt.yticks([])
-#     return fig
-
-
-# def plot_3(df):
-
-#     labels = df.columns[-5:]
-
-#     last_5_week_par = df[df.columns[-5:]].applymap(lambda x : 1 if x >0.33 and x <= 0.66 else 0).sum()/len(df)
-
-
-#     fig, ax = plt.subplots(figsize = (6,1.2) )
-#     ax.bar(range(5), last_5_week_par,  alpha = 0.8, width = 0.8,color='orange')
-
-#     for index, value in enumerate(last_5_week_par):
-#         plt.text(index-0.3, value+0.005, "{:.2%}".format(value))
-#     ax.spines['top'].set_visible(False)
-#     ax.spines['right'].set_visible(False)
-#     ax.spines['left'].set_visible(False)
-#     ax.set_xticks(range(5))
-#     ax.set_xticklabels(labels, fontsize='small')
-#     # plt.tick_params(left = False)
-#     plt.yticks([])
-#     return fig
-
-# def plot_4(df):
-
-#     labels = df.columns[-5:]
-
-#     last_5_week_non = df[df.columns[-5:]].applymap(lambda x : 1 if x <=0.33 else 0).sum()/len(df)
-
-
-#     fig, ax = plt.subplots(figsize = (6,1.2) )
-#     ax.bar(range(5), last_5_week_non,  alpha = 0.8, width = 0.8,color='red')
-
-#     for index, value in enumerate(last_5_week_non):
-#         plt.text(index-0.3, value+0.001, "{:.2%}".format(value))
-#     ax.spines['top'].set_visible(False)
-#     ax.spines['right'].set_visible(False)
-#     ax.spines['left'].set_visible(False)
-#     ax.set_xticks(range(5))
-#     ax.set_xticklabels(labels, fontsize='small')
-#     # plt.tick_params(left = False)
-#     plt.yticks([])
-#     return fig
 
 def plot_status(df, start):
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
@@ -254,12 +141,12 @@ def plot_status(df, start):
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
     cnt = df.count()
     level = pd.cut(df[start],
-                   bins=[0, .33, .66, 1],
+                   bins=[-1, .33, .66, 1],
                    labels=bin_labels)
     freq = level.value_counts()/level.count()
 
     level_y = pd.cut(df[start_last2],
-                     bins=[0, .33, .66, 1],
+                     bins=[-1, .33, .66, 1],
                      labels=bin_labels)
 
     freq_y = level_y.value_counts()/level_y.count()
@@ -300,19 +187,45 @@ def plot_status(df, start):
         font=dict(
             size=20
         ),
-        title='Flooding Status This Week (Cloud-Free Fields Only)'
+        title = {'text': f'Flooding Status for the Week of {start} (Cloud-Free Fields Only)',
+                              'x': 0.5,'y': 0.9,
+                              'xanchor': 'center',
+                             'font': {'size': 16}}
     )
-
-    # # Layout
-    # fig.update_layout(
-    #     width=600,
-    #     height=400,
-    #     autosize=False,
-    #     grid={
-    #         'rows': 1,
-    #         'columns': 3,
-    #         'pattern': "coupled"
-    #     },
-    # )
-
     return fig
+
+def map_plot(fields, df, start):
+    '''
+    this function take the geometry information from fieds,
+    the flooding percentage results from last week,
+    and plot a map
+    '''
+    # obtain geometry information and convert to dataframe
+    df_geo = gpd.read_file(json.dumps(fields.getInfo()))
+    # join the flooding percentage results to the geo dataframe
+    merged_df = pd.merge(df_geo, df, 
+                         left_on=['BidID','FieldID'], 
+                         right_on= list(df.columns[:2]))
+    merged_df['Flooding %'] = merged_df[start].round(3)*100
+    merged_df['unique_id'] = merged_df['Bid_ID']+merged_df['Field_ID'] 
+    merged_df.set_index('unique_id', inplace = True)
+    merged_df['timeframe'] = 'Flooding from ' + merged_df['Flood_Start'] + ' to ' +merged_df['Flood_End']
+    fig = px.choropleth_mapbox(
+        merged_df,            # Data frame with values
+        geojson = merged_df.geometry,                      # Geojson with geometries
+        locations = merged_df.index,           
+        hover_name = 'timeframe', 
+        color = 'Flooding %',                # Name of the column of the data frame with the data to be represented
+        mapbox_style = 'stamen-terrain',
+        color_continuous_scale = 'RdBu',
+        opacity = 0.7,
+        center = dict(lat = 39.141, lon = -121.63),
+        zoom = 8)
+    fig.update_layout(height=800, width = 1000, 
+                  autosize = True,
+                  title = {'text': f'Flooding Status on Map for the week of {start}',
+                              'x': 0.5,'y': 0.95,
+                              'xanchor': 'center',
+                             'font': {'size': 16}})
+    return fig
+

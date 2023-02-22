@@ -1,13 +1,14 @@
 # TNC BirdSense Report Automation Workflows
-
-Short description of Project
-
+Short description of BirdReturn
+For more readings, refer to [BirdReturns: A Habitat Timeshare for Migratory Birds](https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/migration-moneyball/)
+The project analyze data from satellite imagery and on-the-ground observations to determine the flooding status of hatbitats of contracted farm lands.
+This repository is part of the BirdReturn project to provide.....
 ## Features:
 - Extract Sentinel 2 data from Google Earth Engine API
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
 - Extract data from Google Drive API
 - Generate a dashboard report through DataPane APP (example screenshot)
-- Schedule report sharing by email
+- Schedule workflow and report sharing by email
 
 ## Preparation
 ### GEE Authentication with Google Service Account
@@ -24,7 +25,7 @@ To download files stored in Google Drive, Google Drive Python API is used. The [
   3. Grant the the Google Drive folder/file access to the Service Account just set up using the Service Account email.
   4. Copy the Google Drive folder/file id from the url. 
   5. Save the jason key content as a repo secrete with the Name of GDRIVE_AUTH under the repo Settings.
-  6. Configure authorize credentials in main.py. Instead of the Google Python Quick start, the [Ben James blog].(https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up Json toke as an environment variable(repo secrete).
+  6. Configure authorize credentials in main.py. Instead of the Google Python Quick start, the [Ben James blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up Json toke as an environment variable(repo secrete).
 ### DataPane Authentication
 To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instrution](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
   1. Create a DataPane account and login
@@ -44,7 +45,10 @@ You can use use [crontab guru](https://crontab.guru) to help generate your cron 
 ### Define fields (Kirk to add)
 ### Modify user definitions
 The following fileds need be defined:
-- Google Drive folder/file id
+- Date Range (start and end dates for data extraction): start_string and end_string 
+- (Optional) Google Drive folder/file id
+- cloud free threshold: cloud_free_thresh
+- NDWI Threshold (to add binary layer based on threshold): thresh_val
 - 
 ### Formate Dashboard
 For this workflow, DataPane is used to generate a report dashboard. DataPane allows to transform Jupyter Notebook or Python script to a interactive web app. It friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly and Folim for map visulization. 
