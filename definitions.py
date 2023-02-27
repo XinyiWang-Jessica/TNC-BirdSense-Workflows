@@ -16,7 +16,7 @@ thresh_val = 0.25
 cloud_free_thresh = 0.5
 
 # google drive document file id
-file_id = '15L6T4rtj0esWA0E2fiWd7EB3pCTPDsoI'
+file_id = '1F7lJbzeTH_uNE267xgR_GvsIJ7C72Ppd'
 
 # define bid and filed id based on program
 field_bid_names = {"W21":['Bid_ID','Field_ID', None], 
