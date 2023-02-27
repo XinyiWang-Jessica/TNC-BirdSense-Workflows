@@ -205,7 +205,7 @@ def main():
                 dp.Plot(heatmaps[i], label=f'Bids {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))] +
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
-        dp.Text('## Flooding Status on Map ##'),
+        dp.Text('## Map of Flooding Status ##'),
         dp.Plot(pct_map, caption="Flooded Status on Map")
     )
     app.upload(name="BirdSense: Drought Relief WaterBird Program, Winter 2022-2023",
