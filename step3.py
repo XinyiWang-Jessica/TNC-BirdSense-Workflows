@@ -207,15 +207,14 @@ def map_plot(fields, df, start):
                          left_on=['BidID','FieldID'], 
                          right_on= list(df.columns[:2]))
     merged_df['Flooding %'] = merged_df[start].round(3)*100
-    merged_df['unique_id'] = merged_df['Bid_ID']+merged_df['Field_ID'] 
-    merged_df.set_index('unique_id', inplace = True)
-    merged_df['timeframe'] = 'Flooding from ' + merged_df['Flood_Start'] + ' to ' +merged_df['Flood_End']
+    merged_df['week'] = f'Week starting on {start}'
     fig = px.choropleth_mapbox(
         merged_df,            # Data frame with values
         geojson = merged_df.geometry,                      # Geojson with geometries
         locations = merged_df.index,           
-        hover_name = 'timeframe', 
-        color = 'Flooding %',                # Name of the column of the data frame with the data to be represented
+        hover_name = 'week', 
+        hover_data = ['BidID', 'FieldID', 'Flood Start', 'Flood End'],
+        color = 'Flooding %',            # Name of the column of the data frame with the data to be represented
         mapbox_style = 'stamen-terrain',
         color_continuous_scale = 'RdBu',
         opacity = 0.7,
@@ -223,9 +222,8 @@ def map_plot(fields, df, start):
         zoom = 8)
     fig.update_layout(height=800, width = 1000, 
                   autosize = True,
-                  title = {'text': f'Flooding Status on Map for the week of {start}',
+                  title = {'text': f'Flooding Status for the week starting on {start}',
                               'x': 0.5,'y': 0.95,
                               'xanchor': 'center',
                              'font': {'size': 16}})
     return fig
-
