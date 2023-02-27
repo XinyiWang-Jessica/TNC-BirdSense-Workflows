@@ -210,7 +210,7 @@ def main():
     )
     app.upload(name="BirdSense: Drought Relief WaterBird Program, Winter 2022-2023",
                publicly_visible=True)
-    url = app.web_url
+    url = 'https://cloud.datapane.com/reports/W3Q8gQA/birdsense-drought-relief-waterbird-program-winter-2022-2023/'
 
    # send email
     msg = f"Please check the latest BirdSense report {url}"
