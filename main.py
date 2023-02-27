@@ -211,7 +211,7 @@ def main():
         dp.Plot(pct_map, caption="Flooded Status on Map")
         ], name=report_name,  publicly_visible=True
     )
-    url = 'https://cloud.datapane.com/reports/+ str(app).split('/')[-2] +'/' + report_name.lower().replace(' ', '-')
+    url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + report_name.lower().replace(' ', '-')
 
    # send email
     msg = f"Please check the latest BirdSense report {url}"
