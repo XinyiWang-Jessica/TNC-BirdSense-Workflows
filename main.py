@@ -3,6 +3,7 @@
 import os
 import io
 import json
+import re
 from step2 import *
 from step3 import *
 from definitions import *
@@ -211,7 +212,8 @@ def main():
         dp.Plot(pct_map, caption="Flooded Status on Map")
         ], name=report_name,  publicly_visible=True
     )
-    url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + report_name.lower().replace(' ', '-')
+    name = re.sub(r'[^\w\s]', '', report_name)
+    url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
 
    # send email
     msg = f"Please check the latest BirdSense report {url}"
