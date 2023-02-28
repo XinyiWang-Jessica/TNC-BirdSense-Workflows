@@ -249,11 +249,12 @@ def pivot_table(df):
 
 
 def add_flood_dates(df_d, df, stat_list):
-
-    df_d['Flood_Start'] = pd.to_datetime(df_d['StartDate'])
-    df_d['Flood_End'] = pd.to_datetime(df_d['EndDate'])
-    #df_d = df_d.rename(columns={'StartDT': 'Flood_Start', 'EndDT': 'Flood_End'})
-    df_d = df_d[['Bid_ID', 'Field_ID', 'Status', 'Flood_Start', 'Flood_End']]
+    '''
+    add plannded flooding start and end time to the pivoted table
+    '''
+    df_d['Flood Start'] = pd.to_datetime(df_d['StartDT'])
+    df_d['Flood End'] = pd.to_datetime(df_d['EndDT'])
+    df_d = df_d[['Bid_ID', 'Field_ID', 'Status', 'Flood Start', 'Flood End']]
     df_pivot = pd.merge(df, df_d, on=['Bid_ID', 'Field_ID'], how='left')
     df_pivot = df_pivot.loc[df_pivot.Status.isin(stat_list)]
   # print("Selected status values: {}".format(stat_list))
@@ -264,8 +265,8 @@ def add_flood_dates(df_d, df, stat_list):
     cols = df_pivot.columns.tolist()
     cols = cols[col_num:] + cols[:col_num]
     df_pivot = df_pivot[cols]
-    df_pivot['Flood_Start'] = df_pivot['Flood_Start'].astype(str)
-    df_pivot['Flood_End'] = df_pivot['Flood_End'].astype(str)
+    df_pivot['Flood Start'] = df_pivot['Flood Start'].astype(str)
+    df_pivot['Flood End'] = df_pivot['Flood End'].astype(str)
     return df_pivot
 
 
@@ -306,18 +307,18 @@ def cloud_free_percent(df, start):
 def watch_list(df, start):
     columns = df.columns[0:4].values.tolist()
     columns.append(start)
-    # print(df.columns)
+    print(columns)
     # print(start)
     in_flood = df[columns].copy()
-    in_flood['Flood_Start'] = pd.to_datetime(in_flood['Flood_Start'])
-    in_flood['Flood_End'] = pd.to_datetime(in_flood['Flood_End'])
+    in_flood['Flood Start'] = pd.to_datetime(in_flood['Flood Start'])
+    in_flood['Flood End'] = pd.to_datetime(in_flood['Flood End'])
     in_flood = in_flood[(in_flood[start] <= 0.33) &
-                        (in_flood['Flood_Start'] <= pd.to_datetime(start)) &
-                        (in_flood['Flood_End'] > pd.to_datetime(start))].sort_values(by=in_flood.columns[-1])
+                        (in_flood['Flood Start'] <= pd.to_datetime(start)) &
+                        (in_flood['Flood End'] > pd.to_datetime(start))].sort_values(by=in_flood.columns[-1])
     in_flood[start] = in_flood[start]*100
     watch = in_flood[in_flood.iloc[:, -1].notna()]
-    watch['Flood_Start'] = watch['Flood_Start'].astype(str)
-    watch['Flood_End'] = df['Flood_End'].astype(str)
+    watch['Flood Start'] = watch['Flood Start'].astype(str)
+    watch['Flood End'] = watch['Flood End'].astype(str)
     watch[start] = watch[start].astype(int)
     watch = watch.rename(columns={start: 'Flooding Percentage, %'})
     # return watch with format percentage

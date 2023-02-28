@@ -3,6 +3,7 @@
 import os
 import io
 import json
+import re
 from step2 import *
 from step3 import *
 from definitions import *
@@ -175,10 +176,12 @@ def main():
 #     my_map.add_child(folium.LayerControl())
 
     # upload to datapane
+    report_name = "BirdSense: Drought Relief WaterBird Program, Winter 2022-2023"
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
     end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
-    app = dp.App(
+    app = dp.upload_report(
         # need to format to the date... and add end date
+        [
         dp.Text(f'# Weekly Report - {start_last_text} to {end_last_text} #'),
         dp.Text(f'last update: {end_string}'),
         dp.Group(
@@ -205,12 +208,12 @@ def main():
                 dp.Plot(heatmaps[i], label=f'Bids {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))] +
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
-        dp.Text('## Flooding Status on Map ##'),
+        dp.Text('## Map of Flooding Status ##'),
         dp.Plot(pct_map, caption="Flooded Status on Map")
+        ], name=report_name,  publicly_visible=True
     )
-    app.upload(name="BirdSense: Drought Relief WaterBird Program, Winter 2022-2023",
-               publicly_visible=True)
-    url = app.web_url
+    name = re.sub(r'[^\w\s]', '', report_name)
+    url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
 
    # send email
     msg = f"Please check the latest BirdSense report {url}"

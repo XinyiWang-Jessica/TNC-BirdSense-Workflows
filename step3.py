@@ -72,17 +72,24 @@ def all_heatmaps(df, col, start):
     return heatmaps, cut_bin
 
 
-def history_plot(df, start, n=8):
+def history_plot(df, start, n=8, cloudy = 0.25):
     '''
     plot the last n weeks data with plotly
     '''
-    columns = df.columns
+    columns = df.columns.tolist()
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
         columns = columns[:-1]
     columns = columns[-n:]
-    last_n_week_all = df[columns].applymap(
-        lambda x: 1 if x >= 0 else 0).sum()/df[columns].count()
+    all_columns = columns.copy()
+    no_columns = []
+    for column in columns:
+        if df[column].count() < len(df)*cloudy:
+            columns.remove(column)
+            no_columns.append(column)
+    # last_n_week_all = df[columns].applymap(
+    #     lambda x: 1 if x >= 0 else 0).sum()/df[columns].count()
+    print(columns)
     last_n_week = df[columns].applymap(
         lambda x: 1 if x > 0.66 else 0).sum()/df[columns].count()
     last_n_week_par = df[columns].applymap(
@@ -119,19 +126,33 @@ def history_plot(df, start, n=8):
                           xanchor="right",
                           x=1),
                       autosize=False,
-                      width=800,
-                      height=400,
+                      width=600,
+                      height=300,
+                      margin=dict(
+                            l=25,
+                            r=25,
+                            b=50,
+                            t=75,
+                            pad=4),
                       xaxis = dict(
-                          title='Start of the Week',
+                          title='Start of the Weeks',
                           tickmode = 'array',
-                          tickvals = last_n_week.index,
-                          ),
+                          tickvals = all_columns),
                       title = {'text': 'Flooding Status for Last 8 Weeks (Cloud-Free Fields Only)',
                               'x': 0.5,'y': 0.9,
                               'xanchor': 'center',
-                             'font': {'size': 16}}
+                             'font': {'size': 16}},
+                        annotations=[
+                            dict(
+                                x=columns[2],
+                                # xanchor='center',
+                                y=1.2,
+                                text="* Weeks with satellite data availability less than {:.0%} are excluded".format(cloudy),
+                                showarrow=False
+                                 )]
                      )
-    fig.update_yaxes(showticklabels=False, range=[0, 1.2])
+    fig.update_yaxes(showticklabels=False, range=[0, 1.3])
+    fig.update_xaxes(range = [all_columns[0], all_columns[-1]])
     return fig
 
 
@@ -207,15 +228,14 @@ def map_plot(fields, df, start):
                          left_on=['BidID','FieldID'], 
                          right_on= list(df.columns[:2]))
     merged_df['Flooding %'] = merged_df[start].round(3)*100
-    merged_df['unique_id'] = merged_df['Bid_ID']+merged_df['Field_ID'] 
-    merged_df.set_index('unique_id', inplace = True)
-    merged_df['timeframe'] = 'Flooding from ' + merged_df['Flood_Start'] + ' to ' +merged_df['Flood_End']
+    merged_df['week'] = f'Week starting on {start}'
     fig = px.choropleth_mapbox(
         merged_df,            # Data frame with values
         geojson = merged_df.geometry,                      # Geojson with geometries
         locations = merged_df.index,           
-        hover_name = 'timeframe', 
-        color = 'Flooding %',                # Name of the column of the data frame with the data to be represented
+        hover_name = 'week', 
+        hover_data = ['BidID', 'FieldID', 'Flood Start', 'Flood End'],
+        color = 'Flooding %',            # Name of the column of the data frame with the data to be represented
         mapbox_style = 'stamen-terrain',
         color_continuous_scale = 'RdBu',
         opacity = 0.7,
@@ -223,9 +243,8 @@ def map_plot(fields, df, start):
         zoom = 8)
     fig.update_layout(height=800, width = 1000, 
                   autosize = True,
-                  title = {'text': f'Flooding Status on Map for the week of {start}',
+                  title = {'text': f'Flooding Status for the week starting on {start}',
                               'x': 0.5,'y': 0.95,
                               'xanchor': 'center',
                              'font': {'size': 16}})
     return fig
-
