@@ -144,7 +144,7 @@ def history_plot(df, start, n=8, cloudy = 0.25):
                              'font': {'size': 16}},
                         annotations=[
                             dict(
-                                x=columns[1],
+                                x=columns[2],
                                 # xanchor='center',
                                 y=1.2,
                                 text="* Weeks with satellite data availability less than {:.0%} are excluded".format(cloudy),
