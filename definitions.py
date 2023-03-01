@@ -15,9 +15,6 @@ program = "WB4B22"
 thresh_val = 0.25
 cloud_free_thresh = 0.5
 
-# google drive document file id
-file_id = field_bid_names[program][3]
-
 # define bid and filed id based on program
 field_bid_names = {"W21":['Bid_ID','Field_ID', None], 
                    "F21": ['Bid_ID', 'Field_ID', None],
@@ -28,6 +25,9 @@ field_bid_names = {"W21":['Bid_ID','Field_ID', None],
                    "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'], '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
                    'WSOD22': ['BidID', 'FieldID', ['Enrolled']]
                   }
+
+# google drive document file id
+file_id = field_bid_names[program][3]
 
 s2_vis_params = {
     'bands': ['B4', 'B3', 'B2'],
