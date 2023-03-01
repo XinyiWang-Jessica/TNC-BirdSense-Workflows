@@ -9,7 +9,7 @@ end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 #run = ''
 # define program to run
-program = "WB4B22"
+program = "WCWR22"
 
 # define threshold
 thresh_val = 0.25
