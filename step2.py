@@ -197,13 +197,15 @@ def table_combine(table1, table2, columns1, columns2):
     # combine two tables
     df1 = to_dataframe(table1, columns1)
     df2 = to_dataframe(table2, columns2)
-    df = pd.merge(df1, df2, on=['BidID', 'FieldID', 'Date'], how='left')
+    # Convert to starndardized column names
+    df1 = standardize_names(df1, "Bid_ID", columns1[0])
+    df1 = standardize_names(df1, "Field_ID", columns1[1])
+    df2 = standardize_names(df2, "Bid_ID", columns1[0])
+    df2 = standardize_names(df2, "Field_ID", columns1[1])
+    df = pd.merge(df1, df2, on=['Bid_ID', 'Field_ID', 'Date'], how='left')
     df['Date'] = pd.to_datetime(df['Date'])
     df['pct_flood'] = df['threshold']
     df['Source'] = 'Sentinel 2'
-    # Convert to starndardized column names
-    df = standardize_names(df, "Bid_ID", columns1[0])
-    df = standardize_names(df, "Field_ID", columns1[1])
     df['Unique_ID'] = df['Bid_ID'] + "_" + df['Field_ID']
     # replace the percentage flooded with Nan if below cloud_free_tresh
     df.loc[df['Pct_CloudFree'] < cloud_free_thresh, 'pct_flood'] = pd.NA
@@ -246,7 +248,6 @@ def pivot_table(df):
         1]
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
-
 
 def add_flood_dates(df_d, df, stat_list):
     '''
