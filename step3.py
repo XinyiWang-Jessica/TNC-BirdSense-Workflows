@@ -215,7 +215,7 @@ def plot_status(df, start):
     )
     return fig
 
-def map_plot(fields, df, start):
+def map_plot(fields, df, program, start):
     '''
     this function take the geometry information from fieds,
     the flooding percentage results from last week,
@@ -223,9 +223,12 @@ def map_plot(fields, df, start):
     '''
     # obtain geometry information and convert to dataframe
     df_geo = gpd.read_file(json.dumps(fields.getInfo()))
+    # change name to satanderd name
+    df_geo = standardize_names(df_geo, 'Bid_ID', field_bid_names[program][0])
+    df_geo = standardize_names(df_geo, 'Field_ID', field_bid_names[program][1])
     # join the flooding percentage results to the geo dataframe
     merged_df = pd.merge(df_geo, df, 
-                         left_on=['BidID','FieldID'], 
+                         left_on=['Bid_ID','Field_ID'], 
                          right_on= list(df.columns[:2]))
     merged_df['Flooding %'] = merged_df[start].round(3)*100
     merged_df['week'] = f'Week starting on {start}'
@@ -234,7 +237,7 @@ def map_plot(fields, df, start):
         geojson = merged_df.geometry,                      # Geojson with geometries
         locations = merged_df.index,           
         hover_name = 'week', 
-        hover_data = ['BidID', 'FieldID', 'Flood Start', 'Flood End'],
+        hover_data = ['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End'],
         color = 'Flooding %',            # Name of the column of the data frame with the data to be represented
         mapbox_style = 'stamen-terrain',
         color_continuous_scale = 'RdBu',
