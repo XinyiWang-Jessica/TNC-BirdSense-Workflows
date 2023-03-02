@@ -72,7 +72,7 @@ def all_heatmaps(df, col, start):
     return heatmaps, cut_bin
 
 
-def history_plot(df, start, n=8, cloudy = 0.25):
+def history_plot(df, start, n=8, cloudy = 0.1):
     '''
     plot the last n weeks data with plotly
     '''
