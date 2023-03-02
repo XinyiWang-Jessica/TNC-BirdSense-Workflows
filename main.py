@@ -73,7 +73,9 @@ field_list = {"W21": in_fields_W21,
               "WDW21": in_fields_WDW21,
               "WDF21": in_fields_WDF21,
               "WB4B22": in_fields_WB4B22,
-              "WCWR22": in_fields_WCWR22}
+              "WCWR22": in_fields_WCWR22,
+              "WSOD22": in_fields_WSOD22,
+              "WDDR22": in_fields_WDDR22}
 fields = field_list[program]
 
 columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
@@ -152,7 +154,7 @@ def main():
     fig_history = history_plot(df_pivot, start_last)
     fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
-    pct_map = map_plot(fields, df_pivot, start_last)
+    pct_map = map_plot(fields, df_pivot, program, start_last)
 
 #     thresh_mean = NDWIThreshonly.select("threshold").mean()
 
@@ -176,7 +178,7 @@ def main():
 #     my_map.add_child(folium.LayerControl())
 
     # upload to datapane
-    report_name = "BirdSense: Drought Relief WaterBird Program, Winter 2022-2023"
+    report_name = f"BirdSense: Drought Relief WaterBird Program - {program}, Winter 2022-2023"
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
     end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
     app = dp.upload_report(
@@ -187,9 +189,10 @@ def main():
         dp.Group(
             dp.BigNumber(heading='Total Fields', value=num),
             dp.BigNumber(heading='Field with cloud-free data this week',
-                         value="{:.2%}".format(percent),
-                         change="{:.2%}".format(percent - percent2),
-                         is_upward_change=True), columns=2),  # check the upward = false
+                         value="{:.2%}".format(percent)
+#                          change="{:.2%}".format(percent - percent2), is_upward_change=True), 
+                        ),
+            columns=2),  # check the upward = false
         dp.Text('## Flooding Status ##'),
         dp.Group(
             dp.Plot(
@@ -209,7 +212,7 @@ def main():
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
         dp.Text('## Map of Flooding Status ##'),
-        dp.Plot(pct_map, caption="Flooded Status on Map")
+        dp.Plot(pct_map)
         ], name=report_name,  publicly_visible=True
     )
     name = re.sub(r'[^\w\s]', '', report_name)
