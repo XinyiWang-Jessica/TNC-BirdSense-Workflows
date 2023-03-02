@@ -189,9 +189,10 @@ def main():
         dp.Group(
             dp.BigNumber(heading='Total Fields', value=num),
             dp.BigNumber(heading='Field with cloud-free data this week',
-                         value="{:.2%}".format(percent),
-                         change="{:.2%}".format(percent - percent2),
-                         is_upward_change=True), columns=2),  # check the upward = false
+                         value="{:.2%}".format(percent)
+#                          change="{:.2%}".format(percent - percent2), is_upward_change=True), 
+                        ),
+            columns=2),  # check the upward = false
         dp.Text('## Flooding Status ##'),
         dp.Group(
             dp.Plot(
@@ -211,7 +212,7 @@ def main():
             [dp.DataTable(df_pivot.round(3), label="Data Table")],
             type=dp.SelectType.TABS),
         dp.Text('## Map of Flooding Status ##'),
-        dp.Plot(pct_map, caption="Flooded Status on Map")
+        dp.Plot(pct_map)
         ], name=report_name,  publicly_visible=True
     )
     name = re.sub(r'[^\w\s]', '', report_name)
@@ -223,7 +224,7 @@ def main():
                        GMAIL_PWD)
     # Adding Content and sending it
 
-    yag.send(["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com", "kklausmeyer@tnc.org"],  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+    yag.send(["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"],  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
              "Weekly BirdSense Report - Testing",
              msg)
 
