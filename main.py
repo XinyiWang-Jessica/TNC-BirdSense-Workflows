@@ -223,7 +223,7 @@ def main():
                        GMAIL_PWD)
     # Adding Content and sending it
 
-    yag.send(["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"],  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+    yag.send(["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com", "kklausmeyer@tnc.org"],  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
              "Weekly BirdSense Report - Testing",
              msg)
 
