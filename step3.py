@@ -280,6 +280,7 @@ def map_plot(fields, df, program, start):
         marker_line_color='gray',
         coloraxis='coloraxis2',
         z=[0] * len(merged_df[merged_df['Flooding %'].isna()]['id']),
+        showscale=False,
         customdata=merged_df[['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End']],
         hovertemplate='Bid_ID: %{customdata[0]}<br>' + 
                         'Field_ID: %{customdata[1]}<br>' +
