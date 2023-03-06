@@ -79,6 +79,7 @@ def history_plot(df, start, n=8, cloudy = 0.1):
     columns = df.columns.tolist()
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
+        last = columns[-1:]
         columns = columns[:-1]
     columns = columns[-n:]
     all_columns = columns.copy()
@@ -151,6 +152,7 @@ def history_plot(df, start, n=8, cloudy = 0.1):
                                 showarrow=False
                                  )]
                      )
+    all_columns = all_columns + last
     fig.update_yaxes(showticklabels=False, range=[0, 1.3])
     fig.update_xaxes(range = [all_columns[0], all_columns[-1]])
     return fig
@@ -257,10 +259,12 @@ def map_plot(fields, df, program, start):
                          right_on= list(df.columns[:2]))
     merged_df['Flooding %'] = merged_df[start].round(3)*100
     merged_df['week'] = f'Week starting on {start}'
+    # fig = go.Figure()
     fig = px.choropleth_mapbox(
-        merged_df,            # Data frame with values
-        geojson = merged_df.geometry,                      # Geojson with geometries
-        locations = merged_df.index,           
+        data_frame = merged_df,            # Data frame with values
+        geojson = fields.getInfo(),                      # Geojson with geometries
+        locations = 'id', 
+        # featureidkey="id",
         hover_name = 'week', 
         hover_data = ['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End'],
         color = 'Flooding %',            # Name of the column of the data frame with the data to be represented
@@ -269,6 +273,20 @@ def map_plot(fields, df, program, start):
         opacity = 0.7,
         center = dict(lat = 39.141, lon = -121.63),
         zoom = 8)
+    no_data_fields = go.Choroplethmapbox(
+        geojson=fields.getInfo(),
+        locations=merged_df[merged_df['Flooding %'].isna()]['id'],
+        marker_line_width=1,
+        marker_line_color='gray',
+        coloraxis='coloraxis2',
+        z=[0] * len(merged_df[merged_df['Flooding %'].isna()]['id']),
+        customdata=merged_df[['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End']],
+        hovertemplate='Bid_ID: %{customdata[0]}<br>' + 
+                        'Field_ID: %{customdata[1]}<br>' +
+                        'Flood Start: %{customdata[2]}<br>' +
+                        'Flood End: %{customdata[3]}<br>'
+    )
+    fig.add_trace(no_data_fields)
     fig.update_layout(height=800, width = 1000, 
                   autosize = True,
                   title = {'text': f'Flooding Status for the week starting on {start}',
