@@ -151,8 +151,12 @@ def main():
         watch = pd.DataFrame()
 
     # add plots
+    cloudy = 0.15
     fig_history = history_plot(df_pivot, start_last)
-    fig_status = plot_status(df_pivot, start_last)
+    if percent < cloudy:
+        fig_status = plot_cloudy_status(start_last, cloudy)
+     else:
+        fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
     pct_map = map_plot(fields, df_pivot, program, start_last)
 
