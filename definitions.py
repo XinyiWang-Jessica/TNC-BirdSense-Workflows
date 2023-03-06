@@ -1,6 +1,7 @@
 from datetime import datetime
 import datetime as dt
 import ee
+import os
 
 try:
     GEE_AUTH = os.environ["GEE_AUTH"]
