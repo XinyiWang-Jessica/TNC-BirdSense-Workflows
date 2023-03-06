@@ -2,6 +2,11 @@ from datetime import datetime
 import datetime as dt
 import ee
 
+try:
+    GEE_AUTH = os.environ["GEE_AUTH"]
+except KeyError:
+    GEE_AUTH = "Token not available!"
+
 # GEE authentication
 ee_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
 credentials = ee.ServiceAccountCredentials(ee_account, key_data=GEE_AUTH)
