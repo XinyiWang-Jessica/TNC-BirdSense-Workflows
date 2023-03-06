@@ -13,7 +13,6 @@ ee_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
 credentials = ee.ServiceAccountCredentials(ee_account, key_data=GEE_AUTH)
 ee.Initialize(credentials)
 
-
 # User defined settings
 start_string = '2022-10-01';
 #end_string = '2022-10-21';
@@ -26,7 +25,7 @@ program = "WCWR22"
 # define threshold
 thresh_val = 0.25
 cloud_free_thresh = 0.5
-cloudy = 0.15
+cloudy = 0.10 # below this cloudy threshold, datapane dashboard won't refelect the corresponding status plot
 
 # define bid and filed id based on program
 field_bid_names = {"W21":['Bid_ID','Field_ID', None], 
