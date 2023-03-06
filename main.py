@@ -27,59 +27,17 @@ except KeyError:
     GMAIL_PWD = "Token not available!"
 
 try:
-    GEE_AUTH = os.environ["GEE_AUTH"]
-except KeyError:
-    GEE_AUTH = "Token not available!"
-
-try:
     GDRIVE_AUTH = os.environ["GDRIVE_AUTH"]
 except KeyError:
     GDRIVE_AUTH = "Token not available!"
 
-# # GEE authentication
-# ee_account = 'gee-auth@tnc-birdreturn-test.iam.gserviceaccount.com'
-# credentials = ee.ServiceAccountCredentials(ee_account, key_data=GEE_AUTH)
-# ee.Initialize(credentials)
-
 # Google Drive authentication and read the Excel file from google drive
-# SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 gdrive_auth = json.loads(GDRIVE_AUTH)
 creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
 request = service.files().get_media(fileId=file_id)
 file = io.BytesIO(request.execute())
-
-# # User defined settings
-# in_fields_W21 = ee.FeatureCollection(
-#     "users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
-# in_fields_F21 = ee.FeatureCollection("users/kklausmeyer/B4B_fields_Fall2021")
-# in_fields_WDW21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDW")
-# in_fields_WDF21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDF_enrolled")
-# in_fields_WB4B22 = ee.FeatureCollection(
-#     "projects/codefornature/assets/B4B_fields_Winter2022")
-# in_fields_WCWR22 = ee.FeatureCollection(
-#     "projects/codefornature/assets/CWRHIP_fields_Winter2022")
-# in_fields_WSOD22 = ee.FeatureCollection(
-#     "projects/codefornature/assets/DSOD_fields_Winter2022")
-# in_fields_WDDR22 = ee.FeatureCollection(
-#     "projects/codefornature/assets/DDR_fields_Winter2022")
-
-# bid_name = field_bid_names[program][0]
-# field_name = field_bid_names[program][1]
-# stat_list = field_bid_names[program][2]
-# field_list = {"W21": in_fields_W21,
-#               "F21": in_fields_F21,
-#               "WDW21": in_fields_WDW21,
-#               "WDF21": in_fields_WDF21,
-#               "WB4B22": in_fields_WB4B22,
-#               "WCWR22": in_fields_WCWR22,
-#               "WSOD22": in_fields_WSOD22,
-#               "WDDR22": in_fields_WDDR22}
-# fields = field_list[program]
-
-# columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
-# columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
