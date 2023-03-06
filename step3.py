@@ -215,6 +215,31 @@ def plot_status(df, start):
     )
     return fig
 
+def plot_cloudy_status(start, cloudy = 0.15):
+    fig = go.Figure()
+    fig.add_annotation(text = "* Status is not shown if the satellite data availability is less than {:.0%}.".format(cloudy),
+                    #    align ='left',
+                       showarrow = False,
+                       xref="paper",
+                       yref="paper",
+                       font=dict(size=14),
+                       x = 0.05,
+                       y = 1,
+                       )
+    fig.update_layout(
+        height=400,
+        autosize=True,
+        font=dict(size=20),
+        plot_bgcolor="rgba(0,0,0,0)",
+        title = {'text': f'Flooding Status for the Week of {start} (Cloud-Free Fields Only)',
+                              'x': 0.5,'y': 0.9,
+                              'xanchor': 'center',
+                             'font': {'size': 16}}
+    )
+    fig.update_xaxes(visible=False)  
+    fig.update_yaxes(visible=False)
+    return fig
+
 def map_plot(fields, df, program, start):
     '''
     this function take the geometry information from fieds,
