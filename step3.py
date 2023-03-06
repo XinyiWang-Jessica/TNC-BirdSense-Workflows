@@ -278,7 +278,6 @@ def map_plot(fields, df, program, start):
         locations=merged_df[merged_df['Flooding %'].isna()]['id'],
         marker_line_width=1,
         marker_line_color='gray',
-        coloraxis='coloraxis2',
         z=[0] * len(merged_df[merged_df['Flooding %'].isna()]['id']),
         showscale=False,
         customdata=merged_df[['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End']],
