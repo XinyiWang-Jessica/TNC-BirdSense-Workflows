@@ -57,14 +57,15 @@ def heatmap_plot(df, n, col, start):
 
 def all_heatmaps(df, col, start):
     '''
-    split fields into 5 groups and create heatmaps
+    split fields into n groups and create heatmaps
     '''
+    n = len(df)//100 +1
     heatmaps = []
     df['Unique_ID'] = df['Bid_ID'] + "-" + df['Field_ID']
     df['group'] = df['Bid_ID'].apply(lambda x: x.split('-')[-1]).astype('int')
     df['group'], cut_bin = pd.qcut(
-        df['group'], q=5, labels=range(5), retbins=True)
-    for i in range(5):
+        df['group'], q=n, labels=range(n), retbins=True)
+    for i in range(n):
         sub_df = df[df.group == i]
         fig = heatmap_plot(sub_df, i, col, start)
         heatmaps.append(fig)
@@ -74,12 +75,13 @@ def all_heatmaps(df, col, start):
 
 def history_plot(df, start, n=8, cloudy = 0.1):
     '''
-    plot the last n weeks data with plotly
+    plot the last n weeks data with plotly`
     '''
     columns = df.columns.tolist()
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
+    print(columns)
+    last = [' ']
     if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
-        last = columns[-1:]
         columns = columns[:-1]
     columns = columns[-n:]
     all_columns = columns.copy()
@@ -150,7 +152,8 @@ def history_plot(df, start, n=8, cloudy = 0.1):
                                 y=1.2,
                                 text="* Weeks with satellite data availability less than {:.0%} are excluded".format(cloudy),
                                 showarrow=False
-                                 )]
+                                 )
+                                     ]
                      )
     all_columns = all_columns + last
     fig.update_yaxes(showticklabels=False, range=[0, 1.3])
