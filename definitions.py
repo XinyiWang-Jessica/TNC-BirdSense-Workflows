@@ -27,7 +27,7 @@ end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
 
 
 # define program to run
-program = "WB4B22"
+program = "WCWR22" # "WB4B22", "WCWR22"
 
 # define threshold
 thresh_val = 0.25
