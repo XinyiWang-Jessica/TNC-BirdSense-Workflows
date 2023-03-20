@@ -14,13 +14,20 @@ credentials = ee.ServiceAccountCredentials(ee_account, key_data=GEE_AUTH)
 ee.Initialize(credentials)
 
 # User defined settings
+
 start_string = '2022-10-01';
 #end_string = '2022-10-21';
 end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 #run = ''
+# get the start sunday of the previous week
+aday = dt.datetime.now().date() - dt.timedelta(days = 6)
+start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
+end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
+
+
 # define program to run
-program = "WB4B22"
+program = "WCWR22" # "WB4B22", "WCWR22"
 
 # define threshold
 thresh_val = 0.25
@@ -74,19 +81,18 @@ file_id = field_bid_names[program][3]
 # Google Drive authentication and read the Excel file from google drive
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
-s2_vis_params = {
-    'bands': ['B4', 'B3', 'B2'],
-    'max': 3133,
-    'min': 405,
-    'gamma': 1,
-    'opacity':0.7
-}
+# folium map related definitions
+# s2_vis_params = {
+#     'bands': ['B4', 'B3', 'B2'],
+#     'max': 3133,
+#     'min': 405,
+#     'gamma': 1,
+#     'opacity':0.7
+# }
 
-thresh_vis_params = {
-    'palette' : ['white', 'blue']
-}
+# thresh_vis_params = {
+#     'palette' : ['white', 'blue']
+# }
 
-# get the start sunday of the previous week
-aday = dt.datetime.now().date() - dt.timedelta(days = 6)
-start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
-end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
+# define the email recipients
+recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com","kklausmeyer@tnc.org"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
