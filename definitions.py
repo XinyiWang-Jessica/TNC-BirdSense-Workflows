@@ -27,7 +27,7 @@ end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
 
 
 # define program to run
-program = "WCWR22" # "WB4B22", "WCWR22"
+program = "WB4B22" # "WB4B22", "WCWR22"
 
 # define threshold
 thresh_val = 0.25
@@ -46,19 +46,14 @@ field_bid_names = {"W21":['Bid_ID','Field_ID', None],
                   }
 
 # User defined fields settings
-in_fields_W21 = ee.FeatureCollection(
-    "users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
-in_fields_F21 = ee.FeatureCollection("users/kklausmeyer/B4B_fields_Fall2021")
-in_fields_WDW21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDW")
-in_fields_WDF21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDF_enrolled")
-in_fields_WB4B22 = ee.FeatureCollection(
-    "projects/codefornature/assets/B4B_fields_Winter2022")
-in_fields_WCWR22 = ee.FeatureCollection(
-    "projects/codefornature/assets/CWRHIP_fields_Winter2022")
-in_fields_WSOD22 = ee.FeatureCollection(
-    "projects/codefornature/assets/DSOD_fields_Winter2022")
-in_fields_WDDR22 = ee.FeatureCollection(
-    "projects/codefornature/assets/DDR_fields_Winter2022")
+in_fields_W21 = ee.FeatureCollection("users/kklausmeyer/Bid4Birds_Fields_Winter2021_1206")
+in_fields_F21 = ee.FeatureCollection("users/kklausmeyer/B4B_fields_Fall2021");
+in_fields_WDW21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDW");
+in_fields_WDF21 = ee.FeatureCollection("users/kklausmeyer/BR_21_WDF_enrolled");
+in_fields_WB4B22 = ee.FeatureCollection("projects/codefornature/assets/B4B_fields_Winter2022_20221214");
+in_fields_WCWR22 = ee.FeatureCollection("projects/codefornature/assets/CWRHIP_fields_Winter2022_20221221");
+in_fields_WSOD22 = ee.FeatureCollection("projects/codefornature/assets/DSOD_fields_Winter2022");
+in_fields_WDDR22 = ee.FeatureCollection("projects/codefornature/assets/DDR_fields_Winter2022");
 
 bid_name = field_bid_names[program][0]
 field_name = field_bid_names[program][1]
@@ -95,4 +90,4 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 # }
 
 # define the email recipients
-recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com","kklausmeyer@tnc.org"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
