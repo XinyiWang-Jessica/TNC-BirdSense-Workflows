@@ -39,7 +39,7 @@ field_bid_names = {"W21":['Bid_ID','Field_ID', None],
                    "F21": ['Bid_ID', 'Field_ID', None],
                    "WDW21": ['wn21_ID', 'Field_Name', ['enrolled']],
                    "WDF21": ['wn21_ID', 'Field_Name', ['enrolled']], 
-                   "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], '1F7lJbzeTH_uNE267xgR_GvsIJ7C72Ppd'],
+                   "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], '1mk7YwU4BpD9Wof4fdixlG9xYccaPuI8D'],
                    "WDDR22": ['BidID', 'FieldID', ['Bid', 'Enrolled']],
                    "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'], '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
                    'WSOD22': ['BidID', 'FieldID', ['Enrolled']]
