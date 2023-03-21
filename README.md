@@ -1,8 +1,9 @@
 # TNC BirdSense Report Automation Workflows
-Short description of BirdReturn
-For more readings, refer to [BirdReturns: A Habitat Timeshare for Migratory Birds](https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/migration-moneyball/)
-The project analyze data from satellite imagery and on-the-ground observations to determine the flooding status of hatbitats of contracted farm lands.
-This repository is part of the BirdReturn project to provide.....
+Every year, over 1 billion birds migrate along the Pacific Flyway and travel through California. Many of these birds need wetlands for food and rest to support their journey, but over 95% of the historical wetlands in the Central Valley have been drained and developed. The Nature Conservancy and partners recently launched a program called BirdReturns to pay farmers to flood their fields to support migratory wetland birds.   
+For more information, refer to [BirdReturns: A Habitat Timeshare for Migratory Birds](https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/migration-moneyball/).  
+As the program scaling up with government funds to combat the impacts of the drought, new tools are needed to ensure that farmers flood their fields for the full duration of their contract. The current program has been experimenting using free images captured by satellites to estimate the extent and duration of flooding on the enrolled fields.  
+Based on the promissing experiment outcomes, this GitHub Repository is aimed to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.
+
 ## Features:
 - Extract Sentinel 2 data from Google Earth Engine API
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
@@ -45,11 +46,13 @@ You can use use [crontab guru](https://crontab.guru) to help generate your cron 
 ### Define fields (Kirk to add)
 ### Modify user definitions
 The following fileds need be defined:
-- Date Range (start and end dates for data extraction): start_string and end_string 
+- Date Range (start and end dates for data extraction from GEE): start_string and end_string. 
+- Reporting period: start_last and end_last. The current repo set the DataPane reporting period of prevouse week. 
 - (Optional) Google Drive folder/file id
-- cloud free threshold: cloud_free_thresh
+- Cloud free threshold: cloud_free_thresh. The NDWI results are set to NaN for pixels below cloud free threshold.
 - NDWI Threshold (to add binary layer based on threshold): thresh_val
-- 
+- Cloudy threshold: cloudy. If the percentage of cloud-free fields are below this threshold, the status reporting on DataPane for this week will be disabled. 
+- Email recipients can be defined in definitions.py
 ### Formate Dashboard
 For this workflow, DataPane is used to generate a report dashboard. DataPane allows to transform Jupyter Notebook or Python script to a interactive web app. It friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly and Folim for map visulization. 
 Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numbers, table, plot and map formating
