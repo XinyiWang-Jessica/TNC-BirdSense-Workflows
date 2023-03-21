@@ -1,9 +1,11 @@
 # TNC BirdSense Report Automation Workflows
 Every year, over 1 billion birds migrate along the Pacific Flyway and travel through California. Many of these birds need wetlands for food and rest to support their journey, but over 95% of the historical wetlands in the Central Valley have been drained and developed. The Nature Conservancy and partners recently launched a program called BirdReturns to pay farmers to flood their fields to support migratory wetland birds.   
 For more information, refer to [BirdReturns: A Habitat Timeshare for Migratory Birds](https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/migration-moneyball/).  
-As the program scaling up with government funds to combat the impacts of the drought, new tools are needed to ensure that farmers flood their fields for the full duration of their contract. The current program has been experimenting using free images captured by satellites to estimate the extent and duration of flooding on the enrolled fields.  
-Based on the promissing experiment outcomes, this GitHub Repository is aimed to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.
 
+As the program scaling up with government funds to combat the impacts of the drought, new tools are needed to ensure that farmers flood their fields for the full duration of their contract. The current program has been experimenting using free images captured by satellites to estimate the extent and duration of flooding on the enrolled fields.  
+Based on the promissing experiment outcomes, this GitHub Repository is aimed to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.  
+
+This repo utilizes the GitHub Action workflow to build a data pipeline and realize the following features.
 ## Features:
 - Extract Sentinel 2 data from Google Earth Engine API
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
@@ -53,10 +55,10 @@ The following fileds need be defined:
 - NDWI Threshold (to add binary layer based on threshold): thresh_val
 - Cloudy threshold: cloudy. If the percentage of cloud-free fields are below this threshold, the status reporting on DataPane for this week will be disabled. 
 - Email recipients can be defined in definitions.py
-### Formate Dashboard
+### Format Dashboard
 For this workflow, DataPane is used to generate a report dashboard. DataPane allows to transform Jupyter Notebook or Python script to a interactive web app. It friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly and Folim for map visulization. 
 Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numbers, table, plot and map formating
-### Modifile email message, sender and recieptants
+### Modifile email message, sender and recipientants
 Refer to the example of [yagmail](https://pypi.org/project/yagmail/) to format your email contents.
 
 ## Acknowledgement:
