@@ -2,8 +2,8 @@
 Every year, over 1 billion birds migrate along the Pacific Flyway and travel through California. Many of these birds need wetlands for food and rest to support their journey, but over 95% of the historical wetlands in the Central Valley have been drained and developed. The Nature Conservancy and partners recently launched a program called BirdReturns to pay farmers to flood their fields to support migratory wetland birds.   
 For more information, refer to [BirdReturns: A Habitat Timeshare for Migratory Birds](https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/migration-moneyball/).  
 
-As the program scaling up with government funds to combat the impacts of the drought, new tools are needed to ensure that farmers flood their fields for the full duration of their contract. The current program has been experimenting using free images captured by satellites to estimate the extent and duration of flooding on the enrolled fields.  
-Based on the promissing experiment outcomes, this GitHub Repository is aimed to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.  
+As the program scales up with government funds to combat the impacts of the drought, new tools are needed to ensure that farmers flood their fields for the full duration of their contract. The current program has been experimenting with using free images captured by satellites to estimate the extent and duration of flooding on the enrolled fields.   
+Based on the promising experiment outcomes, this GitHub Repository is aimed to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.  
 
 This repo utilizes the GitHub Action workflow to build a data pipeline and realize the following features.
 ## Features:
@@ -18,17 +18,18 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 To access data from GEE API, Google Searvice Account is used to authenticate to Earth Engine. To do so, follow the [guide of create service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
   1. Create a Google Cloud Project
   2. Choose the created project and create a Service Account
-  3. Create a private key for the Service Account and download the Json key file
+  3. Create a private key for the Service Account and download the JSON key file
   4. Register your service account for use with the Earth Engine API.
-  5. Save the jason key content as a repo secrete with the Name of GEE_AUTH under the repo Settings
+  5. Save the JSON key content as a repo secrete with the Name of GEE_AUTH under the repo Settings
+  6. Configure authorizing credentials in definitions.py
 ### Google Drive API Authentication
-To download files stored in Google Drive, Google Drive Python API is used. The [Google Python Quickstart](https://developers.google.com/drive/api/quickstart/python) provides guidelines to enable the enable the API and set up the Authorize credentials. The following steps describe how to set up Google Drive API and access an Excel file in google drive:
-  1. Create a Google Service Account and create a Key. Download the Json key file and copy the service account email. 
+To download files stored in Google Drive, Google Drive Python API is used. The [Google Python Quickstart](https://developers.google.com/drive/api/quickstart/python) provides guidelines to enable the API and set up the Authorize credentials. The following steps describe how to set up Google Drive API and access an Excel file in google drive:
+  1. Create a Google Service Account and create a Key. Download the JSON key file and copy the service account email. 
   2. Enable Google Drive API for the Google Cloud Project set up from the previous step. 
-  3. Grant the the Google Drive folder/file access to the Service Account just set up using the Service Account email.
+  3. Grant the Google Drive folder/file access to the Service Account just setup using the Service Account email.
   4. Copy the Google Drive folder/file id from the url. 
-  5. Save the jason key content as a repo secrete with the Name of GDRIVE_AUTH under the repo Settings.
-  6. Configure authorize credentials in main.py. Instead of the Google Python Quick start, the [Ben James blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up Json toke as an environment variable(repo secrete).
+  5. Save the JSON key content as a repo secrete with the Name of GDRIVE_AUTH under the repo Settings.
+  6. Configure authorizing credentials in main.py. Instead of the Google Python Quick start, the [Ben James blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up JSON token as an environment variable(repo secrete).
 ### DataPane Authentication
 To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instrution](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
   1. Create a DataPane account and login
