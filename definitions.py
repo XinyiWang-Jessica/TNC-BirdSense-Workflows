@@ -90,4 +90,4 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 # }
 
 # define the email recipients
-recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com", "kklausmeyer@tnc.org"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
