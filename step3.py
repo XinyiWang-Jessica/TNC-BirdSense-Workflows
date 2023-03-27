@@ -79,7 +79,7 @@ def history_plot(df, start, n=8, cloudy = 0.1):
     '''
     columns = df.columns.tolist()
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
-    print(columns)
+    # print(columns)
     last = [' ']
     if dt.datetime.strptime(columns[-1], '%Y-%m-%d').date() > start_last:
         columns = columns[:-1]
