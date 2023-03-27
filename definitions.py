@@ -26,9 +26,10 @@ start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
 end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
 
 
-# define program to run
+
 # program = "WCWR22" # "WB4B22", "WCWR22"
 programs = ["WB4B22", "WCWR22"]
+
 
 # define threshold
 thresh_val = 0.25
@@ -91,5 +92,5 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 #     'palette' : ['white', 'blue']
 # }
 
-# define the email recipients
-recipients = ["wangxinyi1986@gmail.com"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+
+recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com", "kklausmeyer@tnc.org"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
