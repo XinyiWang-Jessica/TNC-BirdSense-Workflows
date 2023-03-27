@@ -36,8 +36,8 @@ gdrive_auth = json.loads(GDRIVE_AUTH)
 creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
-request = service.files().get_media(fileId=file_id)
-file = io.BytesIO(request.execute())
+# request = service.files().get_media(fileId=file_id)
+# file = io.BytesIO(request.execute())
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -51,9 +51,30 @@ file = io.BytesIO(request.execute())
 # logger_file_handler.setFormatter(formatter)
 # logger.addHandler(logger_file_handler)
 
+def main(program):
+    '''
+    Based on the selected program, 
+        - extract S2 satellite images
+        - estimate flood coverage
+        - apply cloud mask
+        - plot flooding status
+        - upload to DataPane dashboard
+        - share dashboard report by email
+    '''
+    # get prgram specific information from definitions
+    print('run for program: ', program)
+    bid_name = field_bid_names[program][0]
+    field_name = field_bid_names[program][1]
+    stat_list = field_bid_names[program][2]
+    fields = field_list[program]
+    columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
+    columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
+    # google drive document file id
+    file_id = field_bid_names[program][3]
+    request = service.files().get_media(fileId=file_id)
+    file = io.BytesIO(request.execute())
 
-def main():
-    # s2 = ee.ImageCollection('COPERNICUS/S2');
+    # extract satellite images from GEE
     start = ee.Date(start_string)
     end = ee.Date(end_string)
     # Step 1: Extract images from EE and Filter based on time and geography
@@ -63,6 +84,7 @@ def main():
         'COPERNICUS/S2_CLOUD_PROBABILITY').filterDate(start, end).filterBounds(fields)
 
     checks_areaAdded = fields.map(addArea)
+    
     # step 2: add cloudProbability to S2
     withCloudProbability = add_cloudProbability(s2, s2c)
 
@@ -108,8 +130,7 @@ def main():
         col = 3
         watch = pd.DataFrame()
 
-    # add plots
-#     cloudy = 0.15
+    # Step 3: add plots
     fig_history = history_plot(df_pivot, start_last)
     if percent < cloudy:
         fig_status = plot_cloudy_status(start_last, cloudy)
@@ -117,9 +138,9 @@ def main():
         fig_status = plot_status(df_pivot, start_last)
     heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
     pct_map = map_plot(fields, df_pivot, program, start_last)
-
+    
+    # folium plot (optional)
 #     thresh_mean = NDWIThreshonly.select("threshold").mean()
-
     # Add EE drawing method to folium.
 #     folium.Map.add_ee_layer = add_ee_layer
     # Create a folium map object.
@@ -139,7 +160,7 @@ def main():
     # Add a layer control panel to the map.
 #     my_map.add_child(folium.LayerControl())
 
-    # upload to datapane
+    # Step 4: upload to datapane
     report_name = f"BirdSense: Drought Relief WaterBird Program - {program}, Winter 2022-2023"
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
     end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
@@ -181,7 +202,7 @@ def main():
     name = re.sub(r'[^\w\s]', '', report_name)
     url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
 
-   # send email
+   # Step 5: send email
     msg = f"Please check the latest BirdSense report {url}"
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                        GMAIL_PWD)
@@ -191,6 +212,6 @@ def main():
              "Weekly BirdSense Report - Testing",
              msg)
 
-
 if __name__ == "__main__":
-    main()
+    for program in programs:
+        main(program)
