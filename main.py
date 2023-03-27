@@ -71,10 +71,7 @@ def main(program):
     season = field_bid_names[program][3]
     columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
     columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
-    # google drive document file id
     file_id = field_bid_names[program][4]
-    request = service.files().get_media(fileId=file_id)
-    file = io.BytesIO(request.execute())
 
     # extract satellite images from GEE
     start = ee.Date(start_string)
@@ -131,12 +128,15 @@ def main(program):
     except:
         print('no flooding start and end dates in GEE asset')
         try:
+               # google drive document file id
+            request = service.files().get_media(fileId=file_id)
+            file = io.BytesIO(request.execute())
             df_d = pd.read_excel(file)
             col = 5
             df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
             # generate the watch list with low percentage flooded rate
             watch = watch_list(df_pivot, start_last)
-        except FileNotFoundError:
+        except:
             print('no flooding start and end dates in google drive')
             df_pivot = no_flood_dates(pivot_table(df))
             col = 3
