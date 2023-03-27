@@ -1,5 +1,5 @@
-# import logging
-# import logging.handlers
+import logging
+import logging.handlers
 import os
 import io
 import json
@@ -37,17 +37,17 @@ creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
 
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
-# logger_file_handler = logging.handlers.RotatingFileHandler(
-#     "status.log",
-#     maxBytes=1024 * 1024,
-#     backupCount=1,
-#     encoding="utf8",
-# )
-# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-# logger_file_handler.setFormatter(formatter)
-# logger.addHandler(logger_file_handler)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger_file_handler = logging.handlers.RotatingFileHandler(
+    "status.log",
+    maxBytes=1024 * 1024,
+    backupCount=1,
+    encoding="utf8",
+)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger_file_handler.setFormatter(formatter)
+logger.addHandler(logger_file_handler)
 
 def main(program):
     '''
@@ -59,16 +59,20 @@ def main(program):
         - upload to DataPane dashboard
         - share dashboard report by email
     '''
+    # record the running program
+    logger.info(f'Run for program: {program}')
+    
     # get prgram specific information from definitions
     print('run for program: ', program)
     bid_name = field_bid_names[program][0]
     field_name = field_bid_names[program][1]
     stat_list = field_bid_names[program][2]
     fields = field_list[program]
+    season = field_bid_names[program][3]
     columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
     columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
     # google drive document file id
-    file_id = field_bid_names[program][3]
+    file_id = field_bid_names[program][4]
     request = service.files().get_media(fileId=file_id)
     file = io.BytesIO(request.execute())
 
@@ -123,10 +127,12 @@ def main(program):
         df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
         # generate the watch list with low percentage flooded rate
         watch = watch_list(df_pivot, start_last)
+        print('Found enrolled list')
     except FileNotFoundError:
         df_pivot = no_flood_dates(pivot_table(df))
         col = 3
         watch = pd.DataFrame()
+        print('Enrolled list not found')
 
     # Step 3: add plots
     fig_history = history_plot(df_pivot, start_last)
@@ -159,11 +165,11 @@ def main(program):
 #     my_map.add_child(folium.LayerControl())
 
     # Step 4: upload to datapane
-    report_name = f"BirdSense: Drought Relief WaterBird Program - {program}, Winter 2022-2023"
+    report_name = f"BirdSense: Drought Relief WaterBird Program - {program}, {season}"
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
     end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
     app = dp.upload_report(
-        # need to format to the date... and add end date
+
         [
         dp.Text(f'# Weekly Report - {start_last_text} to {end_last_text} #'),
         dp.Text(f'last update: {end_string}'),
@@ -207,7 +213,7 @@ def main(program):
     # Adding Content and sending it
 
     yag.send(recipients, # defined in definitions.py
-             "Weekly BirdSense Report - Testing",
+             f"Weekly BirdSense Report - {program}",
              msg)
 
 if __name__ == "__main__":

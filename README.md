@@ -11,9 +11,12 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
 - Extract data from Google Drive API
 - Generate a dashboard report through DataPane APP (example screenshot)
-- Schedule workflow and report sharing by email
+- Schedule workflows for multiple programs
+- Share dashboard report by email
+- Log workflow actions in status.log
 
 ## Preparation
+The following authentications need to be set up and added to repository Secrets.
 ### GEE Authentication with Google Service Account
 To access data from GEE API, Google Searvice Account is used to authenticate to Earth Engine. To do so, follow the [guide of create service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
   1. Create a Google Cloud Project
@@ -47,6 +50,8 @@ GitHub Repository secrets allow saving passwords, API tokens, and other sensitiv
   2. Using secrets in the workflow .yml file
 
 ## How to Use
+There is no need for environment setup. GitHub Action will install all the packages as required. Any additional packages and versions need to be added to the requirements.txt.
+
 ### Set up a schedule to run repo action
 GitHub repository can run the script on a fixed schedule, such as daily, weekly, or a specific day of the week/month. The scheduling is done by POSIX cron syntax. For more information, refer to the [GitHub Workflow Trigger Events - Schedule](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
 Use [crontab guru](https://crontab.guru) to help generate your cron syntax.
@@ -56,15 +61,15 @@ Use [crontab guru](https://crontab.guru) to help generate your cron syntax.
 
 ### Modify user definitions
 The following fileds need be defined:
-- Date Range (start and end dates for data extraction from GEE): start_string and end_string. 
+- Date Range (start and end dates for data extraction from GEE): start_string: string, end_string: string. 
 - Reporting period: start_last and end_last. The current repo set the DataPane reporting period of prevouse week. 
-- (Optional) Google Drive folder/file id
+- (Optional) Google Drive folder/file id in field_bid_names dictionary
 - Cloud free threshold: cloud_free_thresh. The NDWI results are set to NaN for pixels below cloud free threshold.
 - NDWI Threshold (to add binary layer based on threshold): thresh_val
 - Cloudy threshold: cloudy. If the percentage of cloud-free fields are below this threshold, the status reporting on DataPane for this week will be disabled. 
-- Program name to run: program
+- Programs to run: programs: list
 - Feature names of Field Id, Bid ID, and enrolled status used for the specific program: field_bid_names
-- Email recipients can be defined in definitions.py
+- Email recipients can be defined in definitions.py: recipients: list
 
 ### Format Dashboard
 DataPane is used to generate a reporting dashboard. DataPane allows to transform Jupyter Notebook or Python script to an interactive web app. It is friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly, and Folim for map visualization. 
@@ -72,5 +77,7 @@ Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numb
 ### Modifile email message, sender and recieptants
 Refer to the example of [yagmail](https://pypi.org/project/yagmail/) to format your email contents.
 
-## Acknowledgement:
+## License:
+his project is licensed under the GNU General Public License v2.0 - see the LICENSE file for details
+## Acknowledgements:
 
