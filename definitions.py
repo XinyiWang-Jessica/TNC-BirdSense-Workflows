@@ -27,7 +27,8 @@ end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
 
 
 # define program to run
-program = "WCWR22" # "WB4B22", "WCWR22"
+# program = "WCWR22" # "WB4B22", "WCWR22"
+programs = ["WB4B22", "WCWR22"]
 
 # define threshold
 thresh_val = 0.25
@@ -55,9 +56,7 @@ in_fields_WCWR22 = ee.FeatureCollection("projects/codefornature/assets/CWRHIP_fi
 in_fields_WSOD22 = ee.FeatureCollection("projects/codefornature/assets/DSOD_fields_Winter2022");
 in_fields_WDDR22 = ee.FeatureCollection("projects/codefornature/assets/DDR_fields_Winter2022");
 
-bid_name = field_bid_names[program][0]
-field_name = field_bid_names[program][1]
-stat_list = field_bid_names[program][2]
+
 field_list = {"W21": in_fields_W21,
               "F21": in_fields_F21,
               "WDW21": in_fields_WDW21,
@@ -66,13 +65,16 @@ field_list = {"W21": in_fields_W21,
               "WCWR22": in_fields_WCWR22,
               "WSOD22": in_fields_WSOD22,
               "WDDR22": in_fields_WDDR22}
-fields = field_list[program]
 
-columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
-columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
+# bid_name = field_bid_names[program][0]
+# field_name = field_bid_names[program][1]
+# stat_list = field_bid_names[program][2]
+# fields = field_list[program]
+# columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
+# columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
 
-# google drive document file id
-file_id = field_bid_names[program][3]
+# # google drive document file id
+# file_id = field_bid_names[program][3]
 # Google Drive authentication and read the Excel file from google drive
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
@@ -90,4 +92,4 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 # }
 
 # define the email recipients
-recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+recipients = ["wangxinyi1986@gmail.com"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
