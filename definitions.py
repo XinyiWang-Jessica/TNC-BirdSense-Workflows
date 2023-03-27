@@ -83,4 +83,4 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 # }
 
 
-recipients = ["wliao14@dons.usfca.edu", "wangxinyi1986@gmail.com", "kklausmeyer@tnc.org"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+recipients = ["wangxinyi1986@gmail.com"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
