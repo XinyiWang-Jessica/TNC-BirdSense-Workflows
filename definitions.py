@@ -27,7 +27,7 @@ end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
 
 
 # define programs to run 
-programs = ["WB4B22", "WCWR22"]
+programs = ["WB4B22", "WCWR22", "Bid4Birds"]
 
 # define thresholds
 thresh_val = 0.25
@@ -36,14 +36,16 @@ cloudy = 0.10 # below this cloudy threshold, datapane dashboard won't refelect t
 
 # define bid and filed id based on program
 # program: [BidID, Field_ID, enrolled_status, gdrive_file_id, season]
-field_bid_names = {"W21":['Bid_ID','Field_ID', None, 'Winter 2021-2022', None], 
+field_bid_names = {
+                    "W21":['Bid_ID','Field_ID', None, 'Winter 2021-2022', None], 
                    "F21": ['Bid_ID', 'Field_ID', None, 'Winter 2021-2022', None],
                    "WDW21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', None],
                    "WDF21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', None], 
                    "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '1mk7YwU4BpD9Wof4fdixlG9xYccaPuI8D'],
                    "WDDR22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', None],
                    "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'],  'Winter 2022-2023', '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
-                   'WSOD22': ['BidID', 'FieldID', ['Enrolled'], 'Winter 2022-2023', None]
+                   'WSOD22': ['BidID', 'FieldID', ['Enrolled'], 'Winter 2022-2023', None],
+                   "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 'Spring 2023', None]
                   }
 
 # User defined fields settings
@@ -55,18 +57,22 @@ in_fields_WB4B22 = ee.FeatureCollection("projects/codefornature/assets/B4B_field
 in_fields_WCWR22 = ee.FeatureCollection("projects/codefornature/assets/CWRHIP_fields_Winter2022_20221221");
 in_fields_WSOD22 = ee.FeatureCollection("projects/codefornature/assets/DSOD_fields_Winter2022");
 in_fields_WDDR22 = ee.FeatureCollection("projects/codefornature/assets/DDR_fields_Winter2022");
+in_fields_Bid4Birds = ee.FeatureCollection("projects/codefornature/assets/Bid4Birds_SV_Ag_Spring_2023_Fields");
 
-field_list = {"W21": in_fields_W21,
+field_list = {
+              "W21": in_fields_W21,
               "F21": in_fields_F21,
               "WDW21": in_fields_WDW21,
               "WDF21": in_fields_WDF21,
               "WB4B22": in_fields_WB4B22,
               "WCWR22": in_fields_WCWR22,
               "WSOD22": in_fields_WSOD22,
-              "WDDR22": in_fields_WDDR22}
+              "WDDR22": in_fields_WDDR22,
+              "Bid4Birds": in_fields_Bid4Birds
+              }
 
 
-# Google Drive authentication and read the Excel file from google drive
+#Google Drive authentication and read the Excel file from google drive
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
 # folium map related definitions
