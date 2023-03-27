@@ -36,8 +36,8 @@ gdrive_auth = json.loads(GDRIVE_AUTH)
 creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
-request = service.files().get_media(fileId=file_id)
-file = io.BytesIO(request.execute())
+# request = service.files().get_media(fileId=file_id)
+# file = io.BytesIO(request.execute())
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -62,6 +62,7 @@ def main(program):
         - share dashboard report by email
     '''
     # get prgram specific information from definitions
+    print('run for program: ', program)
     bid_name = field_bid_names[program][0]
     field_name = field_bid_names[program][1]
     stat_list = field_bid_names[program][2]
@@ -70,7 +71,9 @@ def main(program):
     columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
     # google drive document file id
     file_id = field_bid_names[program][3]
-    
+    request = service.files().get_media(fileId=file_id)
+    file = io.BytesIO(request.execute())
+
     # extract satellite images from GEE
     start = ee.Date(start_string)
     end = ee.Date(end_string)
