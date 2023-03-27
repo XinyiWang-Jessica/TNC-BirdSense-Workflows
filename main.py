@@ -1,5 +1,5 @@
-# import logging
-# import logging.handlers
+import logging
+import logging.handlers
 import os
 import io
 import json
@@ -37,17 +37,17 @@ creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
 
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
-# logger_file_handler = logging.handlers.RotatingFileHandler(
-#     "status.log",
-#     maxBytes=1024 * 1024,
-#     backupCount=1,
-#     encoding="utf8",
-# )
-# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-# logger_file_handler.setFormatter(formatter)
-# logger.addHandler(logger_file_handler)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger_file_handler = logging.handlers.RotatingFileHandler(
+    "status.log",
+    maxBytes=1024 * 1024,
+    backupCount=1,
+    encoding="utf8",
+)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger_file_handler.setFormatter(formatter)
+logger.addHandler(logger_file_handler)
 
 def main(program):
     '''
@@ -59,6 +59,9 @@ def main(program):
         - upload to DataPane dashboard
         - share dashboard report by email
     '''
+    # record the running program
+    logger.info(f'Run for program: {program}')
+    
     # get prgram specific information from definitions
     print('run for program: ', program)
     bid_name = field_bid_names[program][0]
