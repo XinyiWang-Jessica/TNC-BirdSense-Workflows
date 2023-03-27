@@ -36,8 +36,6 @@ gdrive_auth = json.loads(GDRIVE_AUTH)
 creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
-# request = service.files().get_media(fileId=file_id)
-# file = io.BytesIO(request.execute())
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
