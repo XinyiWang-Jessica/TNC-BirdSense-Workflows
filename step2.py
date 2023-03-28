@@ -4,6 +4,8 @@ import pandas as pd
 # Import datetime
 from datetime import datetime
 import datetime as dt
+import json
+import geopandas as gpd
 from definitions import *
 
 
@@ -248,6 +250,19 @@ def pivot_table(df):
         1]
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
+
+def fields_to_df_d(fields):
+    '''
+    extract start and end dates information from fields
+    '''
+    df = gpd.read_file(json.dumps(fields.getInfo()))
+    df_d = df[['BidID', 'FieldID', 'Status', 'EndDate', 'StartDate']]
+    columns = df_d.columns
+    df_d = standardize_names(df_d, 'Bid_ID', columns[0])
+    df_d = standardize_names(df_d, 'Field_ID', columns[1])
+    df_d['EndDT'] = df_d['EndDate'].apply(lambda x : datetime.fromtimestamp(x/1000).strftime('%Y-%m-%d'))
+    df_d['StartDT'] = df_d['StartDate'].apply(lambda x : datetime.fromtimestamp(x/1000).strftime('%Y-%m-%d'))
+    return df_d
 
 def add_flood_dates(df_d, df, stat_list):
     '''

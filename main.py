@@ -37,17 +37,17 @@ creds = service_account.Credentials.from_service_account_info(
     gdrive_auth, scopes=SCOPES)
 service = build('drive', 'v3', credentials=creds)
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger_file_handler = logging.handlers.RotatingFileHandler(
-    "status.log",
-    maxBytes=1024 * 1024,
-    backupCount=1,
-    encoding="utf8",
-)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-logger_file_handler.setFormatter(formatter)
-logger.addHandler(logger_file_handler)
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)
+# logger_file_handler = logging.handlers.RotatingFileHandler(
+#     "status.log",
+#     maxBytes=1024 * 1024,
+#     backupCount=1,
+#     encoding="utf8",
+# )
+# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+# logger_file_handler.setFormatter(formatter)
+# logger.addHandler(logger_file_handler)
 
 def main(program):
     '''
@@ -59,8 +59,8 @@ def main(program):
         - upload to DataPane dashboard
         - share dashboard report by email
     '''
-    # record the running program
-    logger.info(f'Run for program: {program}')
+    # record the running program (optional)
+    # logger.info(f'Run for program: {program}')
     
     # get prgram specific information from definitions
     print('run for program: ', program)
@@ -71,10 +71,7 @@ def main(program):
     season = field_bid_names[program][3]
     columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
     columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
-    # google drive document file id
     file_id = field_bid_names[program][4]
-    request = service.files().get_media(fileId=file_id)
-    file = io.BytesIO(request.execute())
 
     # extract satellite images from GEE
     start = ee.Date(start_string)
@@ -122,17 +119,28 @@ def main(program):
     num, percent, percent2, mask, mask2 = cloud_free_percent(df, start_last)
     # create pivoted table and watch list
     try:
-        df_d = pd.read_excel(file)
+        df_d = fields_to_df_d(fields)
         col = 5
         df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
         # generate the watch list with low percentage flooded rate
-        watch = watch_list(df_pivot, start_last)
-        print('Found enrolled list')
-    except FileNotFoundError:
-        df_pivot = no_flood_dates(pivot_table(df))
-        col = 3
-        watch = pd.DataFrame()
-        print('Enrolled list not found')
+        watch = watch_list(df_pivot, start_last) 
+        print('found flooding start and end dates in GEE asset')   
+    except:
+        print('no flooding start and end dates in GEE asset')
+        try:
+               # google drive document file id
+            request = service.files().get_media(fileId=file_id)
+            file = io.BytesIO(request.execute())
+            df_d = pd.read_excel(file)
+            col = 5
+            df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
+            # generate the watch list with low percentage flooded rate
+            watch = watch_list(df_pivot, start_last)
+        except:
+            print('no flooding start and end dates in google drive')
+            df_pivot = no_flood_dates(pivot_table(df))
+            col = 3
+            watch = pd.DataFrame()
 
     # Step 3: add plots
     fig_history = history_plot(df_pivot, start_last)
