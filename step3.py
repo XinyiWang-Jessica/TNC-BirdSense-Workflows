@@ -92,7 +92,7 @@ def history_plot(df, start, n=8, cloudy = 0.1):
             no_columns.append(column)
     # last_n_week_all = df[columns].applymap(
     #     lambda x: 1 if x >= 0 else 0).sum()/df[columns].count()
-    print(columns)
+    # print(columns)
     last_n_week = df[columns].applymap(
         lambda x: 1 if x > 0.66 else 0).sum()/df[columns].count()
     last_n_week_par = df[columns].applymap(
@@ -170,7 +170,7 @@ def plot_status(df, start):
                    bins=[-1, .33, .66, 1],
                    labels=bin_labels)
     freq = level.value_counts()/level.count()
-
+    print(freq)
     level_y = pd.cut(df[start_last2],
                      bins=[-1, .33, .66, 1],
                      labels=bin_labels)

@@ -45,7 +45,7 @@ field_bid_names = {
                    "WDDR22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '2022-10-01', None],
                    "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'],  'Winter 2022-2023', '2022-10-01', '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
                    'WSOD22': ['BidID', 'FieldID', ['Enrolled'], 'Winter 2022-2023', '2022-10-01', None],
-                   "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 'Spring 2023', '2022-10-01', None]
+                   "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 'Spring 2023', '2023-02-01', None]
                   }
 
 # User defined fields settings
