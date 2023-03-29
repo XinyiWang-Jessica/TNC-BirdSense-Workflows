@@ -179,10 +179,10 @@ def plot_status(df, start):
     fig = go.Figure()
     fig.add_trace(go.Indicator(
         mode="number+delta",
-        value=freq.values[0]*100,
+        value=freq.values[2]*100,
         number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
         title={"text": "Flooded<br>(66%-100%)"},
-        delta={'reference': freq_y.values[0]*100,
+        delta={'reference': freq_y.values[2]*100,
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0, 0.33], 'y': [0, 1]}))
 
@@ -197,10 +197,10 @@ def plot_status(df, start):
 
     fig.add_trace(go.Indicator(
         mode="number+delta",
-        value=freq.values[2]*100,
+        value=freq.values[0]*100,
         number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
         title={"text": "Minimally<br>Flooded<br>(0-33%)"},
-        delta={'reference': freq_y.values[2]*100,
+        delta={'reference': freq_y.values[0]*100,
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0.67, 1], 'y': [0, 1]}))
 
