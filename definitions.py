@@ -41,7 +41,7 @@ field_bid_names = {
                    "F21": ['Bid_ID', 'Field_ID', None, 'Winter 2021-2022', '2021-10-01', None],
                    "WDW21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', '2021-10-01', None],
                    "WDF21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', '2021-10-01', None], 
-                   "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '2022-10-01' '1mk7YwU4BpD9Wof4fdixlG9xYccaPuI8D'],
+                   "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '2022-10-01', '1mk7YwU4BpD9Wof4fdixlG9xYccaPuI8D'],
                    "WDDR22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '2022-10-01', None],
                    "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'],  'Winter 2022-2023', '2022-10-01', '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
                    'WSOD22': ['BidID', 'FieldID', ['Enrolled'], 'Winter 2022-2023', '2022-10-01', None],
