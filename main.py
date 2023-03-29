@@ -64,6 +64,10 @@ def main(program):
     
     # get prgram specific information from definitions
     print('run for program: ', program)
+    start_string = field_bid_names[program][4]
+    aday = dt.datetime.now().date() - dt.timedelta(days = 6)
+    start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
+    end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
     bid_name = field_bid_names[program][0]
     field_name = field_bid_names[program][1]
     stat_list = field_bid_names[program][2]
@@ -71,7 +75,7 @@ def main(program):
     season = field_bid_names[program][3]
     columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
     columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
-    file_id = field_bid_names[program][4]
+    file_id = field_bid_names[program][5]
 
     # extract satellite images from GEE
     start = ee.Date(start_string)
@@ -220,7 +224,7 @@ def main(program):
                        GMAIL_PWD)
     # Adding Content and sending it
 
-    yag.send(recipients, # defined in definitions.py
+    yag.send(recipients[program], # defined in definitions.py
              f"Weekly BirdSense Report - {program}",
              msg)
 
