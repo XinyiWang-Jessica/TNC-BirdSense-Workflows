@@ -16,15 +16,10 @@ ee.Initialize(credentials)
 # User defined settings
 
 # start_string = '2022-10-01';
-#end_string = '2022-10-21';
+# end_string = '2022-10-21';
 end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 #run = ''
-# get the start sunday of the previous week
-# aday = dt.datetime.now().date() - dt.timedelta(days = 6)
-# start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
-# end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
-
 
 # define programs to run 
 programs = ["WB4B22", "WCWR22", "Bid4Birds"]
@@ -93,10 +88,10 @@ recipients = {
     "F21": [],
     "WDW21": [],
     "WDF21": [],
-    "WB4B22": ["kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],
-    "WCWR22": ["kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],
+    "WB4B22": ["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],
+    "WCWR22": ["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"],
     "WSOD22": [],
     "WDDR22": [],
-    "Bid4Birds": ["kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu", "ksesser@calrice.org"]
+    "Bid4Birds": ["wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"]
 }
   # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu", "ksesser@calrice.org"

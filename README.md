@@ -69,7 +69,7 @@ The following fileds need be defined:
 - Cloudy threshold: cloudy. If the percentage of cloud-free fields are below this threshold, the status reporting on DataPane for this week will be disabled. 
 - Programs to run: programs: list
 - Feature names of Field Id, Bid ID, and enrolled status used for the specific program: field_bid_names
-- Email recipients can be defined in definitions.py: recipients: list
+- Email recipients for a program can be defined in definitions.py: recipients: dictionary
 
 ### Format Dashboard
 DataPane is used to generate a reporting dashboard. DataPane allows to transform Jupyter Notebook or Python script to an interactive web app. It is friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly, and Folim for map visualization. 
