@@ -15,15 +15,15 @@ ee.Initialize(credentials)
 
 # User defined settings
 
-start_string = '2022-10-01';
+# start_string = '2022-10-01';
 #end_string = '2022-10-21';
 end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 #run = ''
 # get the start sunday of the previous week
-aday = dt.datetime.now().date() - dt.timedelta(days = 6)
-start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
-end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
+# aday = dt.datetime.now().date() - dt.timedelta(days = 6)
+# start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
+# end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
 
 
 # define programs to run 
@@ -35,17 +35,17 @@ cloud_free_thresh = 0.5
 cloudy = 0.10 # below this cloudy threshold, datapane dashboard won't refelect the corresponding status plot
 
 # define bid and filed id based on program
-# program: [BidID, Field_ID, enrolled_status, gdrive_file_id, season]
+# program: [BidID, Field_ID, enrolled_status, season, start_date, gdrive_file_id]
 field_bid_names = {
-                    "W21":['Bid_ID','Field_ID', None, 'Winter 2021-2022', None], 
-                   "F21": ['Bid_ID', 'Field_ID', None, 'Winter 2021-2022', None],
-                   "WDW21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', None],
-                   "WDF21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', None], 
-                   "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '1mk7YwU4BpD9Wof4fdixlG9xYccaPuI8D'],
-                   "WDDR22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', None],
-                   "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'],  'Winter 2022-2023', '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
-                   'WSOD22': ['BidID', 'FieldID', ['Enrolled'], 'Winter 2022-2023', None],
-                   "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 'Spring 2023', None]
+                    "W21":['Bid_ID','Field_ID', None, 'Winter 2021-2022', '2021-10-01', None], 
+                   "F21": ['Bid_ID', 'Field_ID', None, 'Winter 2021-2022', '2021-10-01', None],
+                   "WDW21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', '2021-10-01', None],
+                   "WDF21": ['wn21_ID', 'Field_Name', ['enrolled'], 'Winter 2021-2022', '2021-10-01', None], 
+                   "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '2022-10-01', '1mk7YwU4BpD9Wof4fdixlG9xYccaPuI8D'],
+                   "WDDR22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 'Winter 2022-2023', '2022-10-01', None],
+                   "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'],  'Winter 2022-2023', '2022-10-01', '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
+                   'WSOD22': ['BidID', 'FieldID', ['Enrolled'], 'Winter 2022-2023', '2022-10-01', None],
+                   "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 'Spring 2023', '2023-02-01', None]
                   }
 
 # User defined fields settings
@@ -89,4 +89,16 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 # }
 
 
-recipients = ["kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"]  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"
+
+recipients = {
+    "W21": [],
+    "F21": [],
+    "WDW21": [],
+    "WDF21": [],
+    "WB4B22": ["wangxinyi1986@gmail.com"],
+    "WCWR22": ["wangxinyi1986@gmail.com"],
+    "WSOD22": [],
+    "WDDR22": [],
+    "Bid4Birds": ["wangxinyi1986@gmail.com"]
+}
+  # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu"

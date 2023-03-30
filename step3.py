@@ -92,7 +92,7 @@ def history_plot(df, start, n=8, cloudy = 0.1):
             no_columns.append(column)
     # last_n_week_all = df[columns].applymap(
     #     lambda x: 1 if x >= 0 else 0).sum()/df[columns].count()
-    print(columns)
+    # print(columns)
     last_n_week = df[columns].applymap(
         lambda x: 1 if x > 0.66 else 0).sum()/df[columns].count()
     last_n_week_par = df[columns].applymap(
@@ -162,6 +162,11 @@ def history_plot(df, start, n=8, cloudy = 0.1):
 
 
 def plot_status(df, start):
+    '''
+    classify the flooding percentage to 3 catergories, 
+    creat indicators of the percentage of minimal, partially, and fully flooded.
+    and compare with last week
+    '''
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     start_last2 = (start_last - dt.timedelta(days=7)).strftime('%Y-%m-%d')
     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
@@ -170,19 +175,22 @@ def plot_status(df, start):
                    bins=[-1, .33, .66, 1],
                    labels=bin_labels)
     freq = level.value_counts()/level.count()
-
+    print(freq)
     level_y = pd.cut(df[start_last2],
                      bins=[-1, .33, .66, 1],
                      labels=bin_labels)
-
+    
     freq_y = level_y.value_counts()/level_y.count()
+    #sort by index
+    freq.sort_index(ascending=True, inplace = True)
+    freq_y.sort_index(ascending=True, inplace = True)
     fig = go.Figure()
     fig.add_trace(go.Indicator(
         mode="number+delta",
-        value=freq.values[0]*100,
+        value=freq.values[2]*100,
         number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
         title={"text": "Flooded<br>(66%-100%)"},
-        delta={'reference': freq_y.values[0]*100,
+        delta={'reference': freq_y.values[2]*100,
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0, 0.33], 'y': [0, 1]}))
 
@@ -197,10 +205,10 @@ def plot_status(df, start):
 
     fig.add_trace(go.Indicator(
         mode="number+delta",
-        value=freq.values[2]*100,
+        value=freq.values[0]*100,
         number={'suffix': '%', "font": {"size": 50}, "valueformat": ".0f"},
         title={"text": "Minimally<br>Flooded<br>(0-33%)"},
-        delta={'reference': freq_y.values[2]*100,
+        delta={'reference': freq_y.values[0]*100,
                'relative': False, "valueformat": ".1f"},
         domain={'x': [0.67, 1], 'y': [0, 1]}))
 
@@ -221,6 +229,9 @@ def plot_status(df, start):
     return fig
 
 def plot_cloudy_status(start, cloudy = 0.15):
+    '''
+    if the cloud free fields percentage is below the threshold, hide the status plot
+    '''
     fig = go.Figure()
     fig.add_annotation(text = "* Status is not shown if the satellite data availability is less than {:.0%}.".format(cloudy),
                     #    align ='left',
