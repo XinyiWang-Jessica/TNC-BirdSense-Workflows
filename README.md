@@ -18,7 +18,7 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
 ### GEE Authentication with Google Service Account
-To access data from GEE API, Google Searvice Account is used to authenticate to Earth Engine. To do so, follow the [guide of create service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
+To access data from GEE API, Google Service Account is used to authenticate to Earth Engine. To do so, follow the [guide of create service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
   1. Create a Google Cloud Project
   2. Choose the created project and create a Service Account
   3. Create a private key for the Service Account and download the JSON key file
