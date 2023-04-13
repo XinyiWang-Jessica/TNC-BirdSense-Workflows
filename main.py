@@ -129,12 +129,11 @@ def main(program):
         df_d = pd.read_excel(file)
         col = 5
         df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
-        
+        # generate the watch list with low percentage flooded rate
+        watch = watch_list(df_pivot, start_last)
         print('found flooding start and end dates in Google Drive')   
     except:
         try:
-             # generate the watch list with low percentage flooded rate
-            watch = watch_list(df_pivot, start_last)
             df_d = fields_to_df_d(fields)
             col = 5
             df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
