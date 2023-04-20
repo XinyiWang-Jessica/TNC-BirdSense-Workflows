@@ -81,7 +81,7 @@ Refer to the example of [yagmail](https://pypi.org/project/yagmail/) to format y
 his project is licensed under the GNU General Public License v2.0 - see the LICENSE file for details.
 
 
-## Contributors 
+## Project Contributors 
 Xinyi Wang (USF)
 Wan-Chun Liao (USF)
 Kirk Klausmeyer (TNC)

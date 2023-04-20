@@ -219,7 +219,7 @@ def main(program):
     url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
 
    # Step 5: send email
-    msg = f"Please check the latest BirdSense report {url}"
+    msg = f"Please check the latest BirdSense report: {url}"
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                        GMAIL_PWD)
     # Adding Content and sending it
