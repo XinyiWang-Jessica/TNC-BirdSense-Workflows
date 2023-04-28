@@ -10,10 +10,16 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 - Extract Sentinel 2 data from Google Earth Engine API
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
 - Extract data from Google Drive API
-- Generate a dashboard report through DataPane APP (example screenshot)
+- Generate a dashboard report through DataPane APP 
 - Schedule workflows for multiple programs
 - Share dashboard report by email
 - Log workflow actions in status.log
+
+## DataPane Example
+
+![](./img1.jpg?raw=true )
+![](./img2.jpg?raw=true )
+![DataPane Ex](./img3.jpg?raw=true "Interactive DataPane")
 
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
