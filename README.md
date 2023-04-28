@@ -18,12 +18,12 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
 ### GEE Authentication with Google Service Account
-To access data from GEE API, Google Service Account is used to authenticate to Earth Engine. To do so, follow the [guide of create service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
+To access data from GEE API, Google Service Account is used to authenticate to Earth Engine. To do so, follow the [guide to create a service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
   1. Create a Google Cloud Project
   2. Choose the created project and create a Service Account
   3. Create a private key for the Service Account and download the JSON key file
   4. Register your service account for use with the Earth Engine API.
-  5. Save the JSON key content as a repo secrete with the Name of GEE_AUTH under the repo Settings
+  5. Save the JSON key content as a repo secret with the Name of GEE_AUTH under the repo Settings
   6. Configure authorizing credentials in definitions.py
   
 ### Google Drive API Authentication
@@ -32,17 +32,17 @@ To download files stored in Google Drive, Google Drive Python API is used. The [
   2. Enable Google Drive API for the Google Cloud Project set up from the previous step. 
   3. Grant the Google Drive folder/file access to the Service Account just setup using the Service Account email.
   4. Copy the Google Drive folder/file id from the url. 
-  5. Save the JSON key content as a repo secrete with the Name of GDRIVE_AUTH under the repo Settings.
-  6. Configure authorizing credentials in main.py. Instead of the Google Python Quick start, the [Ben James blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up JSON token as an environment variable(repo secrete).
+  5. Save the JSON key content as a repo secret with the Name of GDRIVE_AUTH under the repo Settings.
+  6. Configure authorizing credentials in main.py. Instead of the Google Python Quick start, [Ben James' blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up JSON token as an environment variable (repo secret).
   
 ### DataPane Authentication
-To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instrution](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
+To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instructions](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
   1. Create a DataPane account and login
   2. Go to the setting page and copy the API Token
-  3. Add the API token as a repo secrete with the Name of DATAPANE_TOKEN 
+  3. Add the API token as a repo secret with the Name of DATAPANE_TOKEN 
   
 ### Gmail Authentication
-Yet Another Gmail [yagmail](https://yagmail.readthedocs.io/en/latest/) is applied to send emails automatically. It requires sign-in process to authorize. Follow the instruction to obtain the [Gmail App password](https://support.google.com/mail/answer/185833?hl=en). Then, add the password to the repo secrete with the name of GMAIL_PWD.
+Yet Another Gmail [yagmail](https://yagmail.readthedocs.io/en/latest/) is applied to send emails automatically. It requires sign-in process to authorize. Follow the instruction to obtain the [Gmail App password](https://support.google.com/mail/answer/185833?hl=en). Then, add the password to the repo secret with the name of GMAIL_PWD.
 
 ### GitHub Repository Secret Set Up
 GitHub Repository secrets allow saving passwords, API tokens, and other sensitive information. The secrets created are available for GitHub Actions workflows. Follow the [instrution to create and use prepository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) and complete the steps below:
@@ -72,7 +72,7 @@ The following fileds need be defined:
 - Email recipients can be defined in definitions.py: recipients: list
 
 ### Format Dashboard
-DataPane is used to generate a reporting dashboard. DataPane allows to transform Jupyter Notebook or Python script to an interactive web app. It is friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly, and Folim for map visualization. 
+DataPane is used to generate a reporting dashboard. DataPane allows you to transform Jupyter Notebook or Python script to an interactive web app. It is friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly, and Folim for map visualization. 
 Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numbers, table, plot, and map formatting
 ### Modifile email message, sender and recieptants
 Refer to the example of [yagmail](https://pypi.org/project/yagmail/) to format your email contents.
