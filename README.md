@@ -17,9 +17,9 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 
 ## DataPane Example
 
-![](./img1.jpg?raw=true )
-![](./img2.jpg?raw=true )
-![DataPane Ex](./img3.jpg?raw=true "Interactive DataPane")
+![](./img1.png?raw=true )
+![](./img2.png?raw=true )
+![DataPane Ex](./img3.png?raw=true "Interactive DataPane")
 
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
