@@ -95,10 +95,10 @@ recipients = {
     "F21": [],
     "WDW21": [],
     "WDF21": [],
-    "WB4B22": ["wangxinyi1986@gmail.com", "cjcarroll@usfca.edu"],
+    "WB4B22": ["wangxinyi1986@gmail.com"],
     "WCWR22": ["wangxinyi1986@gmail.com"],
     "WSOD22": [],
     "WDDR22": [],
-    "Bid4Birds": ["wangxinyi1986@gmail.com"]
+    "Bid4Birds": ["wangxinyi1986@gmail.com", "cjcarroll@usfca.edu"]
 }
   # ,"kklausmeyer@tnc.org", "wangxinyi1986@gmail.com", "wliao14@dons.usfca.edu", "ksesser@calrice.org"
