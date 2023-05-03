@@ -22,14 +22,15 @@ The data pipeline has the following features.
 
 ## DataPane Example
 
-![](./img1.png?raw=true )
-![](./img2.png?raw=true )
-![DataPane Ex](./img3.png?raw=true "Interactive DataPane")
+![](images/img1.png?raw=true )
+![](images/img2.png?raw=true )
+![DataPane Ex](images/img3.png?raw=true "Interactive DataPane")
 
 See here for an [Example DataPane](https://cloud.datapane.com/reports/R70BJZA/birdsense-drought-relief-waterbird-program--wcwr22-winter-20222023/).
 
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
+
 ### GEE Authentication with Google Service Account
 To access data from GEE API, Google Service Account is used to authenticate to Earth Engine. To do so, follow the [guide to create a service account](https://developers.google.com/earth-engine/guides/service_account) and complete the steps below:
   1. Create a Google Cloud Project
