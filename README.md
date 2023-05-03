@@ -94,7 +94,7 @@ Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numb
 Refer to the example of [yagmail](https://pypi.org/project/yagmail/) to format your email contents.
 
 ## License:
-his project is licensed under the GNU General Public License v2.0 - see the LICENSE file for details.
+This project is licensed under the GNU General Public License v2.0 - see the LICENSE file for details.
 
 
 ## Project Contributors 
