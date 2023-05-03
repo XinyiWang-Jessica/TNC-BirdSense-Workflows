@@ -3,9 +3,14 @@ Every year, over 1 billion birds migrate along the Pacific Flyway and travel thr
 For more information, refer to [BirdReturns: A Habitat Timeshare for Migratory Birds](https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/migration-moneyball/).  
 
 As the program scales up with government funds to combat the impacts of the drought, new tools are needed to ensure that farmers flood their fields for the full duration of their contract. The current program has been experimenting with using free images captured by satellites to estimate the extent and duration of flooding on the enrolled fields.   
-Based on the promising experiment outcomes, this GitHub Repository is aimed to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.  
 
-This repo utilizes the GitHub Action workflow to build a data pipeline and realize the following features.
+Based on promising experiment outcomes, this GitHub Repository aims to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.  
+
+This repo uses a GitHub Action workflow to build a data pipeline, as shown in the figure below:
+
+![BirdSense_Workflow](images/workflow.png)
+
+The data pipeline has the following features.
 ## Features:
 - Extract Sentinel 2 data from Google Earth Engine API
 - Process data to obtain the percent of flooding and cloud-free indicator by fields
@@ -44,13 +49,13 @@ To download files stored in Google Drive, Google Drive Python API is used. The [
   6. Configure authorizing credentials in main.py. Instead of the Google Python Quick start, [Ben James' blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up JSON token as an environment variable (repo secret).
   
 ### DataPane Authentication
-To generate a dashboard report on [DataPane](https://datapane.com/), an API token is required for access. Follow the [instructions](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
+An API token is required to access DataPane and generate a dashboard report on [DataPane](https://datapane.com/). Follow the [instructions](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
   1. Create a DataPane account and login
   2. Go to the setting page and copy the API Token
   3. Add the API token as a repo secret with the Name of DATAPANE_TOKEN 
   
 ### Gmail Authentication
-Yet Another Gmail [yagmail](https://yagmail.readthedocs.io/en/latest/) is applied to send emails automatically. It requires sign-in process to authorize. Follow the instruction to obtain the [Gmail App password](https://support.google.com/mail/answer/185833?hl=en). Then, add the password to the repo secret with the name of GMAIL_PWD.
+Yet Another Gmail [yagmail](https://yagmail.readthedocs.io/en/latest/) is applied to send emails automatically. It requires sign-in process to authorize. Follow the instructions to obtain the [Gmail App password](https://support.google.com/mail/answer/185833?hl=en). Then, add the password to the repo secret with the name of GMAIL_PWD.
 
 ### GitHub Repository Secret Set Up
 GitHub Repository secrets allow saving passwords, API tokens, and other sensitive information. The secrets created are available for GitHub Actions workflows. Follow the [instrution to create and use prepository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) and complete the steps below:
@@ -64,25 +69,28 @@ There is no need for environment setup. GitHub Action will install all the packa
 GitHub repository can run the script on a fixed schedule, such as daily, weekly, or a specific day of the week/month. The scheduling is done by POSIX cron syntax. For more information, refer to the [GitHub Workflow Trigger Events - Schedule](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
 Use [crontab guru](https://crontab.guru) to help generate your cron syntax.
 
-### Define fields (Kirk to add)
+### Define fields
+To define the agricultural fields to monitor, go to [Google Earth Engine Code Editor](https://code.earthengine.google.com/) and click on the "Assets" tab.  Click "New" and then select the "Shape file" option under "Table Uploads".  Follow the prompts onscreen.  Once the shapefile is published, share the asset with everyone, and then copy and paste the link to the asset into the user definitions file.
 
 
 ### Modify user definitions
-The following fileds need be defined:
-- Date Range (start and end dates for data extraction from GEE): start_string: string, end_string: string. 
-- Reporting period: start_last and end_last. The current repo set the DataPane reporting period of prevouse week. 
+The following fields need to be defined:
+- Date Range (start and end dates for data extraction from GEE): 
+  - start_string: string. Program specific start_string in field_bid_names dictionary
+  - end_string: string. The default value is today
 - (Optional) Google Drive folder/file id in field_bid_names dictionary
 - Cloud free threshold: cloud_free_thresh. The NDWI results are set to NaN for pixels below cloud free threshold.
-- NDWI Threshold (to add binary layer based on threshold): thresh_val
-- Cloudy threshold: cloudy. If the percentage of cloud-free fields are below this threshold, the status reporting on DataPane for this week will be disabled. 
+- NDWI Threshold (to add binary layer based on a threshold): thresh_val
+- Cloudy threshold: cloudy. If the percentage of cloud-free fields is below this threshold, the status reporting on DataPane for this week will be disabled. 
 - Programs to run: programs: list
 - Feature names of Field Id, Bid ID, and enrolled status used for the specific program: field_bid_names
-- Email recipients can be defined in definitions.py: recipients: list
+- Email recipients can be defined as a list following the respective program. 
 
 ### Format Dashboard
 DataPane is used to generate a reporting dashboard. DataPane allows you to transform Jupyter Notebook or Python script to an interactive web app. It is friendly with Pandas DataFrame, Matplotlib/Seaborn, Plotly, and Folim for map visualization. 
-Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numbers, table, plot, and map formatting
-### Modifile email message, sender and recieptants
+Refer to the [DataPane documentation](https://docs.datapane.com/) for page, numbers, table, plot, and map formatting.
+
+### Modifiable email message, sender and recieptants
 Refer to the example of [yagmail](https://pypi.org/project/yagmail/) to format your email contents.
 
 ## License:
