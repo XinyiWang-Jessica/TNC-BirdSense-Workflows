@@ -21,6 +21,8 @@ This repo utilizes the GitHub Action workflow to build a data pipeline and reali
 ![](./img2.png?raw=true )
 ![DataPane Ex](./img3.png?raw=true "Interactive DataPane")
 
+See here for an [Example DataPane](https://cloud.datapane.com/reports/R70BJZA/birdsense-drought-relief-waterbird-program--wcwr22-winter-20222023/).
+
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
 ### GEE Authentication with Google Service Account
