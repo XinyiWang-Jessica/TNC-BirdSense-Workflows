@@ -47,7 +47,7 @@ To download files stored in Google Drive, Google Drive Python API is used. The [
   3. Grant the Google Drive folder/file access to the Service Account just setup using the Service Account email.
   4. Copy the Google Drive folder/file id from the url. 
   5. Save the JSON key content as a repo secret with the Name of GDRIVE_AUTH under the repo Settings.
-  6. Configure authorizing credentials in main.py. Instead of the Google Python Quick start, [Ben James' blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides an instruction to set up JSON token as an environment variable (repo secret).
+  6. Configure authorizing credentials in main.py. Instead of the Google Python Quick start, [Ben James' blog](https://blog.benjames.io/2020/09/13/authorise-your-python-google-drive-api-the-easy-way/) provides instructions to set up JSON token as an environment variable (repo secret).
   
 ### DataPane Authentication
 An API token is required to access DataPane and generate a dashboard report on [DataPane](https://datapane.com/). Follow the [instructions](https://docs.datapane.com/tutorials/automation/#introduction) and complete the following steps:
@@ -59,7 +59,7 @@ An API token is required to access DataPane and generate a dashboard report on [
 Yet Another Gmail [yagmail](https://yagmail.readthedocs.io/en/latest/) is applied to send emails automatically. It requires sign-in process to authorize. Follow the instructions to obtain the [Gmail App password](https://support.google.com/mail/answer/185833?hl=en). Then, add the password to the repo secret with the name of GMAIL_PWD.
 
 ### GitHub Repository Secret Set Up
-GitHub Repository secrets allow saving passwords, API tokens, and other sensitive information. The secrets created are available for GitHub Actions workflows. Follow the [instrution to create and use prepository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) and complete the steps below:
+GitHub Repository secrets allow saving passwords, API tokens, and other sensitive information. The secrets created are available for GitHub Actions workflows. Follow the [instructions to create and use repository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) and complete the steps below:
   1. Go to repository Settings and create required secrets in the Security section
   2. Using secrets in the workflow .yml file
 
