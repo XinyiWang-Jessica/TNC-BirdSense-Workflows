@@ -22,11 +22,11 @@ The data pipeline has the following features.
 
 ## DataPane Example
 
+See here for an [Example DataPane](https://cloud.datapane.com/reports/R70BJZA/birdsense-drought-relief-waterbird-program--wcwr22-winter-20222023/).
+
 ![](images/img1.png?raw=true )
 ![](images/img2.png?raw=true )
 ![DataPane Ex](images/img3.png?raw=true "Interactive DataPane")
-
-See here for an [Example DataPane](https://cloud.datapane.com/reports/R70BJZA/birdsense-drought-relief-waterbird-program--wcwr22-winter-20222023/).
 
 ## Preparation
 The following authentications need to be set up and added to repository Secrets.
