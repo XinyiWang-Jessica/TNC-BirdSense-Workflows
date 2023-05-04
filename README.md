@@ -7,7 +7,7 @@ As the program scales up with government funds to combat the impacts of the drou
 
 Based on promising experiment outcomes, this GitHub Repository aims to build a data pipeline to 1) ingest the satellite data, 2) generate flooding extent estimates, and 3) automatically send weekly reports to the field staff who manage the program.  
 
-This repo uses a GitHub Action workflow to build a data pipeline, as shown in the figure below:
+This repo uses a GitHub Actions workflow to build a data pipeline, as shown in the figure below:
 
 ![BirdSense_Workflow](images/workflow.png)
 
