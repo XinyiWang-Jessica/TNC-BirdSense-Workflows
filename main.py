@@ -118,7 +118,7 @@ def main(program):
     table = reduced.flatten()
 
     # convert featurecollections to dataframe, combine and formatted as we need
-    df = table_combine(with_PctCloudFree, table, columns1, columns2)
+    df = table_combine(with_PctCloudFree, table, columns1, columns2, stat_list)
     # calculate the cloud free datepoints
     num, percent, percent2, mask, mask2 = cloud_free_percent(df, start_last)
     # create pivoted table and watch list
