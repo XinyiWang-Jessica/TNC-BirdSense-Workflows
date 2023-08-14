@@ -1,9 +1,8 @@
-import logging
-import logging.handlers
+# import logging
+# import logging.handlers
 import os
 import io
 import json
-import re
 from step2 import *
 from step3 import *
 from definitions import *
@@ -13,22 +12,16 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # import requests
-import yagmail
 import ee
-import folium
+# import folium
 from datetime import datetime
 import datapane as dp
 import pandas as pd
 
-# extract token from environment
-try:
-    GMAIL_PWD = os.environ["GMAIL_PWD"]
-except KeyError:
-    GMAIL_PWD = "Token not available!"
 
 try:
     GDRIVE_AUTH = os.environ["GDRIVE_AUTH"]
-except KeyError:
+# except KeyError:
     GDRIVE_AUTH = "Token not available!"
 
 # Google Drive authentication and read the Excel file from google drive
@@ -56,8 +49,7 @@ def main(program):
         - estimate flood coverage
         - apply cloud mask
         - plot flooding status
-        - upload to DataPane dashboard
-        - share dashboard report by email
+        - create DataPane dashboard
     '''
     # record the running program (optional)
     # logger.info(f'Run for program: {program}')
@@ -214,23 +206,8 @@ def main(program):
         dp.Plot(pct_map)
     )
    # save the report as html
-    dp.save_report(view, 'latest_report.html')
+    dp.save_report(view, f'latest_report_{program}.html')
 
- 
-
-
-    # name = re.sub(r'[^\w\s]', '', report_name)
-    # url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
-
-   # Step 5: send email
-    # msg = f"Please check the latest BirdSense report: {url}"
-    # yag = yagmail.SMTP("wangxinyi1986@gmail.com",
-    #                    GMAIL_PWD)
-    # # Adding Content and sending it
-
-    # yag.send(recipients[program], # defined in definitions.py
-    #          f"Weekly BirdSense Report - {program}",
-    #          msg)
 
 if __name__ == "__main__":
     for program in programs:
