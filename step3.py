@@ -9,28 +9,6 @@ import plotly.graph_objects as go
 import plotly.express as px
 from definitions import *
 
-# def plot_1(df):
-#     bin_labels = ['Minimally Flooded', 'Partially Flooded', 'Flooded']
-#     minor = ['(<= 33%)', 'Minimally Flooded', '(33%~66%)','Partially Flooded', '(>66%)', 'Flooded']
-#     level = pd.cut(df[df.columns[-1]],
-#                               bins=[0, .33, .66, 1],
-#                               labels=bin_labels)
-#     freq = level.value_counts()/level.count()
-#     fig, ax = plt.subplots(figsize = (2,1.2) )
-#     ax.barh([0, 1, 2], freq[::-1], color = ['red', 'orange', 'blue'], alpha = 0.5, height = 0.8)
-#     for index, value in enumerate(freq[::-1]):
-#         plt.text(value, index-0.2, "{:.2%}".format(value))
-#     ax.spines['top'].set_visible(False)
-#     ax.spines['right'].set_visible(False)
-#     ax.spines['bottom'].set_visible(False)
-#     ax.spines['left'].set_visible(False)
-#     ax.set_yticks([-0.2, 0.3, 0.8, 1.3, 1.8, 2.3])
-#     # ax.set_yticks([0.5, 1.5, 2.5], minor=True )
-#     ax.set_yticklabels(minor, fontsize='small')
-#     plt.tick_params(left = False)
-#     plt.xticks([])
-#     return fig
-
 def heatmap_plot(df, n, col, start):
     '''
     heatmap of percentage flooded,
@@ -228,6 +206,7 @@ def plot_status(df, start):
     )
     return fig
 
+
 def plot_cloudy_status(start, cloudy = 0.15):
     '''
     if the cloud free fields percentage is below the threshold, hide the status plot
@@ -256,6 +235,7 @@ def plot_cloudy_status(start, cloudy = 0.15):
     fig.update_yaxes(visible=False)
     return fig
 
+
 def map_plot(fields, df, program, start):
     '''
     this function take the geometry information from fieds,
@@ -264,6 +244,7 @@ def map_plot(fields, df, program, start):
     '''
     # obtain geometry information and convert to dataframe
     df_geo = gpd.read_file(json.dumps(fields.getInfo()))
+    
     # change name to satanderd name
     df_geo = standardize_names(df_geo, 'Bid_ID', field_bid_names[program][0])
     df_geo = standardize_names(df_geo, 'Field_ID', field_bid_names[program][1])
@@ -273,20 +254,33 @@ def map_plot(fields, df, program, start):
                          right_on= list(df.columns[:2]))
     merged_df['Flooding %'] = merged_df[start].round(3)*100
     merged_df['week'] = f'Week starting on {start}'
-    # fig = go.Figure()
+    
+    #    # check if the input dataframe include flooding start and end tats
+    if 'Flood_start' in merged_df.columns:
+        columns = ['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End']
+        hover='Bid_ID: %{customdata[0]}<br>' + \
+            'Field_ID: %{customdata[1]}<br>' + \
+            'Flood Start: %{customdata[2]}<br>' + \
+            'Flood End: %{customdata[3]}<br>'
+    else:
+        columns = ['Bid_ID', 'Field_ID']
+        hover='Bid_ID: %{customdata[0]}<br>' + 'Field_ID: %{customdata[1]}<br>' 
+    
+    # map plot
     fig = px.choropleth_mapbox(
         data_frame = merged_df,            # Data frame with values
         geojson = fields.getInfo(),                      # Geojson with geometries
         locations = 'id', 
         # featureidkey="id",
         hover_name = 'week', 
-        hover_data = ['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End'],
+        hover_data = columns,
         color = 'Flooding %',            # Name of the column of the data frame with the data to be represented
         mapbox_style = 'stamen-terrain',
         color_continuous_scale = 'RdBu',
         opacity = 0.7,
         center = dict(lat = 39.141, lon = -121.63),
         zoom = 8)
+    # add the fieds without data to the map
     no_data_fields = go.Choroplethmapbox(
         geojson=fields.getInfo(),
         locations=merged_df[merged_df['Flooding %'].isna()]['id'],
@@ -294,11 +288,8 @@ def map_plot(fields, df, program, start):
         marker_line_color='gray',
         z=[0] * len(merged_df[merged_df['Flooding %'].isna()]['id']),
         showscale=False,
-        customdata=merged_df[['Bid_ID', 'Field_ID', 'Flood Start', 'Flood End']],
-        hovertemplate='Bid_ID: %{customdata[0]}<br>' + 
-                        'Field_ID: %{customdata[1]}<br>' +
-                        'Flood Start: %{customdata[2]}<br>' +
-                        'Flood End: %{customdata[3]}<br>'
+        customdata=merged_df[columns],
+        hovertemplate=hover
     )
     fig.add_trace(no_data_fields)
     fig.update_layout(height=800, width = 1000, 

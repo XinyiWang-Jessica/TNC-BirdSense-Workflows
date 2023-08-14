@@ -180,9 +180,8 @@ def main(program):
     report_name = f"BirdSense: Drought Relief WaterBird Program - {program}, {season}"
     start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
     end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
-    app = dp.upload_report(
+    view = dp.Blocks(report_name, 
 
-        [
         dp.Text(f'# Weekly Report - {start_last_text} to {end_last_text} #'),
         dp.Text(f'last update: {end_string}'),
         dp.Group(
@@ -213,20 +212,25 @@ def main(program):
             type=dp.SelectType.TABS),
         dp.Text('## Map of Flooding Status ##'),
         dp.Plot(pct_map)
-        ], name=report_name,  publicly_visible=True
     )
-    name = re.sub(r'[^\w\s]', '', report_name)
-    url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
+   # save the report as html
+    dp.save_report(view, 'latest_report.html')
+
+ 
+
+
+    # name = re.sub(r'[^\w\s]', '', report_name)
+    # url = 'https://cloud.datapane.com/reports/'+ str(app).split('/')[-2] +'/' + name.lower().replace(' ', '-')
 
    # Step 5: send email
-    msg = f"Please check the latest BirdSense report: {url}"
-    yag = yagmail.SMTP("wangxinyi1986@gmail.com",
-                       GMAIL_PWD)
-    # Adding Content and sending it
+    # msg = f"Please check the latest BirdSense report: {url}"
+    # yag = yagmail.SMTP("wangxinyi1986@gmail.com",
+    #                    GMAIL_PWD)
+    # # Adding Content and sending it
 
-    yag.send(recipients[program], # defined in definitions.py
-             f"Weekly BirdSense Report - {program}",
-             msg)
+    # yag.send(recipients[program], # defined in definitions.py
+    #          f"Weekly BirdSense Report - {program}",
+    #          msg)
 
 if __name__ == "__main__":
     for program in programs:

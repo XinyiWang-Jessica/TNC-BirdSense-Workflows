@@ -17,7 +17,7 @@ def addArea(feature):
 def add_cloudProbability(s2, s2c):
     s2_sysindex_list = s2.aggregate_array('system:index')
     s2c_sysindex_list = s2c.aggregate_array('system:index')
-    # create list of system:index values in s2 that are NOT in s2c
+    # Create list of system:index values in s2 that are NOT in s2c
     s2_sysindex_list_noMatch = s2_sysindex_list.removeAll(s2c_sysindex_list)
     # filter s2 into two imgColls:
     s2_sys_ind_match = s2.filter(
@@ -106,7 +106,7 @@ def fix(area):
         reducer = ee.Reducer.sum()
         scale = 10
         sum_cloudfree = image.reduceRegions(collection, reducer, scale)
-  # add date field to each feature with image date
+  # Add date field to each feature with the image date
         return sum_cloudfree.map(lambda feature: feature.set('Date', image.date().format('YYYY-MM-dd')))
     return reduceRegionsSum
 
@@ -129,8 +129,6 @@ def fix2(fields):
     return reduceRegionsMean
 
 # Define a method for displaying Earth Engine image tiles on a folium map.
-
-
 def add_ee_layer(self, ee_object, vis_params, name):
 
     try:
@@ -195,16 +193,20 @@ def standardize_names(df, standard_name, old_name):
     return df
 
 
-def table_combine(table1, table2, columns1, columns2):
-    # combine two tables
+def table_combine(table1, table2, columns1, columns2, stat_list):
+    '''
+    join the pct_CloudFree table and the NDWI threshold table by FieldID and Bid_ID
+    '''
     df1 = to_dataframe(table1, columns1)
     df2 = to_dataframe(table2, columns2)
-    # Convert to starndardized column names
+    # Convert to standardized column names
     df1 = standardize_names(df1, "Bid_ID", columns1[0])
     df1 = standardize_names(df1, "Field_ID", columns1[1])
     df2 = standardize_names(df2, "Bid_ID", columns1[0])
     df2 = standardize_names(df2, "Field_ID", columns1[1])
     df = pd.merge(df1, df2, on=['Bid_ID', 'Field_ID', 'Date'], how='left')
+    # selete the enrolled fields and drop the non-enrolled ones
+    df = df.loc[df.Status.isin(stat_list)]
     df['Date'] = pd.to_datetime(df['Date'])
     df['pct_flood'] = df['threshold']
     df['Source'] = 'Sentinel 2'
@@ -213,7 +215,7 @@ def table_combine(table1, table2, columns1, columns2):
     df.loc[df['Pct_CloudFree'] < cloud_free_thresh, 'pct_flood'] = pd.NA
     # add in no data to ensure all weeks are include
     df_date = pd.date_range(start=df.Date.min(),
-                            end=df.Date.max()).to_frame(name="Date")
+                            end=dt.datetime.now().date()).to_frame(name="Date")
     df_date["Unique_ID"] = df.iloc[0]['Unique_ID']
     df_date["Source"] = df.iloc[0]['Source']
     df = pd.concat([df, df_date]).reset_index()
@@ -221,9 +223,9 @@ def table_combine(table1, table2, columns1, columns2):
 
 
 def add_all_dates(df):
-    # remove rows with lots of clouds
+    # Remove rows with lots of clouds
     df = df.loc[df.Pct_CloudFree > cloud_free_thresh].copy()
-    # add in no data to ensure all weeks are include
+    # Add in no data to ensure all weeks are included
     df_date = pd.date_range(start=df.Date.min(),
                             end=df.Date.max()).to_frame(name="Date")
     df_date["Unique_ID"] = df.iloc[0]['Unique_ID']
@@ -233,6 +235,9 @@ def add_all_dates(df):
 
 
 def pivot_table(df):
+    '''
+    Summarize results for each field by week.
+    '''
     df['Week_start'] = df['Date'] - pd.to_timedelta(6, unit='d')
     df_week = (df.groupby([pd.Grouper(key='Week_start', freq='W-SUN'), 'Unique_ID', 'Source'])
                .agg({'pct_flood': 'mean'})
@@ -251,12 +256,14 @@ def pivot_table(df):
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
 
-def fields_to_df_d(fields):
+def fields_to_df_d(fields, stat_list):
     '''
-    extract start and end dates information from fields
+    extract start and end dates information from GEE assets (fields)
     '''
     df = gpd.read_file(json.dumps(fields.getInfo()))
-    df_d = df[['BidID', 'FieldID', 'Status', 'EndDate', 'StartDate']]
+    # Seleted the enrolled fields
+    df = df.loc[df.Status.isin(stat_list)]
+    df_d = df[['BidID', 'FieldID', 'Status', 'EndDate', 'StartDate']].copy()
     columns = df_d.columns
     df_d = standardize_names(df_d, 'Bid_ID', columns[0])
     df_d = standardize_names(df_d, 'Field_ID', columns[1])
@@ -266,11 +273,11 @@ def fields_to_df_d(fields):
 
 def add_flood_dates(df_d, df, stat_list):
     '''
-    add plannded flooding start and end time to the pivoted table
+    Add plannded flooding start and end time to the pivoted table
     '''
     df_d['Flood Start'] = pd.to_datetime(df_d['StartDT'])
     df_d['Flood End'] = pd.to_datetime(df_d['EndDT'])
-    df_d = df_d[['Bid_ID', 'Field_ID', 'Status', 'Flood Start', 'Flood End']]
+    df_d = df_d[['Bid_ID', 'Field_ID', 'Status', 'Flood Start', 'Flood End']].copy()
     df_pivot = pd.merge(df, df_d, on=['Bid_ID', 'Field_ID'], how='left')
     df_pivot = df_pivot.loc[df_pivot.Status.isin(stat_list)]
   # print("Selected status values: {}".format(stat_list))
@@ -287,6 +294,9 @@ def add_flood_dates(df_d, df, stat_list):
 
 
 def no_flood_dates(df):
+    '''
+    in case of no flooding start and end dates are available
+    '''
     cols = df.columns.tolist()
     cols = cols[-2:] + cols[:-2]
     df = df[cols]
@@ -294,8 +304,10 @@ def no_flood_dates(df):
 
 
 def cloud_free_percent(df, start):
-    # Check the number of cloud free records in the last seven days
-    # Calculate the start and end dates of last week and two weeks ago
+    '''
+    Check the number of cloud-free records in the last seven days
+    Calculate the start and end dates of last week and two weeks ago
+    '''
     start_last = dt.datetime.strptime(start, '%Y-%m-%d').date()
     end_last = start_last + dt.timedelta(days=6)
     start_last2 = start_last - dt.timedelta(days=7)
@@ -321,6 +333,9 @@ def cloud_free_percent(df, start):
 
 
 def watch_list(df, start):
+    '''
+    Generate a list of the enrolled fields that are minimally filled but are still in contract
+    '''
     columns = df.columns[0:4].values.tolist()
     columns.append(start)
     print(columns)
