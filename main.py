@@ -21,14 +21,12 @@ import pandas as pd
 
 try:
     GDRIVE_AUTH = os.environ["GDRIVE_AUTH"]
-# except KeyError:
+    # Google Drive authentication and read the Excel file from google drive
+    gdrive_auth = json.loads(GDRIVE_AUTH)
+    creds = service_account.Credentials.from_service_account_info(
+        gdrive_auth, scopes=SCOPES)
+except KeyError:
     GDRIVE_AUTH = "Token not available!"
-
-# Google Drive authentication and read the Excel file from google drive
-gdrive_auth = json.loads(GDRIVE_AUTH)
-creds = service_account.Credentials.from_service_account_info(
-    gdrive_auth, scopes=SCOPES)
-service = build('drive', 'v3', credentials=creds)
 
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
