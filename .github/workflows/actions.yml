@@ -53,12 +53,12 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
       
-      - name: share report # send gmails with html attachment
-        env:
-          GMAIL_PWD: ${{secrets.GMAIL_PWD }}
-          GEE_AUTH: ${{secrets.GEE_AUTH}}
-        run: |
-          python share.py  # Replace with your script filename
+      # - name: share report # send gmails with html attachment
+      #   env:
+      #     GMAIL_PWD: ${{secrets.GMAIL_PWD }}
+      #     GEE_AUTH: ${{secrets.GEE_AUTH}}
+      #   run: |
+      #     python share.py  # Replace with your script filename
 
 
 
