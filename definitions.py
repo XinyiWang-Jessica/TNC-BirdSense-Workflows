@@ -20,7 +20,7 @@ end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 
 # define programs to run 
-programs = ["WB4B22", "WCWR22", "Bid4Birds"]
+programs = ["M23"]
 
 # define thresholds
 thresh_val = 0.25

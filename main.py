@@ -204,7 +204,7 @@ def main(program):
         dp.Plot(pct_map)
     )
    # save the report as html
-    dp.save_report(view, f'latest_report_{program}.html')
+    dp.save_report(view, 'index.html')
 
 
 if __name__ == "__main__":

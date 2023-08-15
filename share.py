@@ -17,7 +17,7 @@ def share_report(program):
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                        GMAIL_PWD)
     # Adding Content and sending it
-    attachment_path = f'latest_report_{program}.html'  # Replace with your file path
+    attachment_path = f'reports/latest_report_{program}.html'  # Replace with your file path
     attachments = [attachment_path]
     yag.send(recipients[program], # defined in definitions.py
              f"Weekly BirdSense Report - {program}",
