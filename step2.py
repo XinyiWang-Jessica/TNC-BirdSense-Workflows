@@ -208,7 +208,8 @@ def table_combine(table1, table2, columns1, columns2, stat_list):
     # selete the enrolled fields and drop the non-enrolled ones
     df = df.loc[df.Status.isin(stat_list)]
     df['Date'] = pd.to_datetime(df['Date'])
-    df['pct_flood'] = df['threshold']
+    # df['pct_flood'] = df['threshold']
+    df['pct_flood'] = df['waterB'] + df['flooded_vegB']
     df['Source'] = 'Sentinel 2'
     df['Unique_ID'] = df['Bid_ID'] + "_" + df['Field_ID']
     # replace the percentage flooded with Nan if below cloud_free_tresh
@@ -354,3 +355,11 @@ def watch_list(df, start):
     watch = watch.rename(columns={start: 'Flooding Percentage, %'})
     # return watch with format percentage
     return watch
+
+
+
+def addFlood(image):
+  label = image.select(['label'])
+  water = label.eq(0).rename('waterB')
+  flooded_veg = label.eq(3).rename('flooded_vegB')
+  return image.addBands([water, flooded_veg])

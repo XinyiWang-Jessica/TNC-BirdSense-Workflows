@@ -64,14 +64,14 @@ def main(program):
     fields = field_list[program]
     season = field_bid_names[program][3]
     columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
-    columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
+    columns2 = [bid_name, field_name, 'waterB', 'flooded_vegB', 'Date']
     file_id = field_bid_names[program][5]
 
     # extract satellite images from GEE
     start = ee.Date(start_string)
     end = ee.Date(end_string)
     # Step 1: Extract images from EE and Filter based on time and geography
-    s2 = ee.ImageCollection('COPERNICUS/S2_HARMONIZED').filterDate(start,
+    dw = ee.ImageCollection('GOOGLE/DYNAMICWORLD/V1').filterDate(start,
                                                                    end).filterBounds(fields)  # update for sentinel changes 1/25/2022
     s2c = ee.ImageCollection(
         'COPERNICUS/S2_CLOUD_PROBABILITY').filterDate(start, end).filterBounds(fields)
@@ -79,32 +79,33 @@ def main(program):
     checks_areaAdded = fields.map(addArea)
     
     # step 2: add cloudProbability to S2
-    withCloudProbability = add_cloudProbability(s2, s2c)
+    withCloudProbability = add_cloudProbability(dw, s2c)
 
     cloud_free_imgColl = withCloudProbability.map(cloud_free_function)
 
     maskClouds = buildMaskFunction(50)
-    s2Masked = ee.ImageCollection(cloud_free_imgColl.map(
-        maskClouds)).select(ee.List.sequence(0, 18))
+    dwMasked = ee.ImageCollection(cloud_free_imgColl.map(
+        maskClouds)).select(ee.List.sequence(0, 2))
 
-    s2Masked_byday = mosaicByDate(s2Masked)
+    dwMasked_byday = mosaicByDate(dwMasked)
     # mosaic into one image per day - NO MASK (to count total pixels per check)
-    s2NoMask_byday = mosaicByDate(
-        cloud_free_imgColl).select(ee.List.sequence(17, 18))
+    dwNoMask_byday = mosaicByDate(
+        cloud_free_imgColl).select(ee.List.sequence(11, 12))
 
     # unique_dates = imlist.map(lambda im: ee.Image(im).date().format("YYYY-MM-dd")).distinct()
-    withNDWI = s2Masked_byday.map(addNDWIThresh)
-    NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
-
+    # withNDWI = dwMasked_byday.map(addNDWIThresh)
+    # NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
+    with_flood_dw = dwMasked_byday.map(addFlood)
+    floodOnly_dw = with_flood_dw.select(['waterB', 'flooded_vegB'])
 #     bands = NDWIThreshonly.first().bandNames().getInfo()
     rrs = fix(checks_areaAdded)
-    reduced_cloudfree = s2NoMask_byday.select(
+    reduced_cloudfree = dwNoMask_byday.select(
         ['cloud_free_binary', 'pixel_count']).map(rrs)
     flattened_cloudfree = reduced_cloudfree.flatten()
     with_PctCloudFree = flattened_cloudfree.map(addPctCloudFree)
 
     rrm = fix2(fields)
-    reduced = NDWIThreshonly.map(rrm)
+    reduced = floodOnly_dw.map(rrm)
     table = reduced.flatten()
 
     # convert featurecollections to dataframe, combine and formatted as we need
