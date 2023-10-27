@@ -85,7 +85,7 @@ def main(program):
 
     maskClouds = buildMaskFunction(50)
     dwMasked = ee.ImageCollection(cloud_free_imgColl.map(
-        maskClouds)).select(ee.List.sequence(0, 2))
+        maskClouds)).select(ee.List.sequence(0, 12))
 
     dwMasked_byday = mosaicByDate(dwMasked)
     # mosaic into one image per day - NO MASK (to count total pixels per check)
