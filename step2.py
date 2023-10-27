@@ -1,13 +1,122 @@
-import ee
-import folium
-import pandas as pd
+import os
+import io
+import json
 # Import datetime
 from datetime import datetime
 import datetime as dt
-import json
+import pandas as pd
+import ee
+# import folium
 import geopandas as gpd
 from definitions import *
+# packages for google access
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
+# Google Drive authentication and read the Excel file from google drive
+try:
+    GDRIVE_AUTH = os.environ["GDRIVE_AUTH"]
+    # Google Drive authentication and read the Excel file from google drive
+    gdrive_auth = json.loads(GDRIVE_AUTH)
+    creds = service_account.Credentials.from_service_account_info(
+        gdrive_auth, scopes=SCOPES)
+except KeyError:
+    GDRIVE_AUTH = "Token not available!"
+
+
+def daily_percentage_table(program, fields, start_string, end_string, stat_list):
+    '''
+    Based on the selected program, 
+        - extract S2 satellite images
+        - estimate flood coverage
+        - apply cloud mask
+        - generate daily flooding coverage estimate table
+    '''
+    # Obtain program specific information from definitions
+    bid_name = field_bid_names[program][0]
+    field_name = field_bid_names[program][1]
+    columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
+    columns2 = [bid_name, field_name, 'waterB', 'flooded_vegB', 'Date']
+
+    # extract satellite images from GEE
+    start = ee.Date(start_string)
+    end = ee.Date(end_string)
+    # Step 1: Extract images from EE and Filter based on time and geography
+    dw = ee.ImageCollection('GOOGLE/DYNAMICWORLD/V1').filterDate(start,
+                                                                   end).filterBounds(fields)  # update for sentinel changes 1/25/2022
+    s2c = ee.ImageCollection(
+        'COPERNICUS/S2_CLOUD_PROBABILITY').filterDate(start, end).filterBounds(fields)
+
+    checks_areaAdded = fields.map(addArea)
+    
+    # step 2: add cloudProbability to S2
+    withCloudProbability = add_cloudProbability(dw, s2c)
+
+    cloud_free_imgColl = withCloudProbability.map(cloud_free_function)
+
+    maskClouds = buildMaskFunction(50)
+    dwMasked = ee.ImageCollection(cloud_free_imgColl.map(
+        maskClouds)).select(ee.List.sequence(0, 12))
+
+    dwMasked_byday = mosaicByDate(dwMasked)
+    # mosaic into one image per day - NO MASK (to count total pixels per check)
+    dwNoMask_byday = mosaicByDate(
+        cloud_free_imgColl).select(ee.List.sequence(11, 12))
+
+    # unique_dates = imlist.map(lambda im: ee.Image(im).date().format("YYYY-MM-dd")).distinct()
+    # withNDWI = dwMasked_byday.map(addNDWIThresh)
+    # NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
+    with_flood_dw = dwMasked_byday.map(addFlood)
+    floodOnly_dw = with_flood_dw.select(['waterB', 'flooded_vegB'])
+#     bands = NDWIThreshonly.first().bandNames().getInfo()
+    rrs = fix(checks_areaAdded)
+    reduced_cloudfree = dwNoMask_byday.select(
+        ['cloud_free_binary', 'pixel_count']).map(rrs)
+    flattened_cloudfree = reduced_cloudfree.flatten()
+    with_PctCloudFree = flattened_cloudfree.map(addPctCloudFree)
+
+    rrm = fix2(fields)
+    reduced = floodOnly_dw.map(rrm)
+    table = reduced.flatten()
+
+        # convert featurecollections to dataframe, combine and formatted as we need
+    df = table_combine(with_PctCloudFree, table, columns1, columns2, stat_list)
+    return df
+
+def weekly_percentage_table(df, program, fields, stat_list):
+    '''
+    Based on the daily percentage table 
+    Generate
+        - weekly flood percentage table
+        - watch list. 
+    '''
+    aday = dt.datetime.now().date() - dt.timedelta(days = 6)
+    start_last_week = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
+    file_id = field_bid_names[program][7]
+    try:# google drive document file id
+        request = service.files().get_media(fileId=file_id)
+        file = io.BytesIO(request.execute())
+        df_d = pd.read_excel(file)
+        col = 5
+        df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
+        # generate the watch list with low percentage flooded rate
+        watch = watch_list(df_pivot, start_last_week)
+        print('found flooding start and end dates in google drive')
+    except:
+        try:
+            df_d = fields_to_df_d(fields, program, stat_list)
+            col = 5
+            df_pivot = add_flood_dates(df_d, pivot_table(df), stat_list)
+            # generate the watch list with low percentage flooded rate
+            watch = watch_list(df_pivot, start_last_week) 
+            print('found flooding start and end dates in GEE asset')   
+        except:
+            print('no flooding start and end dates in google drive')
+            df_pivot = no_flood_dates(pivot_table(df))
+            col = 3
+            watch = pd.DataFrame()
+        return df_pivot, watch, col
+    
 
 # add area field to fields
 def addArea(feature):

@@ -1,13 +1,94 @@
-import pandas as pd
 from datetime import datetime
 import datetime as dt
-from step2 import *
+from math import ceil
+import pandas as pd
+import numpy as np
 import json
 import geopandas as gpd
 # import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
+import datapane as dp
+from step2 import *
 from definitions import *
+
+def create_report(df_daily, df_pivot, watch, program, fields, start_string, col):
+    '''
+    Based on the daily and weekly flooding percentage results
+    Generage a DataPane rerport including:
+        - Current status
+        - Historical status summary bar chart
+        - Historical status heatmap 
+        - Watch list
+        - Status on map
+    '''
+    # Obtain program specific information from definitions
+    aday = dt.datetime.now().date() - dt.timedelta(days = 6)
+    start_last = (aday - dt.timedelta(days=aday.weekday()+1)).strftime('%Y-%m-%d')
+    end_last = (aday + dt.timedelta(days=5 - aday.weekday())).strftime('%Y-%m-%d')
+    season = field_bid_names[program][3]
+    # Calculate the cloud free datepoints
+    num, percent, percent2, mask, mask2 = cloud_free_percent(df_daily, start_last)
+    # Step 3: add plots
+    fig_history = history_plot(df_pivot, start_last, start_string)
+    if percent < cloudy:
+        fig_status = plot_cloudy_status(start_last, cloudy)
+    else:
+        fig_status = plot_status(df_pivot, start_last)
+    heatmaps, cut_bins = all_heatmaps(df_pivot, col, start_last)
+    search_plot = history_plot_by_id(df_daily, df_pivot)
+    pct_map = map_plot(fields, df_pivot, program, start_last)
+    # Step 4: upload to datapane
+    start_last_text = datetime.strptime(start_last, '%Y-%m-%d').strftime("%b %d, %Y")
+    end_last_text = datetime.strptime(end_last, '%Y-%m-%d').strftime("%b %d, %Y")
+    last_update_text = datetime.strptime(end_string, '%Y-%m-%d').strftime("%b %d, %Y")
+    program_name = field_bid_names[program][5] if not None else program
+    page = dp.Page(
+        title = program_name, 
+        blocks = [
+            dp.Text('# BirdSense #'),
+            dp.Text(f'## Program - {program_name} ##'),
+            dp.Text(f'## {season} ##'),
+            dp.Text(f'### Weekly Report - {start_last_text} to {end_last_text} ###'),
+            dp.Text(f'last update: {last_update_text}'),
+            dp.Group(
+                dp.BigNumber(heading='Total Fields', value=num),
+                dp.BigNumber(heading='Fields with cloud-free data this week',
+                value="{:.2%}".format(percent)
+                #   change="{:.2%}".format(percent - percent2), is_upward_change=True), 
+                    ), 
+                columns=2
+                ),  # check the upward = false
+            dp.Text('## Flooding Status ##'),
+            dp.Group(
+                dp.Plot(
+                    fig_status,
+                    # Lots of white space here, so we can use a smaller height
+                    responsive=True
+                        ),
+                dp.Plot(fig_history, responsive=True), 
+                columns=2
+                ),
+            dp.Text(f'## Watch List for the week starting {start_last_text} ##'),
+            dp.Text(f'* The Watch List only includes the fields in the contracted flooding period and with satellite data available this week.'),
+            dp.Table(watch.style.background_gradient(cmap="autumn")),
+            dp.Text('## Flooding Percentage by Fields ##'),
+            dp.Select(
+                blocks=[
+                    dp.Plot(
+                        heatmaps[i], 
+                        label=f'Bids {int(cut_bins[i])} ~ {int(cut_bins[i+1])}') for i in range(len(heatmaps))
+                        ] +
+                        [dp.DataTable(df_pivot.round(3), label="Data Table")],
+                        type=dp.SelectType.TABS
+                        ),
+            dp.Text('## Flooding Time Series Chart ##'),
+            dp.Plot(search_plot),
+            dp.Text('## Map of Flooding Status ##'),
+            dp.Plot(pct_map)
+            ]
+                )
+    return page
 
 def heatmap_plot(df, n, col, start):
     '''
