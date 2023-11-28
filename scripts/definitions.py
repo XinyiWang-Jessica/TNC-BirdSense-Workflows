@@ -5,7 +5,7 @@ end_string = datetime.today().strftime('%Y-%m-%d')
 run = '_01'
 
 # define programs to run 
-programs = ["WB4B22", "WCWR22"]
+programs = ["Bid4Birds", "M23"]
 
 # define thresholds
 thresh_val = 0.20
@@ -24,14 +24,14 @@ program: [0.BidID, 1.Field_ID, 2.enrolled_status,
 """
 field_bid_names = {
 
-    "WB4B22": ['BidID', 'FieldID', ['Bid', 'Enrolled'], 
-               'Winter 2022-2023', '2022-10-01', None,
-               "projects/codefornature/assets/B4B_fields_Winter2022_20221214"
-               '110LWV3EVyZBKYsGOtrSPh-J0i_LaJvN-'],
-    "WCWR22": ['Contract_I', 'Field_Name', ['App', 'A[pp', 'Bid'],  
-               'Winter 2022-2023', '2022-10-01', None,
-               "projects/codefornature/assets/CWRHIP_fields_Winter2022_20221221",
-               '1dxz5jL2Pv1Uf7k6wSuqwIsoDpNNZhAAX'],
+    "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 
+                  'Spring 2023', '2023-02-01', None,
+                  "projects/codefornature/assets/Bid4Birds_SV_Ag_Spring_2023_Fields",
+                  None],
+    "M23": ['BidID', 'FieldID', ['Enrolled'], 
+            'Summer 2023', '2023-04-01', "M23",
+            "projects/codefornature/assets/B4B_ponds_Summer23_20230525", 
+            None],
 
                   }
 
