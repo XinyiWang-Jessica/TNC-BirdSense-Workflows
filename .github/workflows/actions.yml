@@ -3,13 +3,13 @@ name: run main.py
 on:
   push:
     branches:
-      - main
-      # - 'Testing'
+    - main
+    # - 'Testing'
 
 # on:
-#     schedule:
-#         # run at 8am every Wendsday
-#         - cron: "00 15 */3 * *"
+#    schedule:
+#         # run at 8am every Monday
+#        - cron: "00 15 * * 1"
         
 jobs:
   build:
@@ -48,13 +48,10 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
-      
-      # - name: share report # send gmails with html attachment
-      #   env:
-      #     GMAIL_PWD: ${{secrets.GMAIL_PWD }}
-      #     GEE_AUTH: ${{secrets.GEE_AUTH}}
-      #   run: |
-      #     python share.py  # Replace with your script filename
 
-
-
+      - name: share report # send gmails with html attachment
+        env:
+          GMAIL_PWD: ${{secrets.GMAIL_PWD }}
+          GEE_AUTH: ${{secrets.GEE_AUTH}}
+        run: |
+          python share.py  # Replace with your script filename

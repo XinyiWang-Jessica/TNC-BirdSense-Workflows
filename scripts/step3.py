@@ -9,8 +9,8 @@ import geopandas as gpd
 import plotly.graph_objects as go
 import plotly.express as px
 import datapane as dp
-from step2 import *
-from definitions import *
+from scripts.step2 import *
+from scripts.definitions import *
 
 def create_report(df_daily, df_pivot, watch, program, fields, start_string, col):
     '''
@@ -46,7 +46,7 @@ def create_report(df_daily, df_pivot, watch, program, fields, start_string, col)
     page = dp.Page(
         title = program_name, 
         blocks = [
-            dp.Text('# BirdSense - test with Dynamic World #'),
+            dp.Text('# BirdSense #'),
             dp.Text(f'## Program - {program_name} ##'),
             dp.Text(f'## {season} ##'),
             dp.Text(f'### Weekly Report - {start_last_text} to {end_last_text} ###'),
@@ -90,6 +90,7 @@ def create_report(df_daily, df_pivot, watch, program, fields, start_string, col)
                 )
     return page
 
+
 def heatmap_plot(df, n, col, start):
     '''
     heatmap of percentage flooded,
@@ -105,12 +106,16 @@ def heatmap_plot(df, n, col, start):
         x=df.Unique_ID,
         y=columns,
         colorscale='RdBu',
-        colorbar=dict(title='Flooding %'),)
+        colorbar=dict(title='Flooding %'),),
+                    layout = go.Layout(
+                        autosize=False, 
+                        width=300,
+                        height=800)
     )
     fig.update_layout(yaxis={"title": 'Weeks'},  # "tickangle": 45
                       xaxis={"title": 'Fields'})
     fig.update_yaxes(autorange="reversed")
-    fig.update_layout(xaxis_visible=False)
+    fig.update_layout(xaxis_visible=True)
     return fig
 
 
@@ -120,7 +125,7 @@ def all_heatmaps(df, col, start):
     '''
     n = len(df)//100 +1
     heatmaps = []
-    df['Unique_ID'] = df['Bid_ID'] + "-" + df['Field_ID']
+    df['Unique_ID'] = df['Bid_ID'].apply(lambda x: x.split('-')[-1]) + "-" + df['Field_ID']
     df['group'] = df['Bid_ID'].apply(lambda x: x.split('-')[-1]).astype('int')
     df['group'], cut_bin = pd.qcut(
         df['group'], q=n, labels=range(n), retbins=True)

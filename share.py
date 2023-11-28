@@ -1,32 +1,32 @@
+import os
 import yagmail
-from definitions import *
+from scripts.definitions import *
 
-# extract token from environment
+# extract Gmail token from environment
 try:
     GMAIL_PWD = os.environ["GMAIL_PWD"]
 except KeyError:
     GMAIL_PWD = "Token not available!"
 
 
-def share_report(program):
+def share_report():
     '''
     This function send out the created datapane report for each program
     '''
-    msg = f"Please check the latest BirdSense report for program \
-        {program} in the attachment"
+
+    file_path = ['weekly_data/' + program + '_weekly_flood_status.csv' for program in programs]
     yag = yagmail.SMTP("wangxinyi1986@gmail.com",
                        GMAIL_PWD)
     # Adding Content and sending it
-    attachment_path = f'reports/latest_report_{program}.html'  # Replace with your file path
-    attachments = [attachment_path]
-    yag.send(recipients[program], # defined in definitions.py
-             f"Weekly BirdSense Report - {program}",
-             msg,
-             attachments = attachments)
+    yag.send(recipients, # defined in definitions.py
+             f"Weekly BirdSense Reports",
+             contents = email_content,
+             attachments = file_path
+             )
     yag.close()
+    print('email sent')
 
 # Step 5: send email   
-for program in programs:
-        share_report(program)
+share_report()
     
 

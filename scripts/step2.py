@@ -8,10 +8,11 @@ import pandas as pd
 import ee
 # import folium
 import geopandas as gpd
-from definitions import *
+from scripts.definitions import *
 # packages for google access
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+
 
 # Google Drive authentication and read the Excel file from google drive
 try:
@@ -36,52 +37,52 @@ def daily_percentage_table(program, fields, start_string, end_string, stat_list)
     bid_name = field_bid_names[program][0]
     field_name = field_bid_names[program][1]
     columns1 = [bid_name, field_name, 'Status', 'Pct_CloudFree', 'Date']
-    columns2 = [bid_name, field_name, 'waterB', 'flooded_vegB', 'Date']
+    columns2 = [bid_name, field_name, 'NDWI', 'threshold', 'Date']
 
     # extract satellite images from GEE
     start = ee.Date(start_string)
     end = ee.Date(end_string)
     # Step 1: Extract images from EE and Filter based on time and geography
-    dw = ee.ImageCollection('GOOGLE/DYNAMICWORLD/V1').filterDate(start,
-                                                                   end).filterBounds(fields)  # update for sentinel changes 1/25/2022
+    s2 = ee.ImageCollection('COPERNICUS/S2_HARMONIZED')\
+    .filterDate(start, end).filterBounds(fields)  # update for sentinel changes 1/25/2022
     s2c = ee.ImageCollection(
         'COPERNICUS/S2_CLOUD_PROBABILITY').filterDate(start, end).filterBounds(fields)
 
     checks_areaAdded = fields.map(addArea)
     
     # step 2: add cloudProbability to S2
-    withCloudProbability = add_cloudProbability(dw, s2c)
+    withCloudProbability = add_cloudProbability(s2, s2c)
 
     cloud_free_imgColl = withCloudProbability.map(cloud_free_function)
 
     maskClouds = buildMaskFunction(50)
-    dwMasked = ee.ImageCollection(cloud_free_imgColl.map(
-        maskClouds)).select(ee.List.sequence(0, 12))
+    s2Masked = ee.ImageCollection(cloud_free_imgColl.map(
+        maskClouds)).select(ee.List.sequence(0, 18))
 
-    dwMasked_byday = mosaicByDate(dwMasked)
+    s2Masked_byday = mosaicByDate(s2Masked)
     # mosaic into one image per day - NO MASK (to count total pixels per check)
-    dwNoMask_byday = mosaicByDate(
-        cloud_free_imgColl).select(ee.List.sequence(11, 12))
+    s2NoMask_byday = mosaicByDate(
+        cloud_free_imgColl).select(ee.List.sequence(17, 18))
 
     # unique_dates = imlist.map(lambda im: ee.Image(im).date().format("YYYY-MM-dd")).distinct()
-    # withNDWI = dwMasked_byday.map(addNDWIThresh)
-    # NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
-    with_flood_dw = dwMasked_byday.map(addFlood)
-    floodOnly_dw = with_flood_dw.select(['waterB', 'flooded_vegB'])
+    withNDWI = s2Masked_byday.map(addNDWIThresh)
+    NDWIThreshonly = withNDWI.select(['NDWI', 'threshold'])
+
 #     bands = NDWIThreshonly.first().bandNames().getInfo()
     rrs = fix(checks_areaAdded)
-    reduced_cloudfree = dwNoMask_byday.select(
+    reduced_cloudfree = s2NoMask_byday.select(
         ['cloud_free_binary', 'pixel_count']).map(rrs)
     flattened_cloudfree = reduced_cloudfree.flatten()
     with_PctCloudFree = flattened_cloudfree.map(addPctCloudFree)
 
     rrm = fix2(fields)
-    reduced = floodOnly_dw.map(rrm)
+    reduced = NDWIThreshonly.map(rrm)
     table = reduced.flatten()
 
-        # convert featurecollections to dataframe, combine and formatted as we need
+    # convert featurecollections to dataframe, combine and formatted as we need
     df = table_combine(with_PctCloudFree, table, columns1, columns2, stat_list)
     return df
+
 
 def weekly_percentage_table(df, program, fields, stat_list):
     '''
@@ -118,8 +119,10 @@ def weekly_percentage_table(df, program, fields, stat_list):
         return df_pivot, watch, col
     
 
-# add area field to fields
 def addArea(feature):
+    '''
+    add area field to fields
+    '''
     return feature.set({'area_sqm': feature.geometry().area()})
 
 
@@ -149,6 +152,8 @@ def add_cloudProbability(s2, s2c):
 # Define a function to join the two collections on their 'system:index'
 # property. The 'propName' parameter is the name of the property that
 # references the joined image.
+
+
 def indexJoin(colA, colB, propName):
     primary = colA
     secondary = colB
@@ -317,8 +322,7 @@ def table_combine(table1, table2, columns1, columns2, stat_list):
     # selete the enrolled fields and drop the non-enrolled ones
     df = df.loc[df.Status.isin(stat_list)]
     df['Date'] = pd.to_datetime(df['Date'])
-    # df['pct_flood'] = df['threshold']
-    df['pct_flood'] = df['waterB'] + df['flooded_vegB']
+    df['pct_flood'] = df['threshold']
     df['Source'] = 'Sentinel 2'
     df['Unique_ID'] = df['Bid_ID'] + "_" + df['Field_ID']
     # replace the percentage flooded with Nan if below cloud_free_tresh
@@ -366,17 +370,19 @@ def pivot_table(df):
     df_pivot.drop(['Unique_ID', ], axis=1, inplace=True)
     return df_pivot
 
-def fields_to_df_d(fields, stat_list):
+def fields_to_df_d(fields, program, stat_list):
     '''
-    extract start and end dates information from GEE assets (fields)
+    Extract start and end dates information from GEE assets (fields)
     '''
+    # Convert fileds assesst into dataframe
     df = gpd.read_file(json.dumps(fields.getInfo()))
     # Seleted the enrolled fields
     df = df.loc[df.Status.isin(stat_list)]
-    df_d = df[['BidID', 'FieldID', 'Status', 'EndDate', 'StartDate']].copy()
-    columns = df_d.columns
-    df_d = standardize_names(df_d, 'Bid_ID', columns[0])
-    df_d = standardize_names(df_d, 'Field_ID', columns[1])
+    # Standardize the Bid and Field ID
+    df_d = standardize_names(df, 'Bid_ID', field_bid_names[program][0])
+    df_d = standardize_names(df, 'Field_ID', field_bid_names[program][1])
+    df_d = df[['Bid_ID', 'Field_ID', 'Status', 'EndDate', 'StartDate']].copy()
+    # Correct data format
     df_d['EndDT'] = df_d['EndDate'].apply(lambda x : datetime.fromtimestamp(x/1000).strftime('%Y-%m-%d'))
     df_d['StartDT'] = df_d['StartDate'].apply(lambda x : datetime.fromtimestamp(x/1000).strftime('%Y-%m-%d'))
     return df_d
@@ -448,7 +454,7 @@ def watch_list(df, start):
     '''
     columns = df.columns[0:4].values.tolist()
     columns.append(start)
-    print(columns)
+    # print(columns)
     # print(start)
     in_flood = df[columns].copy()
     in_flood['Flood Start'] = pd.to_datetime(in_flood['Flood Start'])
@@ -464,11 +470,3 @@ def watch_list(df, start):
     watch = watch.rename(columns={start: 'Flooding Percentage, %'})
     # return watch with format percentage
     return watch
-
-
-
-def addFlood(image):
-  label = image.select(['label'])
-  water = label.eq(0).rename('waterB')
-  flooded_veg = label.eq(3).rename('flooded_vegB')
-  return image.addBands([water, flooded_veg])

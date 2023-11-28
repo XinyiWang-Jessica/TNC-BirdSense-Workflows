@@ -6,9 +6,9 @@ import ee
 import datapane as dp
 
 # import supporting functions from step2 and step 3
-from step2 import *
-from step3 import *
-from definitions import *
+from scripts.step2 import *
+from scripts.step3 import *
+from scripts.definitions import *
 
 # Obtain GEE token from environment
 try:
