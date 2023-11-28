@@ -25,14 +25,13 @@ program: [0.BidID, 1.Field_ID, 2.enrolled_status,
 field_bid_names = {
 
     "Bid4Birds": ['BidID', 'FieldID', ['Enrolled'], 
-                  'Spring 2023', '2023-02-01', None,
+                  'Spring 2023', '2023-02-01', 'Bid for Birds',
                   "projects/codefornature/assets/Bid4Birds_SV_Ag_Spring_2023_Fields",
                   None],
     "M23": ['BidID', 'FieldID', ['Enrolled'], 
             'Summer 2023', '2023-04-01', "M23",
             "projects/codefornature/assets/B4B_ponds_Summer23_20230525", 
             None],
-
                   }
 
 
