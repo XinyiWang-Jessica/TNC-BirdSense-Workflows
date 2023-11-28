@@ -54,12 +54,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
 # define report link and email recipients
 url = "https://xinyiwang-jessica.github.io/TNC-BirdSense-Workflows/"
-recipients = {
-
-    "Bid4Birds": ["wangxinyi1986@gmail.com"],
-    "M23": ["wangxinyi1986@gmail.com"],
-
-}
+recipients = ["wangxinyi1986@gmail.com", ]
 email_content = f"""
 We've just updated the sample BirdSense dashboard with fresh data on flooded fields. 
 Check out the updated dashboard here: {url} \n
