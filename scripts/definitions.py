@@ -56,8 +56,8 @@ SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 url = "https://xinyiwang-jessica.github.io/TNC-BirdSense-Workflows/"
 recipients = {
 
-    "WB4B22": ["wangxinyi1986@gmail.com"],
-    "WCWR22": ["wangxinyi1986@gmail.com", "cjcarroll@usfca.edu"],
+    "Bid4Birds": ["wangxinyi1986@gmail.com"],
+    "M23": ["wangxinyi1986@gmail.com"],
 
 }
 email_content = f"""
